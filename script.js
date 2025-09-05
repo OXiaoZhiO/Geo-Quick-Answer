@@ -39,6 +39,7 @@ function displayQuestion(question) {
 
   const optionsDiv = document.getElementById('options');
   optionsDiv.innerHTML = '';
+  
   question.options.forEach(option => {
     const button = document.createElement('button');
     button.textContent = option;
