@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>地理快回答！</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>地理快回答！</h1>
+    </header>
+    <main>
+      <div id="game">
+        <div id="timer">时间剩余: <span id="time-left">60</span> 秒</div>
+        <div id="score">分数: <span id="score-value">0</span></div>
+        <div id="question-area">
+          <p id="question">题目将显示在这里</p>
+          <div id="options"></div>
+        </div>
+        <button id="submit-answer">提交答案</button>
+      </div>
+      <div id="game-over" class="hidden">
+        <h2>游戏结束！</h2>
+        <p>您的最终得分是: <span id="final-score">0</span></p>
+        <button id="restart-game">重新开始</button>
+      </div>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

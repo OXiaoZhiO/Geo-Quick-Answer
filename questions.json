@@ -1,0 +1,33 @@
+[
+    {
+        "question": "中国的首都是哪里？",
+        "options": ["上海", "广州", "北京", "天津"],
+        "answer": "北京",
+        "difficulty": 1
+    },
+    {
+        "question": "地球上最大的沙漠是？",
+        "options": ["撒哈拉沙漠", "戈壁沙漠"],
+        "answer": "撒哈拉沙漠",
+        "difficulty": 1
+    },
+    {
+        "question": "珠穆朗玛峰的海拔是多少米？",
+        "options": ["8844", "8848", "8850", "8830"],
+        "answer": "8848",
+        "difficulty": 3
+    },
+    {
+        "question": "以下哪个湖泊是中国最大的淡水湖？",
+        "options": ["青海湖", "鄱阳湖", "洞庭湖"],
+        "answer": "鄱阳湖",
+        "difficulty": 2
+    },
+    {
+        "question": "北极的主要气候类型是？",
+        "options": ["极地气候", "温带大陆性气候", "热带雨林气候"],
+        "answer": "极地气候",
+        "difficulty": 2
+    }
+    // Add 15 more questions here
+]
