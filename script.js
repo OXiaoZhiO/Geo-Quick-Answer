@@ -22,14 +22,12 @@ const feedback = document.getElementById('feedback');
 const finalScore = document.getElementById('final-score');
 const leaderboardList = document.getElementById('leaderboard');
 
-// Start game
 document.getElementById('start-game-btn').addEventListener('click', () => {
   startMenu.classList.add('hidden');
   game.classList.remove('hidden');
   startGame();
 });
 
-// Restart game
 document.getElementById('restart-game-btn').addEventListener('click', () => {
   gameOverMenu.classList.add('hidden');
   startMenu.classList.remove('hidden');
@@ -74,7 +72,7 @@ function displayQuestion(question) {
 function checkAnswer(selectedOption) {
   feedback.classList.remove('hidden');
   if (selectedOption === currentQuestion.answer) {
-    score += currentQuestion.difficulty * 10;
+    score += currentQuestion.difficulty * 5;
     feedback.textContent = '正确！';
     feedback.style.color = 'green';
   } else {
@@ -93,7 +91,6 @@ function endGame() {
   gameOverMenu.classList.remove('hidden');
   finalScore.textContent = score;
 
-  // Update leaderboard
   leaderboard.push(score);
   leaderboard.sort((a, b) => b - a);
   leaderboard = leaderboard.slice(0, 5);
