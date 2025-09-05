@@ -1,33 +1,122 @@
 [
     {
         "question": "中国的首都是哪里？",
-        "options": ["上海", "广州", "北京", "天津"],
+        "options": ["上海", "广州", "北京"],
         "answer": "北京",
         "difficulty": 1
     },
     {
         "question": "地球上最大的沙漠是？",
-        "options": ["撒哈拉沙漠", "戈壁沙漠"],
+        "options": ["撒哈拉沙漠", "戈壁沙漠", "塔克拉玛干沙漠"],
         "answer": "撒哈拉沙漠",
         "difficulty": 1
     },
     {
-        "question": "珠穆朗玛峰的海拔是多少米？",
-        "options": ["8844", "8848", "8850", "8830"],
-        "answer": "8848",
-        "difficulty": 3
+        "question": "太阳系中最大的行星是？",
+        "options": ["木星", "土星", "地球", "火星"],
+        "answer": "木星",
+        "difficulty": 2
     },
     {
         "question": "以下哪个湖泊是中国最大的淡水湖？",
-        "options": ["青海湖", "鄱阳湖", "洞庭湖"],
+        "options": ["青海湖", "鄱阳湖", "洞庭湖", "太湖"],
         "answer": "鄱阳湖",
         "difficulty": 2
     },
     {
-        "question": "北极的主要气候类型是？",
-        "options": ["极地气候", "温带大陆性气候", "热带雨林气候"],
+        "question": "世界上最长的河流是？",
+        "options": ["亚马逊河", "尼罗河", "长江", "密西西比河", "伏尔加河"],
+        "answer": "尼罗河",
+        "difficulty": 3
+    },
+    {
+        "question": "珠穆朗玛峰的海拔是多少米？",
+        "options": ["8844", "8848", "8850", "8830", "8825"],
+        "answer": "8848",
+        "difficulty": 3
+    },
+    {
+        "question": "以下哪座山是中国的五岳之一？",
+        "options": ["泰山", "黄山", "峨眉山", "华山", "衡山", "嵩山"],
+        "answer": "泰山",
+        "difficulty": 4
+    },
+    {
+        "question": "以下哪个是北极的主要气候类型？",
+        "options": ["极地气候", "温带大陆性气候", "热带雨林气候", "地中海气候", "热带草原气候", "高原气候"],
         "answer": "极地气候",
+        "difficulty": 4
+    },
+    {
+        "question": "地球的年龄大约是多少？",
+        "options": ["45亿年", "10亿年", "30亿年"],
+        "answer": "45亿年",
+        "difficulty": 1
+    },
+    {
+        "question": "地球上最深的海沟是？",
+        "options": ["马里亚纳海沟", "汤加海沟", "爪哇海沟", "菲律宾海沟"],
+        "answer": "马里亚纳海沟",
+        "difficulty": 2
+    },
+    {
+        "question": "以下哪个国家是南美洲的？",
+        "options": ["巴西", "埃及", "加拿大", "印度", "南非"],
+        "answer": "巴西",
+        "difficulty": 3
+    },
+    {
+        "question": "以下哪个城市是澳大利亚的首都？",
+        "options": ["悉尼", "墨尔本", "堪培拉"],
+        "answer": "堪培拉",
+        "difficulty": 1
+    },
+    {
+        "question": "以下哪个是世界上人口最多的国家？",
+        "options": ["中国", "印度", "美国", "印尼"],
+        "answer": "中国",
+        "difficulty": 2
+    },
+    {
+        "question": "北美洲的五大湖中最大的湖是？",
+        "options": ["苏必利尔湖", "休伦湖", "密歇根湖", "伊利湖", "安大略湖"],
+        "answer": "苏必利尔湖",
+        "difficulty": 3
+    },
+    {
+        "question": "以下哪个国家的国旗是红底白十字？",
+        "options": ["瑞士", "丹麦", "芬兰", "瑞典"],
+        "answer": "瑞士",
+        "difficulty": 2
+    },
+    {
+        "question": "世界上面积最大的岛屿是？",
+        "options": ["格陵兰岛", "新几内亚岛", "加里曼丹岛", "马达加斯加岛", "大不列颠岛"],
+        "answer": "格陵兰岛",
+        "difficulty": 3
+    },
+    {
+        "question": "中国的四大古都之一是？",
+        "options": ["西安", "北京", "洛阳", "南京", "开封", "杭州"],
+        "answer": "西安",
+        "difficulty": 4
+    },
+    {
+        "question": "以下哪个国家不属于欧盟？",
+        "options": ["挪威", "德国", "法国", "意大利", "西班牙"],
+        "answer": "挪威",
+        "difficulty": 3
+    },
+    {
+        "question": "地球上哪个洲面积最小？",
+        "options": ["澳大利亚", "欧洲", "南极洲"],
+        "answer": "澳大利亚",
+        "difficulty": 1
+    },
+    {
+        "question": "太阳系中最靠近太阳的行星是？",
+        "options": ["水星", "金星", "地球", "火星"],
+        "answer": "水星",
         "difficulty": 2
     }
-    // Add 15 more questions here
 ]
