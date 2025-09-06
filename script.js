@@ -13,35 +13,77 @@ const difficultyMap = {
   4: { options: 6, score: 20 }
 };
 
-// 读取题库并补足选项数
+// 读取题库并处理选项
 async function fetchQuestions() {
   const res = await fetch('questions.json');
   let rawQuestions = await res.json();
   questions = rawQuestions.map((q, idx) => {
     const diffConf = difficultyMap[q.difficulty] || difficultyMap[1];
-    let opts = q.options.slice();
-    while (opts.length < diffConf.options) {
-      let fakeOption = "选项" + (opts.length + 1);
-      if (!opts.includes(fakeOption) && fakeOption !== q.answer) opts.push(fakeOption);
+    
+    // 确保有1个正确答案和5个干扰项，共6个选项
+    if (!q.options.includes(q.answer)) {
+      q.options.unshift(q.answer); // 确保正确答案在选项中
     }
-    // 给每道题加唯一id（NO.编号），用idx或者你题库的id字段
-    return { ...q, options: opts, diffConf, id: idx + 1 };
+    
+    // 过滤重复选项
+    const uniqueOptions = [...new Set(q.options)];
+    
+    // 如果选项不足6个，补充随机生成的干扰项
+    let opts = uniqueOptions.slice();
+    while (opts.length < 6) {
+      let fakeOption = generateFakeOption(q.question, opts, q.answer);
+      if (!opts.includes(fakeOption) && fakeOption !== q.answer) {
+        opts.push(fakeOption);
+      }
+    }
+    
+    // 根据难度筛选显示的选项数量
+    const shuffledAllOptions = shuffleArray(opts.slice()); // 先打乱所有6个选项
+    const displayOptions = shuffledAllOptions.slice(0, diffConf.options); // 取前N个选项
+    
+    return { 
+      ...q, 
+      allOptions: opts, // 存储所有6个选项
+      displayOptions: displayOptions, // 存储当前难度下要显示的选项
+      diffConf, 
+      id: idx + 1 
+    };
   });
+  
+  // 随机排序题目
   shuffleArray(questions);
+}
+
+// 生成更合理的假选项
+function generateFakeOption(question, existingOptions, correctAnswer) {
+  // 地理相关的常见假选项词汇
+  const geographyTerms = [
+    "伦敦", "巴黎", "纽约", "莫斯科", "悉尼", "柏林", "东京", "北京",
+    "太平洋", "大西洋", "印度洋", "北冰洋", "喜马拉雅山", "阿尔卑斯山",
+    "黄河", "珠江", "黑龙江", "里海", "青海湖", "洞庭湖", "巴西", "印度",
+    "加拿大", "澳大利亚", "法国", "德国", "埃及", "南非", "热带雨林",
+    "温带季风", "高原山地", "极地气候", "黑土", "红土", "黄土", "沙漠",
+    "平原", "高原", "盆地", "山脉", "岛屿", "半岛", "海峡", "运河"
+  ];
+  
+  // 尝试找到一个不在现有选项中的地理术语
+  for (let term of geographyTerms) {
+    if (!existingOptions.includes(term) && term !== correctAnswer) {
+      return term;
+    }
+  }
+  
+  // 如果找不到合适的术语，使用默认方式生成
+  return "选项" + (existingOptions.length + 1);
 }
 
 // Fisher-Yates 洗牌算法
 function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-}
-
-// 选项顺序随机
-function shuffleOptions(options) {
-  const arr = options.slice();
-  shuffleArray(arr);
   return arr;
 }
 
@@ -52,12 +94,12 @@ function loadNewQuestion() {
     return;
   }
   const q = questions[currentQuestionIndex];
-  // 题目前加NO.编号
   document.getElementById('question').textContent = `NO.${q.id} ${q.question}`;
   const optionsDiv = document.getElementById('options');
   optionsDiv.innerHTML = '';
 
-  const shuffledOptions = shuffleOptions(q.options);
+  // 对当前要显示的选项再次打乱顺序
+  const shuffledOptions = shuffleArray(q.displayOptions);
 
   shuffledOptions.forEach(option => {
     const btn = document.createElement('button');
