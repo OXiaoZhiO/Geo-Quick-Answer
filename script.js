@@ -13,33 +13,31 @@ const difficultyMap = {
   4: { options: 6, score: 20 }
 };
 
-// 读取题库并处理选项
+// 读取题库并根据难度筛选选项数
 async function fetchQuestions() {
   const res = await fetch('questions.json');
   let rawQuestions = await res.json();
   questions = rawQuestions.map((q, idx) => {
     const diffConf = difficultyMap[q.difficulty] || difficultyMap[1];
-    let opts = q.options.slice();
-    
     // 确保正确答案在选项中
-    if (!opts.includes(q.answer)) {
-      opts.push(q.answer);
+    if (!q.options.includes(q.answer)) {
+      q.options.push(q.answer);
     }
-    
-    // 补充选项到指定数量，使用有意义的占位符
-    const placeholderPrefixes = ["其他选项：", "备选答案：", "可能选项："];
-    while (opts.length < diffConf.options) {
-      const prefix = placeholderPrefixes[Math.floor(Math.random() * placeholderPrefixes.length)];
-      let fakeOption = `${prefix}${opts.length + 1}`;
-      // 确保不重复且不是正确答案
-      if (!opts.includes(fakeOption) && fakeOption !== q.answer) {
-        opts.push(fakeOption);
-      }
+    // 根据难度筛选选项数量，确保包含正确答案
+    let opts = [q.answer]; // 先添加正确答案
+    // 从其他选项中随机选择需要的数量
+    const otherOptions = q.options.filter(opt => opt !== q.answer);
+    // 计算还需要多少个选项
+    const needed = diffConf.options - 1;
+    // 随机选择需要的选项
+    for (let i = 0; i < needed && i < otherOptions.length; i++) {
+      const randomIndex = Math.floor(Math.random() * otherOptions.length);
+      opts.push(otherOptions[randomIndex]);
+      // 移除已选择的选项，避免重复
+      otherOptions.splice(randomIndex, 1);
     }
-    
     return { ...q, options: opts, diffConf, id: idx + 1 };
   });
-  // 首次加载时洗牌
   shuffleArray(questions);
 }
 
@@ -65,6 +63,7 @@ function loadNewQuestion() {
     return;
   }
   const q = questions[currentQuestionIndex];
+  // 题目前加NO.编号
   document.getElementById('question').textContent = `NO.${q.id} ${q.question}`;
   const optionsDiv = document.getElementById('options');
   optionsDiv.innerHTML = '';
@@ -139,9 +138,6 @@ function startGame() {
   document.getElementById('time-left').textContent = timeLeft;
   updateProgressBar();
 
-  // 重新洗牌确保每次游戏题目顺序不同
-  shuffleArray(questions);
-
   clearInterval(timerInterval);
   timerInterval = setInterval(() => {
     timeLeft--;
@@ -153,6 +149,8 @@ function startGame() {
     }
   }, 1000);
 
+  // 重新随机题目顺序
+  shuffleArray(questions);
   loadNewQuestion();
 }
 
