@@ -167,6 +167,9 @@ function resetGame() {
   timeLeft = 60;
   score = 0;
   currentQuestionIndex = 0;
+   // 重新随机题目顺序
+  shuffleArray(questions);
+  loadNewQuestion();
 }
 
 function saveScore(newScore) {
