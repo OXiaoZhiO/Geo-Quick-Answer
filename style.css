@@ -62,7 +62,7 @@ button:disabled {
     background: #ffffff;
     border-radius: 15px;
     padding: 20px;
-    box-shadow: 0 4px 10px rgba(0， 0， 0， 0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     margin-bottom: 20px;
 }
 
@@ -141,7 +141,7 @@ button:disabled {
     height: 100%;
     width: 100%;
     background: linear-gradient(90deg, #3b82f6, #6366f1);
-    transition: width 0.1s linear;
+    transition: width 0.1 linear;
 }
 
 /* 排行榜适配 */
