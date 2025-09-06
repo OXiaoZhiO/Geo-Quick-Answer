@@ -7,31 +7,29 @@ const leaderboardKey = 'leaderboard';
 
 // 难度与分值和选项数映射
 const difficultyMap = {
-  1: { options: 3, score: 5 },
-  2: { options: 4, score: 10 },
-  3: { options: 5, score: 15 },
-  4: { options: 6, score: 20 }
+  1: { options: 3， score: 5 }，
+  2: { options: 4， score: 10 }，
+  3: { options: 5， score: 15 }，
+  4: { options: 6， score: 20 }
 };
 
-// 异步加载题库
+// 读取题库并补足选项数
 async function fetchQuestions() {
   const res = await fetch('questions.json');
-  let rawQuestions = await res.json();
-  // 补足选项数，随机排序题目
-  questions = rawQuestions.map(q => {
-    const diffConf = difficultyMap[q.difficulty] || difficultyMap[1];
-    // 补足选项（如果题库本身选项不够则用“选项X”补齐）
-    let opts = q.options.slice();
-    while (opts.length < diffConf.options) {
-      let fakeOption = "选项" + (opts.length + 1);
-      if (!opts.includes(fakeOption) && fakeOption !== q.answer) opts.push(fakeOption);
+  let rawQuestions = await res。json();
+  questions = rawQuestions。map(q => {
+    const diffConf = difficultyMap[q。difficulty] || difficultyMap[1];
+    let opts = q。options。slice();
+    while (opts。length < diffConf。options) {
+      let fakeOption = "选项" + (opts。length + 1);
+      if (!opts。includes(fakeOption) && fakeOption !== q。answer) opts。push(fakeOption);
     }
-    return { ...q, options: opts, diffConf };
+    return { ...q， options: opts， diffConf };
   });
-  shuffleArray(questions); // 题库随机
+  shuffleArray(questions);
 }
 
-// 洗牌算法
+// Fisher-Yates 洗牌算法
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -53,60 +51,62 @@ function loadNewQuestion() {
     return;
   }
   const q = questions[currentQuestionIndex];
-  document.getElementById('question').textContent = q.question;
-  const optionsDiv = document.getElementById('options');
-  optionsDiv.innerHTML = '';
+  document。getElementById('question')。textContent = q。question;
+  const optionsDiv = document。getElementById('options');
+  optionsDiv。innerHTML = '';
 
-  // 随机排序选项
-  const shuffledOptions = shuffleOptions(q.options);
+  const shuffledOptions = shuffleOptions(q。options);
 
-  shuffledOptions.forEach(option => {
-    const btn = document.createElement('button');
-    btn.textContent = option;
-    btn.className = "option-btn";
-    btn.onclick = () => checkAnswer(option, btn, shuffledOptions);
-    optionsDiv.appendChild(btn);
+  shuffledOptions。forEach(option => {
+    const btn = document。createElement('button');
+    btn。textContent = option;
+    btn。className = "option-btn";
+    btn。style。background = "linear-gradient(135deg, #3b82f6, #6366f1)";
+    btn。onclick = () => checkAnswer(option， btn， shuffledOptions);
+    optionsDiv。appendChild(btn);
   });
 
-  document.getElementById('feedback').classList.add('hidden');
-  document.getElementById('feedback').textContent = '';
+  document。getElementById('feedback')。classList。add('hidden');
+  document。getElementById('feedback')。textContent = '';
 }
 
 // 判断答案并显示反馈
-function checkAnswer(selected, selectedBtn, allOptions) {
+function checkAnswer(selected， selectedBtn， allOptions) {
   const q = questions[currentQuestionIndex];
-  const feedback = document.getElementById('feedback');
-  const optionsDiv = document.getElementById('options');
-  let addScore = 0;
+  const feedback = document。getElementById('feedback');
+  const optionsDiv = document。getElementById('options');
+  let addScore = q。diffConf。score;
   let feedbackText = '';
-  let isCorrect = selected === q.answer;
+  let isCorrect = selected === q。answer;
 
   // 禁止再次选择
-  Array.from(optionsDiv.children).forEach(btn => btn.disabled = true);
+  Array。from(optionsDiv。children)。forEach(btn => btn。disabled = true);
 
   if (isCorrect) {
-    addScore = q.diffConf.score;
     score += addScore;
-    selectedBtn.classList.add('feedback-correct');
+    selectedBtn。classList。add('feedback-correct');
+    selectedBtn。style。background = "linear-gradient(135deg, #48bb78, #38a169)"; // 绿色渐变
     feedbackText = `回答正确！+${addScore}分`;
   } else {
-    selectedBtn.classList.add('feedback-incorrect');
-    feedbackText = `回答错误！正确答案：${q.answer}。`;
-    // 正确选项高亮
-    Array.from(optionsDiv.children).forEach(btn => {
-      if (btn.textContent === q.answer) {
-        btn.classList.add('feedback-correct');
+    selectedBtn。classList。add('feedback-incorrect');
+    selectedBtn。style。background = "linear-gradient(135deg, #ef4444, #dc2626)"; // 红色渐变
+    feedbackText = `回答错误！正确答案：${q。answer}。`;
+    // 正确选项高亮绿色
+    Array。from(optionsDiv。children)。forEach(btn => {
+      if (btn。textContent === q。answer) {
+        btn。classList。add('feedback-correct');
+        btn。style。background = "linear-gradient(135deg, #48bb78, #38a169)";
       }
     });
   }
 
   // 题目解析
-  if (q.explanation) {
-    feedbackText += `\n解析：${q.explanation}`;
+  if (q。explanation) {
+    feedbackText += `\n解析：${q。explanation}`;
   }
-  feedback.textContent = feedbackText;
-  feedback.className = isCorrect ? 'feedback-correct' : 'feedback-incorrect';
-  feedback.classList.remove('hidden');
+  feedback。textContent = feedbackText;
+  feedback。className = isCorrect ? 'feedback-correct' : 'feedback-incorrect';
+  feedback。classList。remove('hidden');
   document.getElementById('score-value').textContent = score;
   currentQuestionIndex++;
   setTimeout(loadNewQuestion, 1500);
