@@ -13,7 +13,7 @@ body {
 }
 
 #app {
-    width: 90%;
+    width: 95vw;
     max-width: 600px;
     text-align: center;
 }
@@ -42,61 +42,99 @@ button {
     border-radius: 25px;
     margin-top: 10px;
     cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease-in-out;
+    outline: none;
 }
 
-button:hover {
+button:hover:not(:disabled) {
     background: linear-gradient(135deg, #2575fc, #6a11cb);
     transform: translateY(-2px);
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 #question-area {
     background: #ffffff;
     border-radius: 15px;
     padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0， 0， 0， 0.15);
     margin-bottom: 20px;
+}
+
+#question {
+    font-size: 1.08em;
+    font-weight: 500;
+    margin-bottom: 10px;
+    word-break: break-word;
+}
+
+#options {
+    margin-top: 10px;
 }
 
 #options button {
     display: block;
-    margin: 10px auto;
-    width: 80%;
-    font-size: 1em;
+    margin: 12px auto;
+    width: 95vw;
+    max-width: 420px;
+    min-height: 44px;
+    font-size: 1.08em;
     background: linear-gradient(135deg, #3b82f6, #6366f1);
     border-radius: 20px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 6px rgba(60,80,240,0.06);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 
-#options button:hover:not(.disabled) {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+#options button:hover:not(:disabled) {
+    transform: scale(1.04);
+    box-shadow: 0 4px 12px rgba(99,102,241,0.14);
+}
+
+#options button.feedback-correct {
+    background: linear-gradient(135deg, #48bb78, #38a169) !important; /*绿色渐变*/
+    color: #fff;
+}
+
+#options button.feedback-incorrect {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important; /*红色渐变*/
+    color: #fff;
 }
 
 #feedback {
-    font-size: 1.2em;
+    font-size: 1.1em;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 14px;
+    white-space: pre-line;
+    word-break: break-word;
+    text-align: left;
+    padding-left: 12px;
+    padding-right: 12px;
 }
 
 .feedback-correct {
-    color: green;
+    color: #38a169;
 }
 
 .feedback-incorrect {
-    color: red;
+    color: #dc2626;
 }
 
 /* 进度条样式 */
 .progress-bar {
     width: 100%;
-    height: 10px;
+    height: 14px;
     background: #e0e0e0;
-    border-radius: 5px;
+    border-radius: 7px;
     overflow: hidden;
     margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .progress-fill {
@@ -104,4 +142,35 @@ button:hover {
     width: 100%;
     background: linear-gradient(90deg, #3b82f6, #6366f1);
     transition: width 0.1s linear;
+}
+
+/* 排行榜适配 */
+ul#leaderboard, ul#game-over-leaderboard {
+    padding-left: 0;
+    list-style: none;
+    margin: 10px 0 0 0;
+    text-align: left;
+}
+
+ul#leaderboard li, ul#game-over-leaderboard li {
+    background: #f3f4f6;
+    margin: 4px 0;
+    padding: 6px 13px;
+    border-radius: 12px;
+    font-size: 1em;
+}
+
+@media (max-width: 700px) {
+    #app {
+        max-width: 100vw;
+        padding: 0px;
+    }
+    #question-area {
+        padding: 12vw 2vw;
+    }
+    #options button {
+        max-width: 98vw;
+        min-height: 44px;
+        font-size: 1em;
+    }
 }
