@@ -2,25 +2,22 @@ let timeLeft = 60;
 let score = 0;
 const leaderboardKey = 'leaderboard';
 
-document.getElementById('start-game-btn').addEventListener('click', () => {
-  document.getElementById('start-menu').classList.add('hidden');
-  document.getElementById('game').classList.remove('hidden');
-  startGame();
-});
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById('start-game-btn').addEventListener('click', () => {
+    document.getElementById('start-menu').classList.add('hidden');
+    document.getElementById('game').classList.remove('hidden');
+    startGame();
+  });
 
-document.getElementById('view-leaderboard-btn').addEventListener('click', () => {
-  displayLeaderboard();
-});
+  document.getElementById('view-leaderboard-btn').addEventListener('click', () => {
+    displayLeaderboard();
+  });
 
-document.getElementById('back-to-menu-btn').addEventListener('click', () => {
-  document.getElementById('leaderboard-menu').classList.add('hidden');
-  document.getElementById('start-menu').classList.remove('hidden');
-});
-
-document.getElementById('restart-game-btn').addEventListener('click', () => {
-  document.getElementById('game-over-menu').classList.add('hidden');
-  document.getElementById('start-menu').classList.remove('hidden');
-  resetGame();
+  document.getElementById('restart-game-btn').addEventListener('click', () => {
+    document.getElementById('game-over-menu').classList.add('hidden');
+    document.getElementById('start-menu').classList.remove('hidden');
+    resetGame();
+  });
 });
 
 function startGame() {
@@ -43,7 +40,7 @@ function startGame() {
 }
 
 function loadNewQuestion() {
-  // Implement question loading logic here
+  // 这里可以实现加载题目的逻辑
 }
 
 function endGame() {
@@ -84,7 +81,7 @@ function displayLeaderboard() {
 
 function updateLeaderboard() {
   const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
-  const leaderboardList = document.getElementById('game-over-leaderboard');
+  const leaderboardList = document.getElementById('leaderboard');
 
   leaderboardList.innerHTML = '';
   leaderboard.forEach((score, index) => {
