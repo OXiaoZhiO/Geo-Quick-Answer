@@ -63,7 +63,7 @@ function saveScore(newScore) {
   const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
   leaderboard.push(newScore);
   leaderboard.sort((a, b) => b - a);
-  localStorage.setItem(leaderboardKey', JSON.stringify(leaderboard.slice(0, 10)));
+  localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard.slice(0, 10)));
 }
 
 function displayLeaderboard() {
