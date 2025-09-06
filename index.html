@@ -13,6 +13,7 @@
       <h1>地理快回答！</h1>
       <p>测试你的地理知识，挑战极限分数！</p>
       <button id="start-game-btn">开始游戏</button>
+      <button id="view-leaderboard-btn">查看排行榜</button>
     </div>
 
     <!-- 游戏界面 -->
@@ -20,6 +21,9 @@
       <header>
         <div id="timer">时间: <span id="time-left">60</span> 秒</div>
         <div id="score">分数: <span id="score-value">0</span></div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
       </header>
       <main>
         <div id="question-area">
