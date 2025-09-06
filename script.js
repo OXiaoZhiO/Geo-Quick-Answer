@@ -5,14 +5,34 @@ let timeLeft = 60;
 let timerInterval = null;
 const leaderboardKey = 'leaderboard';
 
+// 难度与分值映射
+const difficultyMap = {
+  1: { options: 3， score: 5 }，
+  2: { options: 4， score: 10 }，
+  3: { options: 5， score: 15 }，
+  4: { options: 6， score: 20 }
+};
+
 // 异步加载题库
 async function fetchQuestions() {
   const res = await fetch('questions.json');
-  questions = await res.json();
+  let rawQuestions = await res。json();
+  // 按难度筛选并补足选项数
+  questions = rawQuestions。map(q => {
+    const diffConf = difficultyMap[q。difficulty] || difficultyMap[1];
+    // 补足选项数量（如果题库本身选项不够则用错误选项补齐）
+    let opts = q。options。slice();
+    while (opts。length < diffConf。options) {
+      // 随机添加不存在于当前选项的干扰项
+      let fakeOption = "选项" + (opts。length + 1);
+      if (!opts。includes(fakeOption) && fakeOption !== q。answer) opts。push(fakeOption);
+    }
+    return { ...q, options: opts, diffConf };
+  });
   shuffleArray(questions); // 题库顺序随机
 }
 
-// 洗牌算法（Fisher-Yates）
+// 洗牌算法
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -34,37 +54,63 @@ function loadNewQuestion() {
     return;
   }
   const q = questions[currentQuestionIndex];
-  document.getElementById('question').textContent = q.question;
-  const optionsDiv = document.getElementById('options');
-  optionsDiv.innerHTML = '';
+  document。getElementById('question')。textContent = q。question;
+  const optionsDiv = document。getElementById('options');
+  optionsDiv。innerHTML = '';
 
-  const shuffledOptions = shuffleOptions(q.options);
-  shuffledOptions.forEach(option => {
-    const btn = document.createElement('button');
-    btn.textContent = option;
-    btn.onclick = () => checkAnswer(option);
-    optionsDiv.appendChild(btn);
+  // 随机排序选项
+  const shuffledOptions = shuffleOptions(q。options);
+
+  shuffledOptions。forEach(option => {
+    const btn = document。createElement('button');
+    btn。textContent = option;
+    btn。className = "option-btn";
+    btn。onclick = () => checkAnswer(option， btn， shuffledOptions);
+    optionsDiv。appendChild(btn);
   });
 
-  document.getElementById('feedback').classList.add('hidden');
+  document。getElementById('feedback')。classList。add('hidden');
+  document。getElementById('feedback')。textContent = '';
 }
 
 // 判断答案并显示反馈
-function checkAnswer(selected) {
+function checkAnswer(selected， selectedBtn， allOptions) {
   const q = questions[currentQuestionIndex];
-  const feedback = document.getElementById('feedback');
-  if (selected === q.answer) {
-    score += q.difficulty || 1;
-    feedback.textContent = '回答正确！';
-    feedback.className = 'feedback-correct';
+  const feedback = document。getElementById('feedback');
+  const optionsDiv = document。getElementById('options');
+  let addScore = 0;
+  let feedbackText = '';
+  let isCorrect = selected === q。answer;
+
+  // 禁止再次选择
+  Array。from(optionsDiv。children)。forEach(btn => btn。disabled = true);
+
+  if (isCorrect) {
+    addScore = q。diffConf。score;
+    score += addScore;
+    selectedBtn。classList。add('feedback-correct');
+    feedbackText = `回答正确！+${addScore}分`;
   } else {
-    feedback.textContent = '回答错误！正确答案：' + q.answer;
-    feedback.className = 'feedback-incorrect';
+    selectedBtn。classList。add('feedback-incorrect');
+    feedbackText = `回答错误！正确答案：${q。answer}。`;
+    // 正确选项高亮
+    Array。from(optionsDiv。children)。forEach(btn => {
+      if (btn。textContent === q。answer) {
+        btn。classList。add('feedback-correct');
+      }
+    });
   }
+
+  // 题目解析
+  if (q。explanation) {
+    feedbackText += `\n解析：${q。explanation}`;
+  }
+  feedback。textContent = feedbackText;
+  feedback。className = isCorrect ? 'feedback-correct' : 'feedback-incorrect';
   feedback.classList.remove('hidden');
   document.getElementById('score-value').textContent = score;
   currentQuestionIndex++;
-  setTimeout(loadNewQuestion, 1000);
+  setTimeout(loadNewQuestion, 1500);
 }
 
 // 计时进度条
@@ -133,7 +179,7 @@ function displayLeaderboard() {
 
 function updateLeaderboard() {
   const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
-  const leaderboardList = document.getElementById('leaderboard');
+  const leaderboardList = document.getElementById('game-over-leaderboard');
   leaderboardList.innerHTML = '';
   leaderboard.forEach((score, index) => {
     const li = document.createElement('li');
@@ -162,7 +208,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     resetGame();
   });
 
-  // 如果你有返回排行榜主菜单按钮
+  // 处理排行榜返回主菜单
   const backBtn = document.getElementById('back-to-menu-btn');
   if (backBtn) {
     backBtn.addEventListener('click', () => {
