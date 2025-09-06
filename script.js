@@ -1,20 +1,34 @@
-let timeLeft = 60;
-let score = 0;
 let questions = [];
 let currentQuestionIndex = 0;
+let score = 0;
+let timeLeft = 60;
 let timerInterval = null;
-
 const leaderboardKey = 'leaderboard';
 
-// 加载题库
+// 异步加载题库
 async function fetchQuestions() {
   const res = await fetch('questions.json');
   questions = await res.json();
+  shuffleArray(questions); // 题库顺序随机
 }
 
-// 显示题目
+// 洗牌算法（Fisher-Yates）
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+// 选项顺序随机
+function shuffleOptions(options) {
+  const arr = options.slice();
+  shuffleArray(arr);
+  return arr;
+}
+
+// 显示题目和选项
 function loadNewQuestion() {
-  // 如果所有题目都答完了，直接结束游戏
   if (currentQuestionIndex >= questions.length) {
     endGame();
     return;
@@ -23,20 +37,24 @@ function loadNewQuestion() {
   document.getElementById('question').textContent = q.question;
   const optionsDiv = document.getElementById('options');
   optionsDiv.innerHTML = '';
-  q.options.forEach(option => {
+
+  const shuffledOptions = shuffleOptions(q.options);
+  shuffledOptions.forEach(option => {
     const btn = document.createElement('button');
     btn.textContent = option;
     btn.onclick = () => checkAnswer(option);
     optionsDiv.appendChild(btn);
   });
+
   document.getElementById('feedback').classList.add('hidden');
 }
 
+// 判断答案并显示反馈
 function checkAnswer(selected) {
   const q = questions[currentQuestionIndex];
   const feedback = document.getElementById('feedback');
   if (selected === q.answer) {
-    score += q.difficulty || 1; // 难度越高得分越多
+    score += q.difficulty || 1;
     feedback.textContent = '回答正确！';
     feedback.className = 'feedback-correct';
   } else {
@@ -46,7 +64,13 @@ function checkAnswer(selected) {
   feedback.classList.remove('hidden');
   document.getElementById('score-value').textContent = score;
   currentQuestionIndex++;
-  setTimeout(loadNewQuestion, 1000); // 1秒后自动跳到下一题
+  setTimeout(loadNewQuestion, 1000);
+}
+
+// 计时进度条
+function updateProgressBar() {
+  const progressFill = document.getElementById('progress-fill');
+  progressFill.style.width = (timeLeft / 60 * 100) + '%';
 }
 
 function startGame() {
@@ -55,11 +79,13 @@ function startGame() {
   currentQuestionIndex = 0;
   document.getElementById('score-value').textContent = score;
   document.getElementById('time-left').textContent = timeLeft;
+  updateProgressBar();
 
-  // 开始计时
+  clearInterval(timerInterval);
   timerInterval = setInterval(() => {
     timeLeft--;
     document.getElementById('time-left').textContent = timeLeft;
+    updateProgressBar();
     if (timeLeft === 0) {
       clearInterval(timerInterval);
       endGame();
@@ -116,9 +142,10 @@ function updateLeaderboard() {
   });
 }
 
-// 按钮事件
+// 按钮事件绑定
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchQuestions();
+
   document.getElementById('start-game-btn').addEventListener('click', () => {
     document.getElementById('start-menu').classList.add('hidden');
     document.getElementById('game').classList.remove('hidden');
@@ -134,4 +161,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('start-menu').classList.remove('hidden');
     resetGame();
   });
+
+  // 如果你有返回排行榜主菜单按钮
+  const backBtn = document.getElementById('back-to-menu-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      document.getElementById('leaderboard-menu').classList.add('hidden');
+      document.getElementById('start-menu').classList.remove('hidden');
+    });
+  }
 });
