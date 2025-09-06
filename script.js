@@ -5,7 +5,7 @@ let timeLeft = 60;
 let timerInterval = null;
 const leaderboardKey = 'leaderboard';
 
-// 难度与分值映射
+// 难度与分值和选项数映射
 const difficultyMap = {
   1: { options: 3， score: 5 }，
   2: { options: 4， score: 10 }，
@@ -16,20 +16,19 @@ const difficultyMap = {
 // 异步加载题库
 async function fetchQuestions() {
   const res = await fetch('questions.json');
-  let rawQuestions = await res。json();
-  // 按难度筛选并补足选项数
-  questions = rawQuestions。map(q => {
-    const diffConf = difficultyMap[q。difficulty] || difficultyMap[1];
-    // 补足选项数量（如果题库本身选项不够则用错误选项补齐）
-    let opts = q。options。slice();
-    while (opts。length < diffConf。options) {
-      // 随机添加不存在于当前选项的干扰项
-      let fakeOption = "选项" + (opts。length + 1);
-      if (!opts。includes(fakeOption) && fakeOption !== q。answer) opts。push(fakeOption);
+  let rawQuestions = await res.json();
+  // 补足选项数，随机排序题目
+  questions = rawQuestions.map(q => {
+    const diffConf = difficultyMap[q.difficulty] || difficultyMap[1];
+    // 补足选项（如果题库本身选项不够则用“选项X”补齐）
+    let opts = q.options.slice();
+    while (opts.length < diffConf.options) {
+      let fakeOption = "选项" + (opts.length + 1);
+      if (!opts.includes(fakeOption) && fakeOption !== q.answer) opts.push(fakeOption);
     }
     return { ...q, options: opts, diffConf };
   });
-  shuffleArray(questions); // 题库顺序随机
+  shuffleArray(questions); // 题库随机
 }
 
 // 洗牌算法
@@ -95,18 +94,18 @@ function checkAnswer(selected， selectedBtn， allOptions) {
     feedbackText = `回答错误！正确答案：${q。answer}。`;
     // 正确选项高亮
     Array。from(optionsDiv。children)。forEach(btn => {
-      if (btn。textContent === q。answer) {
-        btn。classList。add('feedback-correct');
+      if (btn.textContent === q.answer) {
+        btn.classList.add('feedback-correct');
       }
     });
   }
 
   // 题目解析
-  if (q。explanation) {
-    feedbackText += `\n解析：${q。explanation}`;
+  if (q.explanation) {
+    feedbackText += `\n解析：${q.explanation}`;
   }
-  feedback。textContent = feedbackText;
-  feedback。className = isCorrect ? 'feedback-correct' : 'feedback-incorrect';
+  feedback.textContent = feedbackText;
+  feedback.className = isCorrect ? 'feedback-correct' : 'feedback-incorrect';
   feedback.classList.remove('hidden');
   document.getElementById('score-value').textContent = score;
   currentQuestionIndex++;
