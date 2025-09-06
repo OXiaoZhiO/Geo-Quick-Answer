@@ -1,48 +1,95 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>地理快回答！</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div id="app">
-    <!-- 开始菜单 -->
-    <div id="start-menu">
-      <h1>地理快回答！</h1>
-      <p>测试你的地理知识，挑战极限分数！</p>
-      <button id="start-game-btn">开始游戏</button>
-      <button id="view-leaderboard-btn">查看排行榜</button>
-    </div>
+let timeLeft = 60;
+let score = 0;
+const leaderboardKey = 'leaderboard';
 
-    <!-- 游戏界面 -->
-    <div id="game" class="hidden">
-      <header>
-        <div id="timer">时间: <span id="time-left">60</span> 秒</div>
-        <div id="score">分数: <span id="score-value">0</span></div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progress-fill"></div>
-        </div>
-      </header>
-      <main>
-        <div id="question-area">
-          <p id="question">题目将显示在这里</p>
-          <div id="options"></div>
-          <p id="feedback" class="hidden"></p>
-        </div>
-      </main>
-    </div>
+document.getElementById('start-game-btn').addEventListener('click', () => {
+  document.getElementById('start-menu').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  startGame();
+});
 
-    <!-- 游戏结束菜单 -->
-    <div id="game-over-menu" class="hidden">
-      <h2>游戏结束！</h2>
-      <p>您的得分是: <span id="final-score">0</span></p>
-      <h3>排行榜</h3>
-      <ul id="leaderboard"></ul>
-      <button id="restart-game-btn">重新开始</button>
-    </div>
-  </div>
-  <script src="script.js"></script>
-</body>
-</html>
+document.getElementById('view-leaderboard-btn').addEventListener('click', () => {
+  displayLeaderboard();
+});
+
+document.getElementById('back-to-menu-btn').addEventListener('click', () => {
+  document.getElementById('leaderboard-menu').classList.add('hidden');
+  document.getElementById('start-menu').classList.remove('hidden');
+});
+
+document.getElementById('restart-game-btn').addEventListener('click', () => {
+  document.getElementById('game-over-menu').classList.add('hidden');
+  document.getElementById('start-menu').classList.remove('hidden');
+  resetGame();
+});
+
+function startGame() {
+  timeLeft = 60;
+  score = 0;
+  document.getElementById('score-value').textContent = score;
+  document.getElementById('time-left').textContent = timeLeft;
+
+  const timerInterval = setInterval(() => {
+    timeLeft--;
+    document.getElementById('time-left').textContent = timeLeft;
+
+    if (timeLeft === 0) {
+      clearInterval(timerInterval);
+      endGame();
+    }
+  }, 1000);
+
+  loadNewQuestion();
+}
+
+function loadNewQuestion() {
+  // Implement question loading logic here
+}
+
+function endGame() {
+  saveScore(score);
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('game-over-menu').classList.remove('hidden');
+  document.getElementById('final-score').textContent = score;
+  updateLeaderboard();
+}
+
+function resetGame() {
+  timeLeft = 60;
+  score = 0;
+}
+
+function saveScore(newScore) {
+  const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
+  leaderboard.push(newScore);
+  leaderboard.sort((a, b) => b - a);
+  localStorage.setItem(leaderboardKey', JSON.stringify(leaderboard.slice(0, 10)));
+}
+
+function displayLeaderboard() {
+  const leaderboardMenu = document.getElementById('leaderboard-menu');
+  const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
+  const leaderboardList = document.getElementById('leaderboard');
+
+  leaderboardList.innerHTML = '';
+  leaderboard.forEach((score, index) => {
+    const li = document.createElement('li');
+    li.textContent = `${index + 1}. ${score} 分`;
+    leaderboardList.appendChild(li);
+  });
+
+  document.getElementById('start-menu').classList.add('hidden');
+  leaderboardMenu.classList.remove('hidden');
+}
+
+function updateLeaderboard() {
+  const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
+  const leaderboardList = document.getElementById('game-over-leaderboard');
+
+  leaderboardList.innerHTML = '';
+  leaderboard.forEach((score, index) => {
+    const li = document.createElement('li');
+    li.textContent = `${index + 1}. ${score} 分`;
+    leaderboardList.appendChild(li);
+  });
+}
