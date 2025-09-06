@@ -45,6 +45,8 @@ button {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease-in-out;
     outline: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 button:hover:not(:disabled) {
@@ -75,12 +77,15 @@ button:disabled {
 
 #options {
     margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
 }
 
 #options button {
-    display: block;
-    margin: 12px auto;
-    width: 95vw;
+    width: 100%;
     max-width: 420px;
     min-height: 44px;
     font-size: 1.08em;
@@ -98,12 +103,12 @@ button:disabled {
 }
 
 #options button.feedback-correct {
-    background: linear-gradient(135deg, #48bb78, #38a169) !important; /*绿色渐变*/
+    background: linear-gradient(135deg, #48bb78, #38a169) !important;
     color: #fff;
 }
 
 #options button.feedback-incorrect {
-    background: linear-gradient(135deg, #ef4444, #dc2626) !important; /*红色渐变*/
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
     color: #fff;
 }
 
@@ -141,7 +146,7 @@ button:disabled {
     height: 100%;
     width: 100%;
     background: linear-gradient(90deg, #3b82f6, #6366f1);
-    transition: width 0.1 linear;
+    transition: width 0.1s linear;
 }
 
 /* 排行榜适配 */
@@ -160,10 +165,25 @@ ul#leaderboard li, ul#game-over-leaderboard li {
     font-size: 1em;
 }
 
+/* 难度选择按钮 */
+#difficulty-selection {
+    margin: 20px 0;
+}
+
+.difficulty-btn {
+    margin: 0 5px;
+    padding: 8px 15px;
+}
+
+.difficulty-btn.active {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+}
+
+/* 手机端适配 */
 @media (max-width: 700px) {
     #app {
         max-width: 100vw;
-        padding: 0px;
+        padding: 10px;
     }
     #question-area {
         padding: 12vw 2vw;
