@@ -5,15 +5,15 @@
     "options": ["上海", "北京", "广州"],
     "answer": "北京",
     "difficulty": 1,
-    "explanation": "北京是中国的首都，拥有悠久的历史和文化。"
+    "explanation": "中国的首都是北京，是中国的政治、文化和国际交流中心。"
   },
   {
     "id": 2,
     "question": "地球上最大的沙漠是？",
-    "options": ["撒哈拉沙漠", "戈壁沙漠", "塔克拉玛干沙漠", "澳洲沙漠"],
+    "options": ["撒哈拉沙漠", "戈壁沙漠", "塔克拉玛干沙漠", "澳大利亚大沙漠"],
     "answer": "撒哈拉沙漠",
     "difficulty": 2,
-    "explanation": "撒哈拉沙漠位于非洲北部，是世界上最大的沙漠。"
+    "explanation": "撒哈拉沙漠位于非洲，是世界上面积最大的沙漠。"
   },
   {
     "id": 3,
@@ -25,11 +25,11 @@
   },
   {
     "id": 4,
-    "question": "以下哪个湖泊是中国最大的淡水湖？",
+    "question": "中国最大的淡水湖是？",
     "options": ["青海湖", "鄱阳湖", "洞庭湖", "巢湖"],
     "answer": "鄱阳湖",
     "difficulty": 2,
-    "explanation": "鄱阳湖位于江西省，是中国最大的淡水湖。"
+    "explanation": "鄱阳湖是中国面积最大的淡水湖，位于江西省。"
   },
   {
     "id": 5,
@@ -37,7 +37,7 @@
     "options": ["极地气候", "温带大陆性气候", "热带雨林气候"],
     "answer": "极地气候",
     "difficulty": 1,
-    "explanation": "北极地区属于极地气候，终年寒冷。"
+    "explanation": "北极地区属于极地气候，全年寒冷。"
   },
   {
     "id": 6,
@@ -45,28 +45,28 @@
     "options": ["第一", "第二", "第三", "第四"],
     "answer": "第三",
     "difficulty": 2,
-    "explanation": "长江是世界第三长的河流，仅次于尼罗河和亚马逊河。"
+    "explanation": "长江是世界第三长河流，仅次于尼罗河和亚马逊河。"
   },
   {
     "id": 7,
     "question": "日本的首都是哪里？",
-    "options": ["东京", "大阪", "京都", "北海道"],
+    "options": ["东京", "大阪", "京都"],
     "answer": "东京",
     "difficulty": 1,
-    "explanation": "东京是日本的首都，也是日本的政治、经济和文化中心。"
+    "explanation": "日本的首都是东京。"
   },
   {
     "id": 8,
     "question": "撒哈拉沙漠位于哪个大陆？",
-    "options": ["亚洲", "非洲", "欧洲", "美洲"],
+    "options": ["亚洲", "非洲", "欧洲"],
     "answer": "非洲",
     "difficulty": 1,
-    "explanation": "撒哈拉沙漠位于非洲北部，是世界上最大的沙漠。"
+    "explanation": "撒哈拉沙漠位于非洲北部，是世界最大沙漠。"
   },
   {
     "id": 9,
     "question": "南极洲的面积大约是多少平方公里？",
-    "options": ["1000万", "1400万", "1200万", "1600万"],
+    "options": ["1000万", "1400万", "1200万", "1600万", "1800万"],
     "answer": "1400万",
     "difficulty": 3,
     "explanation": "南极洲面积约1400万平方公里，是世界第五大洲。"
@@ -77,23 +77,23 @@
     "options": ["加拿大", "墨西哥", "巴西", "美国"],
     "answer": "巴西",
     "difficulty": 2,
-    "explanation": "巴西位于南美洲，而其他选项属于北美洲。"
+    "explanation": "巴西位于南美洲，其余均属于北美洲。"
   },
   {
     "id": 11,
-    "question": "以下哪个岛屿是世界最大的岛屿？",
-    "options": ["格陵兰岛", "新几内亚岛", "加里曼丹岛", "马达加斯加岛"],
+    "question": "世界最大的岛屿是？",
+    "options": ["格陵兰岛", "新几内亚岛", "加里曼丹岛", "马达加斯加岛", "澳大利亚"],
     "answer": "格陵兰岛",
     "difficulty": 2,
-    "explanation": "格陵兰岛是世界上面积最大的岛屿，隶属于丹麦。"
+    "explanation": "格陵兰岛是面积最大的岛屿（澳大利亚是大陆，不算岛）。"
   },
   {
     "id": 12,
     "question": "珠穆朗玛峰属于哪一山脉？",
-    "options": ["喜马拉雅山", "昆仑山", "天山", "阿尔卑斯山"],
+    "options": ["喜马拉雅山", "昆仑山", "天山"],
     "answer": "喜马拉雅山",
     "difficulty": 1,
-    "explanation": "珠穆朗玛峰是喜马拉雅山脉的最高峰。"
+    "explanation": "珠穆朗玛峰位于喜马拉雅山脉。"
   },
   {
     "id": 13,
@@ -101,222 +101,142 @@
     "options": ["800万", "900万", "1000万", "1100万"],
     "answer": "900万",
     "difficulty": 3,
-    "explanation": "撒哈拉沙漠面积约900万平方公里，是世界最大的沙漠。"
+    "explanation": "撒哈拉沙漠面积约900万平方公里。"
   },
   {
     "id": 14,
-    "question": "以下哪个湖泊是世界最大的咸水湖？",
+    "question": "世界最大的咸水湖是？",
     "options": ["里海", "贝加尔湖", "青海湖", "死海"],
     "answer": "里海",
     "difficulty": 2,
-    "explanation": "里海是世界上最大的咸水湖，位于欧亚大陆之间。"
+    "explanation": "里海是世界最大的咸水湖，位于欧亚之间。"
   },
   {
     "id": 15,
-    "question": "以下哪个国家是面积最大的？",
+    "question": "世界面积最大的国家是？",
     "options": ["中国", "美国", "俄罗斯", "加拿大"],
     "answer": "俄罗斯",
     "difficulty": 2,
-    "explanation": "俄罗斯是世界上面积最大的国家，横跨欧亚大陆。"
+    "explanation": "俄罗斯是世界面积最大的国家。"
   },
   {
     "id": 16,
-    "question": "太平洋的面积大约是多少平方公里？",
-    "options": ["1.6亿", "1.8亿", "2亿", "2.2亿"],
-    "answer": "1.8亿",
-    "difficulty": 4,
-    "explanation": "太平洋面积约1.8亿平方公里，是世界上面积最大的洋。"
+    "question": "下列哪条河流流经中国最长？",
+    "options": ["黄河", "珠江", "长江", "澜沧江"],
+    "answer": "长江",
+    "difficulty": 1,
+    "explanation": "长江是中国境内流经最长的河流。"
   },
   {
     "id": 17,
-    "question": "以下哪个国家的人口最多？",
-    "options": ["印度", "中国", "美国", "印度尼西亚"],
-    "answer": "中国",
+    "question": "下列哪一省份位于中国东南沿海？",
+    "options": ["山东", "广东", "四川", "新疆"],
+    "answer": "广东",
     "difficulty": 1,
-    "explanation": "中国是世界上人口最多的国家，人口超过14亿。"
+    "explanation": "广东省位于中国的东南沿海地区。"
   },
   {
     "id": 18,
-    "question": "以下哪个国家是世界上最小的国家？",
-    "options": ["梵蒂冈", "摩纳哥", "圣马力诺", "列支敦士登"],
-    "answer": "梵蒂冈",
-    "difficulty": 1,
-    "explanation": "梵蒂冈是世界上最小的国家，位于意大利罗马市内。"
+    "question": "地球的公转周期约为多少？",
+    "options": ["365天", "1年", "30天", "24小时"],
+    "answer": "1年",
+    "difficulty": 2,
+    "explanation": "地球公转一圈约为一年，即365天。"
   },
   {
     "id": 19,
-    "question": "以下哪个城市是澳大利亚的首都？",
-    "options": ["悉尼", "墨尔本", "堪培拉", "布里斯班"],
-    "answer": "堪培拉",
-    "difficulty": 1,
-    "explanation": "堪培拉是澳大利亚的首都，而非悉尼或墨尔本。"
+    "question": "我国四大盆地中面积最大的是？",
+    "options": ["塔里木盆地", "准噶尔盆地", "柴达木盆地", "四川盆地"],
+    "answer": "塔里木盆地",
+    "difficulty": 2,
+    "explanation": "塔里木盆地是中国面积最大的盆地，位于新疆南部。"
   },
   {
     "id": 20,
-    "question": "以下哪个河流是世界最长的河流？",
-    "options": ["尼罗河", "亚马逊河", "长江", "密西西比河"],
-    "answer": "尼罗河",
-    "difficulty": 3,
-    "explanation": "尼罗河是世界上最长的河流，流经非洲东北部。"
+    "question": "我国领土最南端是？",
+    "options": ["海南岛", "南沙群岛", "台湾岛", "西沙群岛"],
+    "answer": "南沙群岛",
+    "difficulty": 2,
+    "explanation": "南沙群岛是我国领土的最南端。"
   },
   {
     "id": 21,
-    "question": "撒哈拉沙漠的气候特点是什么？",
-    "options": ["炎热干燥", "湿润多雨", "四季分明"],
-    "answer": "炎热干燥",
-    "difficulty": 1,
-    "explanation": "撒哈拉沙漠以其炎热和干燥的气候闻名。"
+    "question": "下列地形区中，属于中国第二阶梯的是？",
+    "options": ["青藏高原", "内蒙古高原", "云贵高原", "黄土高原"],
+    "answer": "内蒙古高原",
+    "difficulty": 2,
+    "explanation": "内蒙古高原属于中国地势第二阶梯。"
   },
   {
     "id": 22,
-    "question": "以下哪个国家的国旗是红白相间的？",
-    "options": ["日本", "加拿大", "瑞士"],
-    "answer": "日本",
+    "question": "我国最长的河流是？",
+    "options": ["长江", "黄河", "珠江", "黑龙江"],
+    "answer": "长江",
     "difficulty": 1,
-    "explanation": "日本国旗为白底红圆，象征太阳。"
+    "explanation": "长江是中国第一长河。"
   },
   {
     "id": 23,
-    "question": "珠穆朗玛峰的英文名称是什么？",
-    "options": ["Mount Everest", "K2", "Annapurna"],
-    "answer": "Mount Everest",
+    "question": "下列哪种气候类型主要分布在我国南方？",
+    "options": ["温带季风气候", "亚热带季风气候", "温带大陆性气候", "高原气候"],
+    "answer": "亚热带季风气候",
     "difficulty": 2,
-    "explanation": "珠穆朗玛峰的英文名称是 Mount Everest。"
+    "explanation": "我国南方以亚热带季风气候为主。"
   },
   {
     "id": 24,
-    "question": "撒哈拉沙漠的平均降水量是多少？",
-    "options": ["不足50毫米", "200毫米", "500毫米"],
-    "answer": "不足50毫米",
+    "question": "下列哪种土壤主要分布在东北平原？",
+    "options": ["黑土", "黄土", "红土", "水稻土"],
+    "answer": "黑土",
     "difficulty": 2,
-    "explanation": "撒哈拉沙漠的年平均降水量不足50毫米。"
+    "explanation": "东北平原以肥沃的黑土著称。"
   },
   {
     "id": 25,
-    "question": "世界上最大的热带雨林是？",
-    "options": ["亚马逊雨林", "刚果雨林", "婆罗洲雨林"],
-    "answer": "亚马逊雨林",
-    "difficulty": 2,
-    "explanation": "亚马逊雨林是世界上最大的热带雨林。"
+    "question": "地球上面积最大的洋是？",
+    "options": ["太平洋", "大西洋", "印度洋", "北冰洋"],
+    "answer": "太平洋",
+    "difficulty": 1,
+    "explanation": "太平洋是地球上面积最大的海洋。"
   },
   {
     "id": 26,
-    "question": "以下哪个湖泊是世界上最深的湖泊？",
-    "options": ["贝加尔湖", "里海", "苏必利尔湖"],
-    "answer": "贝加尔湖",
-    "difficulty": 3,
-    "explanation": "贝加尔湖位于俄罗斯，是世界上最深的湖泊。"
+    "question": "下列气候类型主要分布在赤道附近？",
+    "options": ["热带雨林气候", "温带季风气候", "高原气候", "极地气候"],
+    "answer": "热带雨林气候",
+    "difficulty": 2,
+    "explanation": "热带雨林气候主要分布在赤道附近，全年高温多雨。"
   },
   {
     "id": 27,
-    "question": "以下哪个国家不属于欧盟？",
-    "options": ["挪威", "德国", "法国"],
-    "answer": "挪威",
-    "difficulty": 2,
-    "explanation": "挪威不是欧盟成员国，而德国和法国是。"
+    "question": "我国地势特点是？",
+    "options": ["西高东低", "东高西低", "南高北低", "北高南低"],
+    "answer": "西高东低",
+    "difficulty": 1,
+    "explanation": "我国地势总体呈西高东低的趋势。"
   },
   {
     "id": 28,
-    "question": "撒哈拉沙漠覆盖多少个国家？",
-    "options": ["10个", "12个", "14个"],
-    "answer": "10个",
-    "difficulty": 3,
-    "explanation": "撒哈拉沙漠覆盖非洲10个国家。"
+    "question": "下列哪一城市位于长江中下游平原？",
+    "options": ["武汉", "成都", "西安", "哈尔滨"],
+    "answer": "武汉",
+    "difficulty": 1,
+    "explanation": "武汉位于长江中下游平原，是重要城市。"
   },
   {
     "id": 29,
-    "question": "以下哪个国家是南极条约的签署国？",
-    "options": ["中国", "美国", "所有列出国家"],
-    "answer": "所有列出国家",
-    "difficulty": 3,
-    "explanation": "南极条约由多个国家签署，包括中国和美国。"
+    "question": "中国四大高原不包括？",
+    "options": ["青藏高原", "黄土高原", "云贵高原", "松嫩平原"],
+    "answer": "松嫩平原",
+    "difficulty": 2,
+    "explanation": "松嫩平原属于平原，不是高原。"
   },
   {
     "id": 30,
-    "question": "以下哪个岛屿属于印度尼西亚？",
-    "options": ["爪哇岛", "夏威夷", "格陵兰岛"],
-    "answer": "爪哇岛",
-    "difficulty": 1,
-    "explanation": "爪哇岛是属于印度尼西亚的岛屿。"
-  },
-  {
-    "id": 31,
-    "question": "以下哪个国家的面积最小？",
-    "options": ["梵蒂冈", "摩纳哥", "圣马力诺"],
-    "answer": "梵蒂冈",
-    "difficulty": 1,
-    "explanation": "梵蒂冈是世界上最小的国家。"
-  },
-  {
-    "id": 32,
-    "question": "南极洲是否有常住居民？",
-    "options": ["有", "没有"],
-    "answer": "没有",
-    "difficulty": 1,
-    "explanation": "南极洲没有常住居民，只有科学家和研究人员短期驻扎。"
-  },
-  {
-    "id": 33,
-    "question": "以下哪个国家的官方语言是西班牙语？",
-    "options": ["巴西", "阿根廷", "加拿大"],
-    "answer": "阿根廷",
+    "question": "我国最长的陆地边界线与哪个国家接壤？",
+    "options": ["俄罗斯", "印度", "蒙古", "哈萨克斯坦"],
+    "answer": "蒙古",
     "difficulty": 2,
-    "explanation": "阿根廷的官方语言是西班牙语，而巴西是葡萄牙语。"
-  },
-  {
-    "id": 34,
-    "question": "撒哈拉沙漠的气候特点是什么？",
-    "options": ["炎热干燥", "湿润多雨", "四季分明"],
-    "answer": "炎热干燥",
-    "difficulty": 1,
-    "explanation": "撒哈拉沙漠以炎热和干燥的气候闻名。"
-  },
-  {
-    "id": 35,
-    "question": "以下哪个湖泊位于非洲？",
-    "options": ["维多利亚湖", "里海", "贝加尔湖"],
-    "answer": "维多利亚湖",
-    "difficulty": 2,
-    "explanation": "维多利亚湖位于非洲东部，是非洲最大的湖泊。"
-  },
-  {
-    "id": 36,
-    "question": "撒哈拉沙漠位于哪个大陆？",
-    "options": ["非洲", "亚洲", "欧洲"],
-    "answer": "非洲",
-    "difficulty": 1,
-    "explanation": "撒哈拉沙漠位于非洲北部。"
-  },
-  {
-    "id": 37,
-    "question": "以下哪个城市位于南半球？",
-    "options": ["悉尼", "东京", "纽约"],
-    "answer": "悉尼",
-    "difficulty": 2,
-    "explanation": "悉尼位于南半球的澳大利亚。"
-  },
-  {
-    "id": 38,
-    "question": "撒哈拉沙漠的面积约为多少？",
-    "options": ["900万平方公里", "500万平方公里", "1200万平方公里"],
-    "answer": "900万平方公里",
-    "difficulty": 3,
-    "explanation": "撒哈拉沙漠面积约900万平方公里，是世界最大的沙漠。"
-  },
-  {
-    "id": 39,
-    "question": "以下哪个城市是南非的行政首都？",
-    "options": ["开普敦", "比勒陀利亚", "约翰内斯堡"],
-    "answer": "比勒陀利亚",
-    "difficulty": 2,
-    "explanation": "比勒陀利亚是南非的行政首都，开普敦是立法首都。"
-  },
-  {
-    "id": 40,
-    "question": "以下哪个国家横跨欧亚两洲？",
-    "options": ["俄罗斯", "土耳其", "所有列出国家"],
-    "answer": "所有列出国家",
-    "difficulty": 3,
-    "explanation": "俄罗斯和土耳其都是跨越欧亚两洲的国家。"
+    "explanation": "中国与蒙古的陆地边界线最长。"
   }
 ]
