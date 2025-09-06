@@ -7,10 +7,10 @@ const leaderboardKey = 'leaderboard';
 
 // 难度与分值和选项数映射
 const difficultyMap = {
-  1: { options: 3， score: 5 }，
-  2: { options: 4， score: 10 }，
-  3: { options: 5， score: 15 }，
-  4: { options: 6， score: 20 }
+  1: { options: 3, score: 5 },
+  2: { options: 4, score: 10 },
+  3: { options: 5, score: 15 },
+  4: { options: 6, score: 20 }
 };
 
 // 异步加载题库
@@ -53,47 +53,47 @@ function loadNewQuestion() {
     return;
   }
   const q = questions[currentQuestionIndex];
-  document。getElementById('question')。textContent = q。question;
-  const optionsDiv = document。getElementById('options');
-  optionsDiv。innerHTML = '';
+  document.getElementById('question').textContent = q.question;
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
 
   // 随机排序选项
-  const shuffledOptions = shuffleOptions(q。options);
+  const shuffledOptions = shuffleOptions(q.options);
 
-  shuffledOptions。forEach(option => {
-    const btn = document。createElement('button');
-    btn。textContent = option;
-    btn。className = "option-btn";
-    btn。onclick = () => checkAnswer(option， btn， shuffledOptions);
-    optionsDiv。appendChild(btn);
+  shuffledOptions.forEach(option => {
+    const btn = document.createElement('button');
+    btn.textContent = option;
+    btn.className = "option-btn";
+    btn.onclick = () => checkAnswer(option, btn, shuffledOptions);
+    optionsDiv.appendChild(btn);
   });
 
-  document。getElementById('feedback')。classList。add('hidden');
-  document。getElementById('feedback')。textContent = '';
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('feedback').textContent = '';
 }
 
 // 判断答案并显示反馈
-function checkAnswer(selected， selectedBtn， allOptions) {
+function checkAnswer(selected, selectedBtn, allOptions) {
   const q = questions[currentQuestionIndex];
-  const feedback = document。getElementById('feedback');
-  const optionsDiv = document。getElementById('options');
+  const feedback = document.getElementById('feedback');
+  const optionsDiv = document.getElementById('options');
   let addScore = 0;
   let feedbackText = '';
-  let isCorrect = selected === q。answer;
+  let isCorrect = selected === q.answer;
 
   // 禁止再次选择
-  Array。from(optionsDiv。children)。forEach(btn => btn。disabled = true);
+  Array.from(optionsDiv.children).forEach(btn => btn.disabled = true);
 
   if (isCorrect) {
-    addScore = q。diffConf。score;
+    addScore = q.diffConf.score;
     score += addScore;
-    selectedBtn。classList。add('feedback-correct');
+    selectedBtn.classList.add('feedback-correct');
     feedbackText = `回答正确！+${addScore}分`;
   } else {
-    selectedBtn。classList。add('feedback-incorrect');
-    feedbackText = `回答错误！正确答案：${q。answer}。`;
+    selectedBtn.classList.add('feedback-incorrect');
+    feedbackText = `回答错误！正确答案：${q.answer}。`;
     // 正确选项高亮
-    Array。from(optionsDiv。children)。forEach(btn => {
+    Array.from(optionsDiv.children).forEach(btn => {
       if (btn.textContent === q.answer) {
         btn.classList.add('feedback-correct');
       }
