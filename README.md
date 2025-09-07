@@ -17,6 +17,7 @@
 1. 克隆或下载本项目到本地
 2. 确保你有一个`questions.json`文件（题库）在项目根目录
 3. 在浏览器中打开`index.html`文件即可开始游戏
+4. 直接点击右侧链接游玩https://oxiaozhio.github.io/Geo-Quick-Answer/
 
 ## 🎮 游戏规则
 
@@ -80,7 +81,8 @@
     "difficulty": 1,
     "explanation": "珠穆朗玛峰海拔8848.86米，是世界最高峰。"
   },
-  // 更多题目...
+   {"question":"更多题目..."
+}
 ]
 ```
 
