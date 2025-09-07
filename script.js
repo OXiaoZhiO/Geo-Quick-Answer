@@ -67,7 +67,7 @@ async function fetchQuestions() {
     // 显示加载提示
     const app = document.getElementById('app');
     const originalAppHTML = app.innerHTML;
-    app.innerHTML = '<div style="text-align:center"><p>加载题库中...</p></div>';
+    //app.innerHTML = '<div style="text-align:center"><p>加载题库中...</p></div>';
     
     try {
       const res = await fetch('questions.json');
