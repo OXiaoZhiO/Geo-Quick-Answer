@@ -10,6 +10,7 @@ body {
     align-items: center;
     min-height: 100vh;
     color: #333;
+    position: relative; /* 新增：为错误提示定位做准备 */
 }
 
 #app {
@@ -179,6 +180,55 @@ ul#leaderboard li, ul#game-over-leaderboard li {
     background: linear-gradient(135deg, #48bb78, #38a169);
 }
 
+/* 错误提示样式 */
+.error-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ff4444;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 300px;
+    z-index: 1000;
+    animation: slideIn 0.3s ease-out;
+}
+
+.error-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+
+.error-message {
+    font-size: 0.95em;
+    margin-bottom: 10px;
+}
+
+.error-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin: 0;
+}
+
+/* 错误提示动画 */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 /* 手机端适配 */
 @media (max-width: 700px) {
     #app {
@@ -192,5 +242,12 @@ ul#leaderboard li, ul#game-over-leaderboard li {
         max-width: 98vw;
         min-height: 44px;
         font-size: 1em;
+    }
+    
+    /* 移动端错误提示适配 */
+    .error-container {
+        bottom: 10px;
+        right: 10px;
+        max-width: 80%;
     }
 }
