@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('back-to-menu-btn').addEventListener('click', backToMenu);
   document.getElementById('restart-game-btn').addEventListener('click', restartGame);
   
+  // 初始化游戏说明弹窗
+  setupInstructionsModal();
+  
   // 预加载题库
   fetchQuestions().then(success => {
     if (success) {
@@ -30,6 +33,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// 游戏说明弹窗控制
+function setupInstructionsModal() {
+  const modal = document.getElementById('instructions-modal');
+  const showBtn = document.getElementById('show-instructions-btn');
+  const closeBtn = document.querySelector('.close-modal');
+
+  if (!modal || !showBtn || !closeBtn) {
+    console.warn('游戏说明相关元素不存在');
+    return;
+  }
+
+  // 显示弹窗
+  showBtn.addEventListener('click', () => {
+    modal.classList.remove('hidden');
+  });
+
+  // 关闭弹窗
+  closeBtn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+  });
+
+  // 点击弹窗外部关闭
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+    }
+  });
+}
 
 // 读取题库并根据难度筛选选项数
 async function fetchQuestions() {
