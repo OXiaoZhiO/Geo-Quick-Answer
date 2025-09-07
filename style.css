@@ -8,6 +8,8 @@
   --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   --secondary-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
   --secondary-hover: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --option-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  --option-hover: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
   --bg-gradient: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fbc2eb 100%);
   --card-bg: rgba(255, 255, 255, 0.95);
   --text-color: #333333;
@@ -27,7 +29,7 @@ body {
   background-attachment: fixed;
   color: var(--text-color);
   min-height: 100vh;
-  padding: 15px;
+  padding: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,8 +37,7 @@ body {
 
 #app {
   width: 100%;
-  max-width: 600px;
-  box-sizing: border-box;
+  max-width: 1200px;
 }
 
 .screen {
@@ -50,7 +51,7 @@ body {
 .card {
   background: var(--card-bg);
   border-radius: 32px;
-  padding: 25px 20px;
+  padding: 30px 20px;
   width: 100%;
   box-shadow: var(--shadow);
   text-align: center;
@@ -105,7 +106,6 @@ button {
   justify-content: center;
   gap: 8px;
   min-height: 52px;
-  width: 100%;
 }
 
 button:hover:not(:disabled) {
@@ -123,6 +123,7 @@ button:disabled {
 .primary-btn {
   background: var(--primary-gradient);
   color: white;
+  width: 100%;
 }
 
 .primary-btn:hover:not(:disabled) {
@@ -132,6 +133,7 @@ button:disabled {
 .secondary-btn {
   background: var(--secondary-gradient);
   color: white;
+  width: 100%;
 }
 
 .secondary-btn:hover:not(:disabled) {
@@ -147,21 +149,29 @@ button:disabled {
 }
 
 /* 游戏区域样式 */
+.game-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  margin-top: 15px;
+}
+
 #question-area {
   background: rgba(255, 255, 255, 0.7);
   border-radius: 24px;
-  padding: 20px 15px;
-  margin: 15px 0;
+  padding: 25px 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  width: 100%;
 }
 
 #question {
-  font-size: 1.2em;
+  font-size: 1.25em;
   font-weight: 500;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   padding: 10px;
   line-height: 1.6;
-  min-height: auto;
+  min-height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -170,23 +180,23 @@ button:disabled {
 #options {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 #options button {
-  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  background: var(--option-gradient);
   color: white;
   border-radius: 16px;
-  padding: 14px 18px;
-  font-size: 1em;
+  padding: 16px 20px;
+  font-size: 1.1em;
   text-align: left;
   transition: var(--transition);
   border: 2px solid transparent;
 }
 
 #options button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+  background: var(--option-hover);
   transform: translateY(-3px) scale(1.03);
   box-shadow: 0 8px 15px rgba(99, 102, 241, 0.2);
   border-color: rgba(255, 255, 255, 0.5);
@@ -201,15 +211,16 @@ button:disabled {
 }
 
 #feedback {
-  font-size: 1.05em;
+  font-size: 1.1em;
   font-weight: 500;
-  margin-top: 15px;
-  padding: 12px;
+  padding: 20px;
   border-radius: 16px;
   white-space: pre-line;
   word-break: break-word;
   text-align: left;
   line-height: 1.6;
+  background: rgba(240, 244, 248, 0.8);
+  min-height: 100px;
 }
 
 .feedback-correct {
@@ -227,12 +238,12 @@ button:disabled {
 /* 进度条样式 */
 .progress-container {
   width: 100%;
-  padding: 8px 0;
+  padding: 10px 0;
 }
 
 .progress-bar {
   width: 100%;
-  height: 14px;
+  height: 16px;
   background: rgba(220, 220, 220, 0.6);
   border-radius: 30px;
   overflow: hidden;
@@ -252,7 +263,7 @@ button:disabled {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding: 8px 0;
+  padding: 10px 0;
   font-weight: 500;
   font-size: 1.05em;
 }
@@ -266,7 +277,7 @@ button:disabled {
 .question-count {
   color: #666;
   font-size: 1em;
-  margin: 5px 0 10px 0;
+  margin: 5px 0 15px 0;
   font-weight: 500;
 }
 
@@ -274,7 +285,7 @@ button:disabled {
 .score-list {
   list-style: none;
   padding: 10px;
-  margin: 15px 0;
+  margin: 20px 0;
   width: 100%;
   max-height: 250px;
   overflow-y: auto;
@@ -298,10 +309,10 @@ button:disabled {
 
 .score-list li {
   background: rgba(243, 244, 246, 0.8);
-  margin: 8px 0;
-  padding: 10px 18px;
+  margin: 10px 0;
+  padding: 12px 20px;
   border-radius: 16px;
-  font-size: 1em;
+  font-size: 1.1em;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -327,6 +338,49 @@ button:disabled {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: pulse 1.5s infinite;
+}
+
+/* 高亮分数动画 */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* 破纪录庆祝信息 */
+.celebration {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  padding: 20px 40px;
+  border-radius: 20px;
+  font-size: 1.5em;
+  font-weight: bold;
+  z-index: 1001;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -15px); }
+}
+
+#record-message {
+  color: #6a11cb;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 15px 0;
+  animation: flash 1s infinite alternate;
+}
+
+@keyframes flash {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
 }
 
 /* 错误消息样式 */
@@ -337,7 +391,7 @@ button:disabled {
   transform: translate(-50%, -50%);
   background: var(--error-gradient);
   color: white;
-  padding: 20px;
+  padding: 25px;
   border-radius: 16px;
   z-index: 1000;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -391,11 +445,6 @@ button:disabled {
 .modal-content h2 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #333;
-  background: none;
-  -webkit-background-clip: initial;
-  background-clip: initial;
-  color: initial;
   background: linear-gradient(135deg, #6a11cb, #2575fc);
   -webkit-background-clip: text;
   background-clip: text;
@@ -420,10 +469,30 @@ button:disabled {
 }
 
 /* 响应式设计 */
-@media (max-width: 700px) {
+@media (min-width: 900px) {
+  .game-content {
+    flex-direction: row;
+    gap: 20px;
+  }
+  
+  .question-section, .explanation-section {
+    flex: 1;
+  }
+  
+  .explanation-section {
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  #feedback {
+    width: 100%;
+  }
+}
+
+@media (max-width: 899px) {
   .card {
     border-radius: 24px;
-    padding: 20px 15px;
+    padding: 25px 15px;
   }
 
   h1 {
@@ -435,23 +504,19 @@ button:disabled {
   }
 
   #question {
-    font-size: 1.1em;
-    margin-bottom: 15px;
-  }
-
-  #options {
-    gap: 8px;
+    font-size: 1.15em;
+    min-height: auto;
   }
 
   #options button {
-    padding: 12px 15px;
-    font-size: 0.95em;
+    padding: 14px 16px;
+    font-size: 1em;
   }
 
   .status-bar {
-    flex-direction: column;
-    gap: 5px;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
   }
 
   .score-list {
@@ -463,8 +528,10 @@ button:disabled {
     font-size: 1em;
     min-height: 48px;
   }
-
-  .modal-content {
-    padding: 20px 15px;
+  
+  .celebration {
+    font-size: 1.2em;
+    padding: 15px 30px;
   }
 }
+    
