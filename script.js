@@ -3,7 +3,6 @@ let currentQuestionIndex = 0;
 let score = 0;
 let timeLeft = 60;
 let timerInterval = null;
-let gameStarted = false; // 新增：游戏状态标记
 const leaderboardKey = 'leaderboard';
 
 // 难度与分值和选项数映射
@@ -143,6 +142,7 @@ function loadNewQuestion() {
   const q = questions[currentQuestionIndex];
   const questionElement = document.getElementById('question');
   const optionsDiv = document.getElementById('options');
+  const questionCountElement = document.getElementById('question-count');
   
   // 检查DOM元素是否存在
   if (!questionElement || !optionsDiv) {
@@ -151,8 +151,13 @@ function loadNewQuestion() {
     return;
   }
   
-  // 显示题目
-  questionElement.textContent = `NO.${q.id} ${q.question}`;
+  // 显示题目和题目数量
+  questionElement.textContent = `${q.question}`;
+  // 显示当前题目数/总题目数
+  if (questionCountElement) {
+    questionCountElement.textContent = `第 ${currentQuestionIndex + 1}/${questions.length} 题`;
+  }
+  
   optionsDiv.innerHTML = '';
   
   const shuffledOptions = shuffleOptions(q.options);
@@ -271,7 +276,7 @@ function startGame() {
   // 验证必要元素是否存在
   const requiredElements = [
     'time-left', 'score-value', 'progress-fill',
-    'question', 'options', 'feedback'
+    'question', 'options', 'feedback', 'question-count'
   ];
   
   const missingElements = requiredElements.filter(id => !document.getElementById(id));
@@ -285,7 +290,6 @@ function startGame() {
   timeLeft = 60;
   score = 0;
   currentQuestionIndex = 0;
-  gameStarted = true; // 更新游戏状态
   
   // 更新UI显示
   document.getElementById('start-menu').classList.add('hidden');
@@ -299,11 +303,6 @@ function startGame() {
   
   // 启动计时器
   timerInterval = setInterval(() => {
-    if (!gameStarted) { // 检查游戏状态
-      clearInterval(timerInterval);
-      return;
-    }
-    
     timeLeft--;
     document.getElementById('time-left').textContent = timeLeft;
     updateProgressBar();
@@ -334,7 +333,6 @@ function backToMenu() {
 
 // 结束游戏
 function endGame() {
-  gameStarted = false; // 更新游戏状态
   clearInterval(timerInterval);
   
   // 保存分数
@@ -362,7 +360,6 @@ function resetGame() {
   timeLeft = 60;
   score = 0;
   currentQuestionIndex = 0;
-  gameStarted = false;
 }
 
 // 重新开始游戏
@@ -415,5 +412,37 @@ function updateLeaderboard(listId) {
     const errorItem = document.createElement('li');
     errorItem.textContent = '排行榜加载失败';
     leaderboardList.appendChild(errorItem);
+  }
+}
+
+// 显示排行榜
+function displayLeaderboard() {
+  const leaderboardMenu = document.getElementById('leaderboard-menu');
+  const leaderboardList = document.getElementById('leaderboard');
+  
+  if (!leaderboardMenu || !leaderboardList) {
+    console.error('找不到排行榜相关元素');
+    return;
+  }
+  
+  try {
+    const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
+    leaderboardList.innerHTML = '';
+    
+    if (leaderboard.length === 0) {
+      const emptyItem = document.createElement('li');
+      emptyItem.textContent = '暂无分数记录';
+      leaderboardList.appendChild(emptyItem);
+      return;
+    }
+    
+    leaderboard.forEach((score, index) => {
+      const listItem = document.createElement('li');
+      listItem.textContent = `${index + 1}. ${score} 分`;
+      leaderboardList.appendChild(listItem);
+    });
+  } catch (error) {
+    console.error('显示排行榜失败:', error);
+    leaderboardList.innerHTML = '<li>排行榜加载失败</li>';
   }
 }
