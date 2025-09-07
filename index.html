@@ -10,10 +10,11 @@
   <div id="app">
     <!-- 开始菜单 -->
     <div id="start-menu">
-      <h1>地理快回答！</h1>
-      <p>测试你的地理知识，挑战极限分数！</p>
+      <h1>地理快地理快回答！</h1>
+      <p>测试你的地理知识，挑战极限分！</p>
       <button id="start-game-btn">开始游戏</button>
       <button id="view-leaderboard-btn">查看排行榜</button>
+      <button id="view-history-btn" class="hidden">答题历史</button> <!-- 新增答题历史按钮，初始隐藏 -->
     </div>
 
     <!-- 游戏界面 -->
@@ -25,19 +26,13 @@
           <div class="progress-fill" id="progress-fill"></div>
         </div>
       </header>
-      <div class="game-container">
-        <main>
-          <div id="question-area">
-            <p id="question">题目将显示在这里</p>
-            <div id="options"></div>
-            <p id="current-feedback" class="hidden"></p>
-          </div>
-        </main>
-        <aside class="explanation-panel">
-          <h3>解析记录</h3>
-          <div id="explanation-list"></div>
-        </aside>
-      </div>
+      <main>
+        <div id="question-area">
+          <p id="question">题目将显示在这里</p>
+          <div id="options"></div>
+          <p id="feedback" class="hidden"></p>
+        </div>
+      </main>
     </div>
 
     <!-- 排行榜界面 -->
@@ -47,23 +42,20 @@
       <button id="back-to-menu-btn">返回主菜单</button>
     </div>
 
+    <!-- 答题历史界面 (新增) -->
+    <div id="history-menu" class="hidden">
+      <h2>答题历史</h2>
+      <ul id="history-list"></ul>
+      <button id="history-back-btn">返回主菜单</button>
+    </div>
+
     <!-- 游戏结束菜单 -->
     <div id="game-over-menu" class="hidden">
       <h2>游戏结束！</h2>
       <p>您的得分是: <span id="final-score">0</span></p>
       <h3>排行榜</h3>
       <ul id="game-over-leaderboard"></ul>
-      <button id="view-history-btn">查看答题历史</button>
       <button id="restart-game-btn">重新开始</button>
-    </div>
-
-    <!-- 答题历史弹窗 -->
-    <div id="history-modal" class="hidden modal">
-      <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>答题历史</h2>
-        <div id="history-content"></div>
-      </div>
     </div>
   </div>
   <script src="script.js"></script>
