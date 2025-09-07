@@ -152,7 +152,7 @@ function loadNewQuestion() {
   }
   
   // 显示题目和题目数量
-  questionElement.textContent = `${q.question}`;
+  questionElement.textContent = `NO.${q.id} ${q.question}`;
   // 显示当前题目数/总题目数
   if (questionCountElement) {
     questionCountElement.textContent = `第 ${currentQuestionIndex + 1}/${questions.length} 题`;
