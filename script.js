@@ -1,9 +1,46 @@
 // 全局错误处理函数
 function setupErrorHandling() {
+    // 错误队列，用于存储待显示的错误
+    const errorQueue = [];
+    // 标记当前是否有错误弹窗显示中
+    let isErrorShowing = false;
+    
+    // 创建错误容器元素（如果不存在）
+    function createErrorContainer() {
+        let container = document.getElementById('error-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'error-container';
+            container.className = 'error-container hidden';
+            document.body.appendChild(container);
+        }
+        return container;
+    }
+    
     // 显示错误提示
     function showError(title, message) {
-        const errorContainer = document.getElementById('error-container');
-        errorContainer.className = 'error-container'; // 移除hidden类
+        // 将错误添加到队列
+        errorQueue.push({ title, message });
+        
+        // 如果当前没有错误显示，处理队列中的第一个错误
+        if (!isErrorShowing) {
+            processNextError();
+        }
+    }
+    
+    // 处理队列中的下一个错误
+    function processNextError() {
+        if (errorQueue.length === 0) {
+            isErrorShowing = false;
+            return;
+        }
+        
+        isErrorShowing = true;
+        const { title, message } = errorQueue.shift();
+        const errorContainer = createErrorContainer();
+        
+        // 显示错误弹窗
+        errorContainer.className = 'error-container';
         errorContainer.innerHTML = `
             <div class="error-title">${title}</div>
             <div class="error-message">${message}</div>
@@ -11,14 +48,20 @@ function setupErrorHandling() {
         `;
         
         // 关闭按钮事件
-        errorContainer.querySelector('.error-close').addEventListener('click', () => {
+        const closeBtn = errorContainer.querySelector('.error-close');
+        closeBtn.addEventListener('click', () => {
             errorContainer.className = 'error-container hidden';
+            // 处理下一个错误
+            setTimeout(processNextError, 300);
         });
         
-        // 10秒后自动关闭
+        // 5秒后自动关闭，处理下一个错误
         setTimeout(() => {
-            errorContainer.className = 'error-container hidden';
-        }, 10000);
+            if (errorContainer.className !== 'error-container hidden') {
+                errorContainer.className = 'error-container hidden';
+                setTimeout(processNextError, 300);
+            }
+        }, 8000);
     }
     
     // 捕获全局JavaScript错误
