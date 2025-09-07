@@ -4,7 +4,7 @@ let score = 0;
 let timeLeft = 60;
 let timerInterval = null;
 const leaderboardKey = 'leaderboard';
-let答题历史 = []; // 存储本次答题历史
+const historyKey = 'answerHistory'; // 新增：答题历史存储键名
 
 // 难度与分值和选项数映射
 const difficultyMap = {
@@ -160,8 +160,8 @@ function loadNewQuestion() {
     optionsDiv.appendChild(btn);
   });
   
-  // 重置当前反馈
-  const feedback = document.getElementById('current-feedback');
+  // 重置反馈
+  const feedback = document.getElementById('feedback');
   if (feedback) {
     feedback.classList.add('hidden');
     feedback.textContent = '';
@@ -171,7 +171,7 @@ function loadNewQuestion() {
 // 判断答案并显示反馈
 function checkAnswer(selected, selectedBtn, allOptions) {
   const q = questions[currentQuestionIndex];
-  const feedback = document.getElementById('current-feedback');
+  const feedback = document.getElementById('feedback');
   const optionsDiv = document.getElementById('options');
   
   if (!feedback || !optionsDiv) {
@@ -182,6 +182,15 @@ function checkAnswer(selected, selectedBtn, allOptions) {
   let addScore = q.diffConf.score;
   let feedbackText = '';
   const isCorrect = selected === q.answer;
+
+  // 保存答题记录（新增）
+  saveAnswerHistory({
+    question: q.question,
+    userAnswer: selected,
+    correctAnswer: q.answer,
+    isCorrect,
+    time: new Date().toLocaleString()
+  });
 
   // 禁止再次选择
   Array.from(optionsDiv.children).forEach(btn => {
@@ -215,19 +224,6 @@ function checkAnswer(selected, selectedBtn, allOptions) {
   feedback.textContent = feedbackText;
   feedback.classList.remove('hidden');
   
-  // 保存答题历史
-  答题历史.push({
-    question: q.question,
-    userAnswer: selected,
-    correctAnswer: q.answer,
-    isCorrect: isCorrect,
-    score: isCorrect ? addScore : 0,
-    explanation: q.explanation || '无解析'
-  });
-  
-  // 添加到解析列表，新的解析放在最上面
-  addToExplanationList(q.question, selected, q.answer, isCorrect, q.explanation);
-  
   // 更新分数
   const scoreElement = document.getElementById('score-value');
   if (scoreElement) {
@@ -239,27 +235,66 @@ function checkAnswer(selected, selectedBtn, allOptions) {
   setTimeout(loadNewQuestion, 1500);
 }
 
-// 添加解析到右侧列表
-function addToExplanationList(question, userAnswer, correctAnswer, isCorrect, explanation) {
-  const listContainer = document.getElementById('explanation-list');
-  if (!listContainer) return;
+// 新增：保存答题记录
+function saveAnswerHistory(record) {
+  try {
+    const history = JSON.parse(localStorage.getItem(historyKey)) || [];
+    history.push(record);
+    // 只保留最近100条记录
+    if (history.length > 100) {
+      history.splice(0, history.length - 100);
+    }
+    localStorage.setItem(historyKey, JSON.stringify(history));
+  } catch (error) {
+    console.error('保存答题记录失败:', error);
+  }
+}
+
+// 新增：显示答题历史
+function displayAnswerHistory() {
+  const historyMenu = document.getElementById('history-menu');
+  const historyList = document.getElementById('history-list');
+  const startMenu = document.getElementById('start-menu');
   
-  const item = document.createElement('div');
-  item.className = `explanation-item ${isCorrect ? 'correct' : 'incorrect'}`;
+  if (!historyMenu || !historyList) {
+    console.error('找不到答题历史相关元素');
+    return;
+  }
   
-  item.innerHTML = `
-    <div class="explanation-question">${question}</div>
-    <div class="explanation-answer">
-      你的答案: ${userAnswer} ${!isCorrect ? `<br>正确答案: ${correctAnswer}` : ''}
-    </div>
-    <div class="explanation-text">解析: ${explanation || '无解析'}</div>
-  `;
+  // 切换显示状态
+  startMenu.classList.add('hidden');
+  historyMenu.classList.remove('hidden');
   
-  // 新的解析放在最上面
-  if (listContainer.firstChild) {
-    listContainer.insertBefore(item, listContainer.firstChild);
-  } else {
-    listContainer.appendChild(item);
+  try {
+    const history = JSON.parse(localStorage.getItem(historyKey)) || [];
+    historyList.innerHTML = '';
+    
+    if (history.length === 0) {
+      const emptyItem = document.createElement('li');
+      emptyItem.textContent = '暂无答题记录';
+      historyList.appendChild(emptyItem);
+      return;
+    }
+    
+    // 倒序显示（最新的在前）
+    history.reverse().forEach((record, index) => {
+      const item = document.createElement('li');
+      item.className = record.isCorrect ? 'history-correct' : 'history-incorrect';
+      
+      item.innerHTML = `
+        <strong>Q${index + 1}:</strong> ${record.question}<br>
+        <strong>你的答案:</strong> ${record.userAnswer}<br>
+        <strong>正确答案:</strong> ${record.correctAnswer}<br>
+        <strong>时间:</strong> ${record.time}
+      `;
+      
+      historyList.appendChild(item);
+    });
+  } catch (error) {
+    console.error('加载答题历史失败:', error);
+    const errorItem = document.createElement('li');
+    errorItem.textContent = '加载历史记录失败';
+    historyList.appendChild(errorItem);
   }
 }
 
@@ -282,14 +317,10 @@ function updateProgressBar() {
 
 // 开始游戏
 function startGame() {
-  // 重置答题历史
-  答题历史 = [];
-  document.getElementById('explanation-list').innerHTML = '';
-  
   // 验证必要元素是否存在
   const requiredElements = [
     'time-left', 'score-value', 'progress-fill',
-    'question', 'options', 'current-feedback', 'explanation-list'
+    'question', 'options', 'feedback'
   ];
   
   const missingElements = requiredElements.filter(id => !document.getElementById(id));
@@ -328,11 +359,9 @@ function startGame() {
   shuffleArray(questions);
   loadNewQuestion();
   
-  // 显示游戏界面，隐藏其他界面
+  // 隐藏菜单，显示游戏界面
   document.getElementById('start-menu').classList.add('hidden');
   document.getElementById('game').classList.remove('hidden');
-  document.getElementById('leaderboard-menu').classList.add('hidden');
-  document.getElementById('game-over-menu').classList.add('hidden');
 }
 
 // 结束游戏
@@ -343,6 +372,9 @@ function endGame() {
   if (score > 0) {
     saveScore(score);
   }
+  
+  // 显示答题历史按钮（关键修改）
+  document.getElementById('view-history-btn')?.classList.remove('hidden');
   
   // 更新UI
   const gameElement = document.getElementById('game');
@@ -359,46 +391,11 @@ function endGame() {
   }
 }
 
-// 显示答题历史
-function show答题历史() {
-  const modal = document.getElementById('history-modal');
-  const content = document.getElementById('history-content');
-  
-  if (!modal || !content) return;
-  
-  // 清空内容
-  content.innerHTML = '';
-  
-  if (答题历史.length === 0) {
-    content.innerHTML = '<p>没有答题记录</p>';
-  } else {
-    答题历史.forEach((item, index) => {
-      const historyItem = document.createElement('div');
-      historyItem.className = `explanation-item ${item.isCorrect ? 'correct' : 'incorrect'}`;
-      historyItem.style.marginBottom = '15px';
-      
-      historyItem.innerHTML = `
-        <div class="explanation-question">${index + 1}. ${item.question}</div>
-        <div class="explanation-answer">
-          你的答案: ${item.userAnswer} ${!item.isCorrect ? `<br>正确答案: ${item.correctAnswer}` : ''}
-          ${item.isCorrect ? `<br>得分: +${item.score}` : ''}
-        </div>
-        <div class="explanation-text">解析: ${item.explanation}</div>
-      `;
-      
-      content.appendChild(historyItem);
-    });
-  }
-  
-  modal.classList.remove('hidden');
-}
-
 // 重置游戏
 function resetGame() {
   timeLeft = 60;
   score = 0;
   currentQuestionIndex = 0;
-  答题历史 = [];
 }
 
 // 保存分数到本地存储
@@ -418,12 +415,17 @@ function saveScore(newScore) {
 function displayLeaderboard() {
   const leaderboardMenu = document.getElementById('leaderboard-menu');
   const leaderboardList = document.getElementById('leaderboard');
+  const startMenu = document.getElementById('start-menu');
   
   if (!leaderboardMenu || !leaderboardList) {
     console.error('找不到排行榜相关元素');
     return;
   }
   
+  // 切换显示状态
+  startMenu.classList.add('hidden');
+  leaderboardMenu.classList.remove('hidden');
+  
   try {
     const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
     leaderboardList.innerHTML = '';
@@ -432,83 +434,81 @@ function displayLeaderboard() {
       const emptyItem = document.createElement('li');
       emptyItem.textContent = '暂无记录';
       leaderboardList.appendChild(emptyItem);
-    } else {
-      leaderboard.forEach((score, index) => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${index + 1}. ${score} 分`;
-        leaderboardList.appendChild(listItem);
-      });
+      return;
     }
     
-    // 显示排行榜，隐藏其他界面
-    document.getElementById('start-menu').classList.add('hidden');
-    document.getElementById('game').classList.add('hidden');
-    document.getElementById('leaderboard-menu').classList.remove('hidden');
-    document.getElementById('game-over-menu').classList.add('hidden');
+    leaderboard.forEach((score, index) => {
+      const item = document.createElement('li');
+      item.textContent = `${index + 1}. ${score} 分`;
+      leaderboardList.appendChild(item);
+    });
   } catch (error) {
-    console.error('显示排行榜失败:', error);
+    console.error('加载排行榜失败:', error);
+    const errorItem = document.createElement('li');
+    errorItem.textContent = '加载排行榜失败';
+    leaderboardList.appendChild(errorItem);
   }
 }
 
 // 更新游戏结束时的排行榜
 function updateLeaderboard() {
-  const leaderboardList = document.getElementById('game-over-leaderboard');
-  
-  if (!leaderboardList) {
-    console.error('找不到游戏结束时的排行榜元素');
-    return;
-  }
+  const gameOverLeaderboard = document.getElementById('game-over-leaderboard');
+  if (!gameOverLeaderboard) return;
   
   try {
     const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
-    leaderboardList.innerHTML = '';
+    gameOverLeaderboard.innerHTML = '';
     
-    if (leaderboard.length === 0) {
-      const emptyItem = document.createElement('li');
-      emptyItem.textContent = '暂无记录';
-      leaderboardList.appendChild(emptyItem);
-    } else {
-      leaderboard.forEach((score, index) => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${index + 1}. ${score} 分`;
-        leaderboardList.appendChild(listItem);
-      });
-    }
+    leaderboard.forEach((score, index) => {
+      const item = document.createElement('li');
+      item.textContent = `${index + 1}. ${score} 分`;
+      gameOverLeaderboard.appendChild(item);
+    });
   } catch (error) {
-    console.error('更新游戏结束时的排行榜失败:', error);
+    console.error('更新游戏结束排行榜失败:', error);
   }
 }
 
-// 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', () => {
-  // 加载题库
-  fetchQuestions();
-  
-  // 绑定按钮事件
-  document.getElementById('start-game-btn').addEventListener('click', startGame);
-  document.getElementById('view-leaderboard-btn').addEventListener('click', displayLeaderboard);
-  document.getElementById('back-to-menu-btn').addEventListener('click', () => {
-    document.getElementById('leaderboard-menu').classList.add('hidden');
-    document.getElementById('start-menu').classList.remove('hidden');
-  });
-  document.getElementById('restart-game-btn').addEventListener('click', () => {
-    resetGame();
+// 初始化事件监听
+function initEventListeners() {
+  // 开始游戏按钮
+  document.getElementById('start-game-btn')?.addEventListener('click', () => {
+    document.getElementById('start-menu').classList.add('hidden');
+    document.getElementById('game').classList.remove('hidden');
     startGame();
   });
   
-  // 答题历史按钮事件
-  document.getElementById('view-history-btn').addEventListener('click', show答题历史);
+  // 查看排行榜按钮
+  document.getElementById('view-leaderboard-btn')?.addEventListener('click', displayLeaderboard);
   
-  // 关闭弹窗事件
-  document.querySelector('.close-modal').addEventListener('click', () => {
-    document.getElementById('history-modal').classList.add('hidden');
+  // 返回主菜单按钮
+  document.getElementById('back-to-menu-btn')?.addEventListener('click', () => {
+    document.getElementById('leaderboard-menu').classList.add('hidden');
+    document.getElementById('start-menu').classList.remove('hidden');
   });
   
-  // 点击弹窗外部关闭弹窗
-  window.addEventListener('click', (event) => {
-    const modal = document.getElementById('history-modal');
-    if (event.target === modal) {
-      modal.classList.add('hidden');
-    }
+  // 重新开始按钮
+  document.getElementById('restart-game-btn')?.addEventListener('click', () => {
+    document.getElementById('game-over-menu').classList.add('hidden');
+    document.getElementById('game').classList.remove('hidden');
+    startGame();
   });
-});
+  
+  // 答题历史按钮（新增）
+  document.getElementById('view-history-btn')?.addEventListener('click', displayAnswerHistory);
+  
+  // 历史记录返回按钮（新增）
+  document.getElementById('history-back-btn')?.addEventListener('click', () => {
+    document.getElementById('history-menu').classList.add('hidden');
+    document.getElementById('start-menu').classList.remove('hidden');
+  });
+}
+
+// 初始化游戏
+async function init() {
+  await fetchQuestions();
+  initEventListeners();
+}
+
+// 启动游戏
+window.addEventListener('DOMContentLoaded', init);
