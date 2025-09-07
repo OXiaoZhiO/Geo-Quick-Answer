@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchQuestions().then(success => {
     if (success) {
       console.log('题库加载完成， ready to play!');
+      // 更新总题目数显示
+      document.getElementById('total-questions').textContent = questions.length;
     }
   });
 });
@@ -96,20 +98,17 @@ async function fetchQuestions() {
 function showErrorMessage(message) {
   const errorDiv = document.createElement('div');
   errorDiv.className = 'error-message';
-  errorDiv.style.position = 'fixed';
-  errorDiv.style.top = '50%';
-  errorDiv.style.left = '50%';
-  errorDiv.style.transform = 'translate(-50%, -50%)';
-  errorDiv.style.backgroundColor = '#ff4444';
-  errorDiv.style.color = 'white';
-  errorDiv.style.padding = '20px';
-  errorDiv.style.borderRadius = '8px';
-  errorDiv.style.zIndex = '1000';
   errorDiv.textContent = message;
   
   const closeBtn = document.createElement('button');
-  closeBtn.textContent = '关闭';
-  closeBtn.style.marginTop = '10px';
+  closeBtn.textContent = '关闭 ×';
+  closeBtn.style.marginTop = '15px';
+  closeBtn.style.background = 'rgba(255,255,255,0.2)';
+  closeBtn.style.color = 'white';
+  closeBtn.style.borderRadius = '20px';
+  closeBtn.style.padding = '8px 16px';
+  closeBtn.style.border = 'none';
+  closeBtn.style.cursor = 'pointer';
   closeBtn.onclick = () => errorDiv.remove();
   errorDiv.appendChild(closeBtn);
   
@@ -142,7 +141,6 @@ function loadNewQuestion() {
   const q = questions[currentQuestionIndex];
   const questionElement = document.getElementById('question');
   const optionsDiv = document.getElementById('options');
-  const questionCountElement = document.getElementById('question-count');
   
   // 检查DOM元素是否存在
   if (!questionElement || !optionsDiv) {
@@ -151,12 +149,9 @@ function loadNewQuestion() {
     return;
   }
   
-  // 显示题目和题目数量
-  questionElement.textContent = `NO.${q.id} ${q.question}`;
-  // 显示当前题目数/总题目数
-  if (questionCountElement) {
-    questionCountElement.textContent = `第 ${currentQuestionIndex + 1}/${questions.length} 题`;
-  }
+  // 显示题目和当前题目计数
+  questionElement.textContent = q.question;
+  document.getElementById('current-question').textContent = currentQuestionIndex + 1;
   
   optionsDiv.innerHTML = '';
   
@@ -165,16 +160,6 @@ function loadNewQuestion() {
   shuffledOptions.forEach(option => {
     const btn = document.createElement('button');
     btn.textContent = option;
-    btn.className = "option-btn";
-    btn.style.background = "linear-gradient(135deg, #3b82f6, #6366f1)";
-    btn.style.color = "#fff";
-    btn.style.border = "none";
-    btn.style.padding = "10px";
-    btn.style.margin = "5px";
-    btn.style.borderRadius = "5px";
-    btn.style.cursor = "pointer";
-    btn.style.transition = "background 0.3s";
-    
     btn.addEventListener('click', () => {
       checkAnswer(option, btn, shuffledOptions);
     });
@@ -208,23 +193,22 @@ function checkAnswer(selected, selectedBtn, allOptions) {
   // 禁止再次选择
   Array.from(optionsDiv.children).forEach(btn => {
     btn.disabled = true;
-    btn.style.cursor = 'not-allowed';
   });
 
   if (isCorrect) {
     score += addScore;
-    selectedBtn.style.background = "linear-gradient(135deg, #48bb78, #38a169)"; // 绿色渐变
-    feedbackText = `回答正确！+${addScore}分`;
+    selectedBtn.classList.add('correct');
+    feedbackText = `回答正确！+${addScore}分 🎉`;
     feedback.className = 'feedback-correct';
   } else {
-    selectedBtn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)"; // 红色渐变
-    feedbackText = `回答错误！正确答案：${q.answer}。`;
+    selectedBtn.classList.add('incorrect');
+    feedbackText = `回答错误！正确答案：${q.answer} 😢`;
     feedback.className = 'feedback-incorrect';
     
     // 高亮正确选项
     Array.from(optionsDiv.children).forEach(btn => {
       if (btn.textContent === q.answer) {
-        btn.style.background = "linear-gradient(135deg, #48bb78, #38a169)";
+        btn.classList.add('correct');
       }
     });
   }
@@ -276,7 +260,7 @@ function startGame() {
   // 验证必要元素是否存在
   const requiredElements = [
     'time-left', 'score-value', 'progress-fill',
-    'question', 'options', 'feedback', 'question-count'
+    'question', 'options', 'feedback', 'current-question', 'total-questions'
   ];
   
   const missingElements = requiredElements.filter(id => !document.getElementById(id));
@@ -291,11 +275,12 @@ function startGame() {
   score = 0;
   currentQuestionIndex = 0;
   
-  // 更新UI显示
+  // 更新UI
   document.getElementById('start-menu').classList.add('hidden');
   document.getElementById('game').classList.remove('hidden');
   document.getElementById('score-value').textContent = score;
   document.getElementById('time-left').textContent = timeLeft;
+  document.getElementById('total-questions').textContent = questions.length;
   updateProgressBar();
 
   // 清除现有计时器
@@ -355,13 +340,6 @@ function endGame() {
   }
 }
 
-// 重置游戏
-function resetGame() {
-  timeLeft = 60;
-  score = 0;
-  currentQuestionIndex = 0;
-}
-
 // 重新开始游戏
 function restartGame() {
   document.getElementById('game-over-menu').classList.add('hidden');
@@ -404,7 +382,12 @@ function updateLeaderboard(listId) {
     // 显示排行榜前10名
     leaderboard.forEach((score, index) => {
       const listItem = document.createElement('li');
-      listItem.textContent = `${index + 1}. ${score} 分`;
+      // 添加排名图标
+      const rankIcon = index < 3 ? 
+        (index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉') : 
+        `${index + 1}.`;
+      
+      listItem.textContent = `${rankIcon} ${score} 分`;
       leaderboardList.appendChild(listItem);
     });
   } catch (error) {
@@ -412,37 +395,5 @@ function updateLeaderboard(listId) {
     const errorItem = document.createElement('li');
     errorItem.textContent = '排行榜加载失败';
     leaderboardList.appendChild(errorItem);
-  }
-}
-
-// 显示排行榜
-function displayLeaderboard() {
-  const leaderboardMenu = document.getElementById('leaderboard-menu');
-  const leaderboardList = document.getElementById('leaderboard');
-  
-  if (!leaderboardMenu || !leaderboardList) {
-    console.error('找不到排行榜相关元素');
-    return;
-  }
-  
-  try {
-    const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
-    leaderboardList.innerHTML = '';
-    
-    if (leaderboard.length === 0) {
-      const emptyItem = document.createElement('li');
-      emptyItem.textContent = '暂无分数记录';
-      leaderboardList.appendChild(emptyItem);
-      return;
-    }
-    
-    leaderboard.forEach((score, index) => {
-      const listItem = document.createElement('li');
-      listItem.textContent = `${index + 1}. ${score} 分`;
-      leaderboardList.appendChild(listItem);
-    });
-  } catch (error) {
-    console.error('显示排行榜失败:', error);
-    leaderboardList.innerHTML = '<li>排行榜加载失败</li>';
   }
 }
