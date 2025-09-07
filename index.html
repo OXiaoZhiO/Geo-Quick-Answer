@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>地理快回答！🌍</title>
+  <title>地理快回答！</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <!-- 开始菜单 -->
     <div id="start-menu" class="screen">
       <div class="card">
-        <h1>地理快回答！🌍</h1>
+        <h1>地理快回答！</h1>
         <p>测试你的地理知识，挑战极限分数！⏱️</p>
         <div class="button-group">
           <button id="start-game-btn" class="primary-btn">
@@ -20,7 +20,32 @@
           <button id="view-leaderboard-btn" class="secondary-btn">
             <span>查看排行榜</span> 🏆
           </button>
+          <button id="show-instructions-btn" class="secondary-btn">
+            <span>游戏说明</span> ℹ️
+          </button>
         </div>
+      </div>
+    </div>
+
+    <!-- 游戏说明弹窗 -->
+    <div id="instructions-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>游戏说明 📝</h2>
+        <ul>
+          <li>游戏限时60秒，在规定时间内尽可能回答更多问题</li>
+          <li>题目分为4个难度等级，难度越高，选项越多，得分越高：
+            <ul>
+              <li>难度1：3个选项，得5分</li>
+              <li>难度2：4个选项，得10分</li>
+              <li>难度3：5个选项，得15分</li>
+              <li>难度4：6个选项，得20分</li>
+            </ul>
+          </li>
+          <li>选择正确答案将获得对应分值，错误则不加分</li>
+          <li>每道题回答后会显示正确答案及解析</li>
+          <li>游戏结束后可查看你的得分和排行榜</li>
+        </ul>
       </div>
     </div>
 
