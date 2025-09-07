@@ -3,6 +3,9 @@ let currentQuestionIndex = 0;
 let score = 0;
 let timeLeft = 60;
 let timerInterval = null;
+let currentTimeInterval = null;
+let startTime = null;
+let completionTime = null;
 const leaderboardKey = 'leaderboard';
 
 // 难度与分值和选项数映射
@@ -20,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('view-leaderboard-btn').addEventListener('click', viewLeaderboard);
   document.getElementById('back-to-menu-btn').addEventListener('click', backToMenu);
   document.getElementById('restart-game-btn').addEventListener('click', restartGame);
+  document.getElementById('clear-leaderboard-btn').addEventListener('click', clearLeaderboard);
+  document.getElementById('clear-records-btn').addEventListener('click', clearLeaderboard);
   
   // 初始化游戏说明弹窗
   setupInstructionsModal();
@@ -61,6 +66,24 @@ function setupInstructionsModal() {
       modal.classList.add('hidden');
     }
   });
+}
+
+// 格式化日期时间
+function formatDateTime(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+// 更新当前时间显示
+function updateCurrentTimeDisplay() {
+  const now = new Date();
+  document.getElementById('current-time').textContent = formatDateTime(now).split(' ')[1];
 }
 
 // 读取题库并根据难度筛选选项数
@@ -245,7 +268,10 @@ function checkAnswer(selected, selectedBtn, allOptions) {
     });
   }
 
-  // 添加解析
+  // 添加解析和答题时间
+  const currentTime = new Date();
+  feedbackText += `\n答题时间: ${formatDateTime(currentTime)}`;
+  
   if (q.explanation) {
     feedbackText += `\n解析：${q.explanation}`;
   }
@@ -281,6 +307,30 @@ function updateProgressBar() {
   }
 }
 
+// 检查是否为新纪录
+function isNewRecord(newScore) {
+  try {
+    const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
+    if (leaderboard.length === 0) return true;
+    return newScore > leaderboard[0];
+  } catch (error) {
+    console.error('检查新纪录失败:', error);
+    return false;
+  }
+}
+
+// 显示庆祝信息
+function showCelebration() {
+  const celebration = document.getElementById('celebration-message');
+  if (celebration) {
+    celebration.classList.remove('hidden');
+    // 3秒后隐藏庆祝信息
+    setTimeout(() => {
+      celebration.classList.add('hidden');
+    }, 3000);
+  }
+}
+
 // 开始游戏
 function startGame() {
   // 验证题库是否加载完成
@@ -291,7 +341,7 @@ function startGame() {
   
   // 验证必要元素是否存在
   const requiredElements = [
-    'time-left', 'score-value', 'progress-fill',
+    'time-left', 'score-value', 'progress-fill', 'current-time',
     'question', 'options', 'feedback', 'current-question', 'total-questions'
   ];
   
@@ -301,6 +351,9 @@ function startGame() {
     showErrorMessage('游戏初始化失败，缺少必要组件');
     return;
   }
+  
+  // 记录开始时间
+  startTime = new Date();
   
   // 重置游戏状态
   timeLeft = 60;
@@ -314,9 +367,11 @@ function startGame() {
   document.getElementById('time-left').textContent = timeLeft;
   document.getElementById('total-questions').textContent = questions.length;
   updateProgressBar();
+  updateCurrentTimeDisplay();
 
   // 清除现有计时器
   clearInterval(timerInterval);
+  clearInterval(currentTimeInterval);
   
   // 启动计时器
   timerInterval = setInterval(() => {
@@ -329,6 +384,9 @@ function startGame() {
       endGame();
     }
   }, 1000);
+  
+  // 启动当前时间更新器
+  currentTimeInterval = setInterval(updateCurrentTimeDisplay, 1000);
 
   // 重新随机题目顺序
   shuffleArray(questions);
@@ -344,15 +402,41 @@ function viewLeaderboard() {
 
 // 返回主菜单
 function backToMenu() {
+  // 清除计时器
+  clearInterval(timerInterval);
+  clearInterval(currentTimeInterval);
+  
   document.getElementById('leaderboard-menu').classList.add('hidden');
+  document.getElementById('instructions-modal').classList.add('hidden');
   document.getElementById('start-menu').classList.remove('hidden');
+}
+
+// 清空排行榜
+function clearLeaderboard() {
+  if (confirm('确定要清空所有排行榜记录吗？此操作不可恢复。')) {
+    try {
+      localStorage.removeItem(leaderboardKey);
+      updateLeaderboard('leaderboard');
+      updateLeaderboard('game-over-leaderboard');
+      showErrorMessage('排行榜已清空');
+    } catch (error) {
+      console.error('清空排行榜失败:', error);
+      showErrorMessage('清空失败，请重试');
+    }
+  }
 }
 
 // 结束游戏
 function endGame() {
+  // 记录完成时间
+  completionTime = new Date();
+  
+  // 清除计时器
   clearInterval(timerInterval);
+  clearInterval(currentTimeInterval);
   
   // 保存分数
+  const isRecord = isNewRecord(score);
   if (score > 0) {
     saveScore(score);
   }
@@ -361,11 +445,23 @@ function endGame() {
   const gameElement = document.getElementById('game');
   const gameOverElement = document.getElementById('game-over-menu');
   const finalScoreElement = document.getElementById('final-score');
+  const completionTimeElement = document.getElementById('quiz-completion-time');
+  const recordMessage = document.getElementById('record-message');
   
-  if (gameElement && gameOverElement && finalScoreElement) {
+  if (gameElement && gameOverElement && finalScoreElement && completionTimeElement) {
     gameElement.classList.add('hidden');
     gameOverElement.classList.remove('hidden');
     finalScoreElement.textContent = score;
+    completionTimeElement.textContent = formatDateTime(completionTime);
+    
+    // 显示破纪录信息
+    if (isRecord && score > 0) {
+      recordMessage.classList.remove('hidden');
+      showCelebration();
+    } else {
+      recordMessage.classList.add('hidden');
+    }
+    
     updateLeaderboard('game-over-leaderboard');
   } else {
     console.error('找不到游戏结束相关元素');
@@ -375,6 +471,7 @@ function endGame() {
 // 重新开始游戏
 function restartGame() {
   document.getElementById('game-over-menu').classList.add('hidden');
+  document.getElementById('celebration-message').classList.add('hidden');
   startGame();
 }
 
@@ -382,9 +479,13 @@ function restartGame() {
 function saveScore(newScore) {
   try {
     const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
-    leaderboard.push(newScore);
+    // 保存分数和时间
+    leaderboard.push({
+      score: newScore,
+      time: new Date().toISOString()
+    });
     // 按分数排序并保留前10名
-    leaderboard.sort((a, b) => b - a);
+    leaderboard.sort((a, b) => b.score - a.score);
     localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard.slice(0, 10)));
   } catch (error) {
     console.error('保存分数失败:', error);
@@ -412,14 +513,18 @@ function updateLeaderboard(listId) {
     }
     
     // 显示排行榜前10名
-    leaderboard.forEach((score, index) => {
+    leaderboard.forEach((entry, index) => {
       const listItem = document.createElement('li');
+      // 格式化时间显示
+      const date = new Date(entry.time);
+      const formattedTime = formatDateTime(date);
+      
       // 添加排名图标
       const rankIcon = index < 3 ? 
         (index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉') : 
         `${index + 1}.`;
       
-      listItem.textContent = `${rankIcon} ${score} 分`;
+      listItem.textContent = `${rankIcon} ${entry.score} 分 (${formattedTime})`;
       leaderboardList.appendChild(listItem);
     });
   } catch (error) {
@@ -429,3 +534,4 @@ function updateLeaderboard(listId) {
     leaderboardList.appendChild(errorItem);
   }
 }
+    
