@@ -6,6 +6,9 @@ let timerInterval = null;
 let currentTimeInterval = null;
 let startTime = null;
 let completionTime = null;
+let correctAnswers = 0;
+let incorrectAnswers = 0;
+let totalAnswered = 0;
 const leaderboardKey = 'leaderboard';
 
 // 难度与分值和选项数映射
@@ -80,10 +83,20 @@ function formatDateTime(date) {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-// 更新当前时间显示
-function updateCurrentTimeDisplay() {
-  const now = new Date();
-  document.getElementById('current-time').textContent = formatDateTime(now).split(' ')[1];
+// 更新正确率显示
+function updateAccuracyDisplay() {
+  const accuracyElement = document.getElementById('accuracy-display');
+  if (!accuracyElement) return;
+  
+  const accuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
+  
+  // 设置不同颜色显示
+  accuracyElement.innerHTML = `
+    <span style="color: #38a169;">${correctAnswers}</span>/
+    <span style="color: #dc2626;">${incorrectAnswers}</span>/
+    <span style="color: #666;">${totalAnswered}</span>-
+    <span style="color: #000;">${accuracy}%</span>
+  `;
 }
 
 // 读取题库并根据难度筛选选项数
@@ -252,10 +265,12 @@ function checkAnswer(selected, selectedBtn, allOptions) {
 
   if (isCorrect) {
     score += addScore;
+    correctAnswers++;
     selectedBtn.classList.add('correct');
     feedbackText = `回答正确！+${addScore}分 🎉`;
     feedback.className = 'feedback-correct';
   } else {
+    incorrectAnswers++;
     selectedBtn.classList.add('incorrect');
     feedbackText = `回答错误！正确答案：${q.answer} 😢`;
     feedback.className = 'feedback-incorrect';
@@ -267,6 +282,9 @@ function checkAnswer(selected, selectedBtn, allOptions) {
       }
     });
   }
+
+  totalAnswered++;
+  updateAccuracyDisplay();
 
   // 添加解析和答题时间
   const currentTime = new Date();
@@ -312,7 +330,7 @@ function isNewRecord(newScore) {
   try {
     const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
     if (leaderboard.length === 0) return true;
-    return newScore > leaderboard[0];
+    return newScore > leaderboard[0].score;
   } catch (error) {
     console.error('检查新纪录失败:', error);
     return false;
@@ -341,7 +359,7 @@ function startGame() {
   
   // 验证必要元素是否存在
   const requiredElements = [
-    'time-left', 'score-value', 'progress-fill', 'current-time',
+    'time-left', 'score-value', 'progress-fill', 
     'question', 'options', 'feedback', 'current-question', 'total-questions'
   ];
   
@@ -359,6 +377,9 @@ function startGame() {
   timeLeft = 60;
   score = 0;
   currentQuestionIndex = 0;
+  correctAnswers = 0;
+  incorrectAnswers = 0;
+  totalAnswered = 0;
   
   // 更新UI
   document.getElementById('start-menu').classList.add('hidden');
@@ -366,8 +387,15 @@ function startGame() {
   document.getElementById('score-value').textContent = score;
   document.getElementById('time-left').textContent = timeLeft;
   document.getElementById('total-questions').textContent = questions.length;
+  
+  // 修改时间显示元素为正确率显示
+  const timeElement = document.getElementById('current-time');
+  if (timeElement) {
+    timeElement.id = 'accuracy-display';
+  }
+  
   updateProgressBar();
-  updateCurrentTimeDisplay();
+  updateAccuracyDisplay();
 
   // 清除现有计时器
   clearInterval(timerInterval);
@@ -384,9 +412,6 @@ function startGame() {
       endGame();
     }
   }, 1000);
-  
-  // 启动当前时间更新器
-  currentTimeInterval = setInterval(updateCurrentTimeDisplay, 1000);
 
   // 重新随机题目顺序
   shuffleArray(questions);
@@ -435,10 +460,13 @@ function endGame() {
   clearInterval(timerInterval);
   clearInterval(currentTimeInterval);
   
+  // 计算正确率
+  const accuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
+  
   // 保存分数
   const isRecord = isNewRecord(score);
   if (score > 0) {
-    saveScore(score);
+    saveScore(score, accuracy);
   }
   
   // 更新UI
@@ -453,6 +481,15 @@ function endGame() {
     gameOverElement.classList.remove('hidden');
     finalScoreElement.textContent = score;
     completionTimeElement.textContent = formatDateTime(completionTime);
+    
+    // 添加正确率显示
+    let accuracyElement = document.getElementById('game-over-accuracy');
+    if (!accuracyElement) {
+      accuracyElement = document.createElement('p');
+      accuracyElement.id = 'game-over-accuracy';
+      finalScoreElement.parentNode.insertBefore(accuracyElement, finalScoreElement.nextSibling);
+    }
+    accuracyElement.innerHTML = `正确率: <span style="font-weight: bold;">${accuracy}%</span>`;
     
     // 显示破纪录信息
     if (isRecord && score > 0) {
@@ -476,12 +513,13 @@ function restartGame() {
 }
 
 // 保存分数到本地存储
-function saveScore(newScore) {
+function saveScore(newScore, accuracy) {
   try {
     const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
-    // 保存分数和时间
+    // 保存分数、正确率和时间
     leaderboard.push({
       score: newScore,
+      accuracy: accuracy,
       time: new Date().toISOString()
     });
     // 按分数排序并保留前10名
@@ -524,7 +562,7 @@ function updateLeaderboard(listId) {
         (index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉') : 
         `${index + 1}.`;
       
-      listItem.textContent = `${rankIcon} ${entry.score} 分 (${formattedTime})`;
+      listItem.textContent = `${rankIcon} ${entry.score} 分 (正确率: ${entry.accuracy}%) (${formattedTime})`;
       leaderboardList.appendChild(listItem);
     });
   } catch (error) {
@@ -534,4 +572,3 @@ function updateLeaderboard(listId) {
     leaderboardList.appendChild(errorItem);
   }
 }
-    
