@@ -88,6 +88,29 @@ p {
   line-height: 1.6;
 }
 
+/* 作者和版本号样式 */
+.author-version {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: -10px 0 25px 0;
+}
+
+.author-version p {
+  margin: 0;
+}
+
+.author-version p:first-child {
+  font-size: 1.2em;
+  color: #666;
+}
+
+.author-version p:last-child {
+  font-size: 1em;
+  color: #888;
+}
+
 .hidden {
   display: none !important;
 }
@@ -533,5 +556,16 @@ button:disabled {
     font-size: 1.2em;
     padding: 15px 30px;
   }
+  
+  .author-version {
+    gap: 10px;
+  }
+  
+  .author-version p:first-child {
+    font-size: 1.1em;
+  }
+  
+  .author-version p:last-child {
+    font-size: 0.9em;
+  }
 }
-    
