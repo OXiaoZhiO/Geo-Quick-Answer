@@ -6,9 +6,6 @@ let timerInterval = null;
 let currentTimeInterval = null;
 let startTime = null;
 let completionTime = null;
-let correctAnswers = 0;
-let incorrectAnswers = 0;
-let totalAnswered = 0;
 const leaderboardKey = 'leaderboard';
 
 // 难度与分值和选项数映射
@@ -33,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupInstructionsModal();
   
   // 预加载题库
-  fetchQuestions().then(success => {
+  loadQuestions().then(success => {
     if (success) {
       console.log('题库加载完成， ready to play!');
       // 更新总题目数显示
@@ -83,83 +80,104 @@ function formatDateTime(date) {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-// 更新正确率显示
-function updateAccuracyDisplay() {
-  const accuracyElement = document.getElementById('accuracy-display');
-  if (!accuracyElement) return;
-  
-  const accuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
-  
-  // 设置不同颜色显示
-  accuracyElement.innerHTML = `
-    <span style="color: #38a169;">${correctAnswers}</span>/
-    <span style="color: #dc2626;">${incorrectAnswers}</span>/
-    <span style="color: #666;">${totalAnswered}</span>-
-    <span style="color: #000;">${accuracy}%</span>
-  `;
+// 更新当前时间显示
+function updateCurrentTimeDisplay() {
+  const now = new Date();
+  document.getElementById('current-time').textContent = formatDateTime(now).split(' ')[1];
 }
 
-// 读取题库并根据难度筛选选项数
-async function fetchQuestions() {
-  try {
-    const res = await fetch('questions.json');
-    if (!res.ok) {
-      throw new Error(`加载题库失败: HTTP状态码 ${res.status}`);
-    }
-    
-    const rawQuestions = await res.json();
-    
-    // 验证题库格式
-    if (!Array.isArray(rawQuestions)) {
-      throw new Error('题库格式错误，预期为数组');
-    }
-    
-    questions = rawQuestions.map((q, idx) => {
-      // 验证题目必要字段
-      if (!q.question || !q.answer || !q.options || !q.difficulty) {
-        console.warn(`题目ID ${idx+1} 格式不完整，已跳过`);
-        return null;
-      }
-      
-      const diffConf = difficultyMap[q.difficulty] || difficultyMap[1];
-      // 确保正确答案在选项中
-      if (!q.options.includes(q.answer)) {
-        q.options.push(q.answer);
-        console.warn(`题目ID ${idx+1} 选项中缺少正确答案，已自动添加`);
-      }
-      
-      // 根据难度筛选选项数量，确保包含正确答案
-      let opts = [q.answer]; // 先添加正确答案
-      const otherOptions = q.options.filter(opt => opt !== q.answer);
-      const needed = diffConf.options - 1;
-      
-      // 随机选择需要的选项
-      for (let i = 0; i < needed && otherOptions.length > 0; i++) {
-        const randomIndex = Math.floor(Math.random() * otherOptions.length);
-        opts.push(otherOptions[randomIndex]);
-        otherOptions.splice(randomIndex, 1);
-      }
-      
-      return { 
-        ...q, 
-        options: opts, 
-        diffConf, 
-        id: idx + 1 
-      };
-    }).filter(Boolean); // 过滤无效题目
-    
-    if (questions.length === 0) {
-      throw new Error('未加载到有效题目，请检查题库文件');
-    }
-    
-    shuffleArray(questions);
-    console.log(`成功加载 ${questions.length} 道题目`);
-    return true;
-  } catch (error) {
-    console.error('题库加载错误:', error);
-    showErrorMessage(`加载失败: ${error.message}，请刷新页面重试`);
+// 读取题库并根据难度筛选选项数（兼容本地文件系统）
+function loadQuestions() {
+  return new Promise((resolve) => {
+    // 尝试使用fetch API
+    fetch('questions.json')
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP状态码 ${res.status}`);
+        return res.json();
+      })
+      .then(rawQuestions => processQuestions(rawQuestions) && resolve(true))
+      .catch(fetchError => {
+        console.log('Fetch失败，尝试使用备用方法加载题库:', fetchError);
+        
+        // 备用方法：使用XMLHttpRequest
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'questions.json', true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200 || xhr.status === 0) { // status 0 适用于本地文件
+              try {
+                const rawQuestions = JSON.parse(xhr.responseText);
+                if (processQuestions(rawQuestions)) {
+                  resolve(true);
+                } else {
+                  showErrorMessage('题库格式错误，请检查questions.json文件');
+                  resolve(false);
+                }
+              } catch (parseError) {
+                showErrorMessage(`解析题库失败: ${parseError.message}`);
+                resolve(false);
+              }
+            } else {
+              showErrorMessage(`加载题库失败: ${xhr.statusText || '未知错误'}`);
+              resolve(false);
+            }
+          }
+        };
+        xhr.send();
+      });
+  });
+}
+
+// 处理题库数据
+function processQuestions(rawQuestions) {
+  // 验证题库格式
+  if (!Array.isArray(rawQuestions)) {
+    showErrorMessage('题库格式错误，预期为数组');
     return false;
   }
+  
+  questions = rawQuestions.map((q, idx) => {
+    // 验证题目必要字段
+    if (!q.question || !q.answer || !q.options || !q.difficulty) {
+      console.warn(`题目ID ${idx+1} 格式不完整，已跳过`);
+      return null;
+    }
+    
+    const diffConf = difficultyMap[q.difficulty] || difficultyMap[1];
+    // 确保正确答案在选项中
+    if (!q.options.includes(q.answer)) {
+      q.options.push(q.answer);
+      console.warn(`题目ID ${idx+1} 选项中缺少正确答案，已自动添加`);
+    }
+    
+    // 根据难度筛选选项数量，确保包含正确答案
+    let opts = [q.answer]; // 先添加正确答案
+    const otherOptions = q.options.filter(opt => opt !== q.answer);
+    const needed = diffConf.options - 1;
+    
+    // 随机选择需要的选项
+    for (let i = 0; i < needed && otherOptions.length > 0; i++) {
+      const randomIndex = Math.floor(Math.random() * otherOptions.length);
+      opts.push(otherOptions[randomIndex]);
+      otherOptions.splice(randomIndex, 1);
+    }
+    
+    return { 
+      ...q, 
+      options: opts, 
+      diffConf, 
+      id: idx + 1 
+    };
+  }).filter(Boolean); // 过滤无效题目
+  
+  if (questions.length === 0) {
+    showErrorMessage('未加载到有效题目，请检查题库文件');
+    return false;
+  }
+  
+  shuffleArray(questions);
+  console.log(`成功加载 ${questions.length} 道题目`);
+  return true;
 }
 
 // 显示错误信息
@@ -265,12 +283,10 @@ function checkAnswer(selected, selectedBtn, allOptions) {
 
   if (isCorrect) {
     score += addScore;
-    correctAnswers++;
     selectedBtn.classList.add('correct');
     feedbackText = `回答正确！+${addScore}分 🎉`;
     feedback.className = 'feedback-correct';
   } else {
-    incorrectAnswers++;
     selectedBtn.classList.add('incorrect');
     feedbackText = `回答错误！正确答案：${q.answer} 😢`;
     feedback.className = 'feedback-incorrect';
@@ -282,9 +298,6 @@ function checkAnswer(selected, selectedBtn, allOptions) {
       }
     });
   }
-
-  totalAnswered++;
-  updateAccuracyDisplay();
 
   // 添加解析和答题时间
   const currentTime = new Date();
@@ -359,7 +372,7 @@ function startGame() {
   
   // 验证必要元素是否存在
   const requiredElements = [
-    'time-left', 'score-value', 'progress-fill', 
+    'time-left', 'score-value', 'progress-fill', 'current-time',
     'question', 'options', 'feedback', 'current-question', 'total-questions'
   ];
   
@@ -377,9 +390,6 @@ function startGame() {
   timeLeft = 60;
   score = 0;
   currentQuestionIndex = 0;
-  correctAnswers = 0;
-  incorrectAnswers = 0;
-  totalAnswered = 0;
   
   // 更新UI
   document.getElementById('start-menu').classList.add('hidden');
@@ -387,15 +397,8 @@ function startGame() {
   document.getElementById('score-value').textContent = score;
   document.getElementById('time-left').textContent = timeLeft;
   document.getElementById('total-questions').textContent = questions.length;
-  
-  // 修改时间显示元素为正确率显示
-  const timeElement = document.getElementById('current-time');
-  if (timeElement) {
-    timeElement.id = 'accuracy-display';
-  }
-  
   updateProgressBar();
-  updateAccuracyDisplay();
+  updateCurrentTimeDisplay();
 
   // 清除现有计时器
   clearInterval(timerInterval);
@@ -412,6 +415,9 @@ function startGame() {
       endGame();
     }
   }, 1000);
+  
+  // 启动当前时间更新器
+  currentTimeInterval = setInterval(updateCurrentTimeDisplay, 1000);
 
   // 重新随机题目顺序
   shuffleArray(questions);
@@ -460,13 +466,10 @@ function endGame() {
   clearInterval(timerInterval);
   clearInterval(currentTimeInterval);
   
-  // 计算正确率
-  const accuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
-  
   // 保存分数
   const isRecord = isNewRecord(score);
   if (score > 0) {
-    saveScore(score, accuracy);
+    saveScore(score);
   }
   
   // 更新UI
@@ -481,15 +484,6 @@ function endGame() {
     gameOverElement.classList.remove('hidden');
     finalScoreElement.textContent = score;
     completionTimeElement.textContent = formatDateTime(completionTime);
-    
-    // 添加正确率显示
-    let accuracyElement = document.getElementById('game-over-accuracy');
-    if (!accuracyElement) {
-      accuracyElement = document.createElement('p');
-      accuracyElement.id = 'game-over-accuracy';
-      finalScoreElement.parentNode.insertBefore(accuracyElement, finalScoreElement.nextSibling);
-    }
-    accuracyElement.innerHTML = `正确率: <span style="font-weight: bold;">${accuracy}%</span>`;
     
     // 显示破纪录信息
     if (isRecord && score > 0) {
@@ -513,13 +507,12 @@ function restartGame() {
 }
 
 // 保存分数到本地存储
-function saveScore(newScore, accuracy) {
+function saveScore(newScore) {
   try {
     const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
-    // 保存分数、正确率和时间
+    // 保存分数和时间
     leaderboard.push({
       score: newScore,
-      accuracy: accuracy,
       time: new Date().toISOString()
     });
     // 按分数排序并保留前10名
@@ -562,7 +555,7 @@ function updateLeaderboard(listId) {
         (index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉') : 
         `${index + 1}.`;
       
-      listItem.textContent = `${rankIcon} ${entry.score} 分 (正确率: ${entry.accuracy}%) (${formattedTime})`;
+      listItem.textContent = `${rankIcon} ${entry.score} 分 (${formattedTime})`;
       leaderboardList.appendChild(listItem);
     });
   } catch (error) {
