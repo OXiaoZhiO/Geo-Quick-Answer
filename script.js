@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupInstructionsModal();
   
   // 预加载题库
-  fetchQuestions().then(success => {
+  loadQuestions().then(success => {
     if (success) {
       console.log('题库加载完成， ready to play!');
       // 更新总题目数显示
