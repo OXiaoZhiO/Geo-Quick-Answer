@@ -248,9 +248,10 @@ function loadNewQuestion() {
     return;
   }
   
-  // 显示题目和当前题目计数
-  questionElement.textContent = q.question;
-  document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+  const currentQues = questions[currentQuestionIndex];
+  // 显示带序号的题目（NO.id）
+  questionElem.textContent = `NO.${currentQues.id} ${currentQues.question}`;
+  if (currentQuesElem) currentQuesElem.textContent = currentQuestionIndex + 1;
   
   optionsDiv.innerHTML = '';
   
