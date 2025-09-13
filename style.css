@@ -2,14 +2,16 @@
 
 :root {
   --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-  --primary-hover: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+  --primary-hover: linear-gradient(135deg, #5a10b8 0%, #1e69e0 100%);
   --success-gradient: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  --success-hover: linear-gradient(135deg, #3eaa6a 0%, #2f8d5a 100%);
   --error-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --error-hover: linear-gradient(135deg, #e03c3c 0%, #c71f1f 100%);
   --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   --secondary-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-  --secondary-hover: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --secondary-hover: linear-gradient(135deg, #7d52e0 0%, #5659d1 100%);
   --option-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-  --option-hover: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+  --option-hover: linear-gradient(135deg, #3475e0 0%, #5659d1 100%);
   --card-bg: rgba(255, 255, 255, 0.95);
   --text-color: #333333;
   --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
@@ -133,22 +135,7 @@ button {
   overflow: hidden;
 }
 
-/* 按钮渐变动画效果 */
-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  transition: var(--transition);
-}
-
-button:hover:not(:disabled)::before {
-  left: 100%;
-}
-
+/* 修改悬停效果为渐变颜色变化，且不明显 */
 button:hover:not(:disabled) {
   transform: translateY(-4px) scale(1.02);
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
@@ -251,8 +238,16 @@ button:disabled {
   background: var(--success-gradient);
 }
 
+#options button.correct:hover:not(:disabled) {
+  background: var(--success-hover);
+}
+
 #options button.incorrect {
   background: var(--error-gradient);
+}
+
+#options button.incorrect:hover:not(:disabled) {
+  background: var(--error-hover);
 }
 
 #feedback {
