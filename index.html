@@ -12,11 +12,6 @@
     <div id="start-menu" class="screen">
       <div class="card">
         <h1>地理快回答！🌍</h1>
-        <!-- 作者和版本号在同一行 -->
-        <div class="author-version">
-          <p>by晓炙云溪</p>
-          <p>v1.0.3-beta</p>
-        </div>
         <p>测试你的地理知识，挑战极限分数！⏱️</p>
         <div class="button-group">
           <button id="start-game-btn" class="primary-btn">
@@ -61,15 +56,12 @@
           <div class="status-bar">
             <div class="status-item">⏱️ 时间: <span id="time-left">60</span> 秒</div>
             <div class="status-item">💯 分数: <span id="score-value">0</span></div>
-            <div class="status-item">📅 <span id="current-time">--:--:--</span></div>
+            <div class="status-item" id="accuracy-display">0/0/0-0%</div>
           </div>
           <div class="progress-container">
             <div class="progress-bar">
               <div class="progress-fill" id="progress-fill"></div>
             </div>
-          </div>
-          <div class="question-count">
-            第 <span id="current-question">1</span>/<span id="total-questions">0</span> 题
           </div>
         </header>
         
