@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('start-game-btn').addEventListener('click', startGame);
   document.getElementById('view-leaderboard-btn').addEventListener('click', viewLeaderboard);
   document.getElementById('back-to-menu-btn').addEventListener('click', backToMenu);
-  document.getElementById('restart-game-btn').addEventListener('click', restartGame);
+  document.getElementById('restart-game-btn').addEventListener('click', backToMenu); // 修改为返回主界面
   document.getElementById('clear-leaderboard-btn').addEventListener('click', clearLeaderboard);
   document.getElementById('clear-records-btn').addEventListener('click', clearLeaderboard);
   
@@ -534,26 +534,33 @@ function endGame() {
   // 清除计时器
   clearInterval(timerInterval);
   
-  // 计算完成时间
+  // 计算完成时间和正确率
   completionTime = new Date();
   const timeSpent = Math.floor((completionTime - startTime) / 1000);
-  const minutes = Math.floor(timeSpent / 60);
-  const seconds = timeSpent % 60;
-  const timeFormatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  const accuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
   
   // 保存分数并检查是否为新纪录
   const newRecord = saveScore();
   
   // 更新游戏结束界面
   document.getElementById('final-score').textContent = score;
-  document.getElementById('quiz-completion-time').textContent = timeFormatted;
+  
+  // 修改答题时间为正确数/错误数/答题总数-正确率格式
+  const statsElement = document.getElementById('quiz-completion-time');
+  statsElement.textContent = `${correctAnswers}/${incorrectAnswers}/${totalAnswered}-${accuracy}%`;
   
   // 显示或隐藏新纪录消息
   const recordMessage = document.getElementById('record-message');
   if (recordMessage) {
     if (newRecord) {
       recordMessage.classList.remove('hidden');
-      document.getElementById('celebration-message').classList.remove('hidden');
+      const celebration = document.getElementById('celebration-message');
+      celebration.classList.remove('hidden');
+      
+      // 3秒后自动隐藏破纪录弹窗
+      setTimeout(() => {
+        celebration.classList.add('hidden');
+      }, 3000);
     } else {
       recordMessage.classList.add('hidden');
     }
@@ -565,6 +572,21 @@ function endGame() {
   // 显示游戏结束界面，隐藏游戏界面
   document.getElementById('game').classList.add('hidden');
   document.getElementById('game-over-menu').classList.remove('hidden');
+  
+  // 禁用游戏结束界面的按钮3秒防止误按
+  const buttons = [
+    document.getElementById('restart-game-btn'),
+    document.getElementById('clear-records-btn')
+  ];
+  
+  buttons.forEach(btn => {
+    if (btn) {
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.disabled = false;
+      }, 3000);
+    }
+  });
 }
 
 /**
@@ -588,19 +610,9 @@ function backToMenu() {
   }
   
   document.getElementById('leaderboard-menu').classList.add('hidden');
-  document.getElementById('start-menu').classList.remove('hidden');
-}
-
-/**
- * 重新开始游戏
- * 清除计时器，调用开始游戏函数
- */
-function restartGame() {
-  if (timerInterval) {
-    clearInterval(timerInterval);
-  }
+  document.getElementById('game-over-menu').classList.add('hidden');
   document.getElementById('celebration-message').classList.add('hidden');
-  startGame();
+  document.getElementById('start-menu').classList.remove('hidden');
 }
 
 /**
