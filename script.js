@@ -11,21 +11,16 @@ let incorrectAnswers = 0;            // 错误答案数量
 let totalAnswered = 0;               // 总答题数量
 const leaderboardKey = 'leaderboard';// 本地存储排行榜的键名
 
-// 难度与分值和选项数映射
-const difficultyMap = {
-  1: { options: 3, score: 5 },
-  2: { options: 4, score: 10 },
-  3: { options: 5, score: 15 },
-  4: { options: 6, score: 20 }
-};
-
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
+  // 创建解析列表容器
+  createExplanationList();
+  
   // 绑定按钮事件
   document.getElementById('start-game-btn').addEventListener('click', startGame);
   document.getElementById('view-leaderboard-btn').addEventListener('click', viewLeaderboard);
   document.getElementById('back-to-menu-btn').addEventListener('click', backToMenu);
-  document.getElementById('restart-game-btn').addEventListener('click', backToMenu); // 修改为返回主界面
+  document.getElementById('restart-game-btn').addEventListener('click', backToMenu); // 返回主界面
   document.getElementById('clear-leaderboard-btn').addEventListener('click', clearLeaderboard);
   document.getElementById('clear-records-btn').addEventListener('click', clearLeaderboard);
   
@@ -39,6 +34,115 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+/**
+ * 创建解析列表容器
+ * 用于在电脑端存储和显示所有解析内容
+ */
+function createExplanationList() {
+  const explanationSection = document.querySelector('.explanation-section');
+  if (!explanationSection) return;
+  
+  // 创建列表容器
+  const listContainer = document.createElement('div');
+  listContainer.id = 'explanation-list-container';
+  listContainer.className = 'explanation-list-container';
+  
+  // 创建列表元素
+  const list = document.createElement('ul');
+  list.id = 'explanation-list';
+  list.className = 'explanation-list';
+  
+  listContainer.appendChild(list);
+  explanationSection.appendChild(listContainer);
+  
+  // 添加样式
+  const style = document.createElement('style');
+  style.textContent = `
+    .explanation-list-container {
+      width: 100%;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    
+    .explanation-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .explanation-item {
+      padding: 15px;
+      border-radius: 16px;
+      animation: fadeIn 0.5s ease-out;
+      transform-origin: top;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    @media (max-width: 899px) {
+      #explanation-list-container {
+        display: none;
+      }
+      
+      #feedback:not(.hidden) {
+        display: block !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+/**
+ * 添加解析到列表
+ * @param {string} content - 解析内容
+ * @param {boolean} isCorrect - 是否正确
+ */
+function addExplanation(content, isCorrect) {
+  // 对于移动设备，仍然使用原来的反馈方式
+  if (window.innerWidth <= 899) {
+    const feedback = document.getElementById('feedback');
+    feedback.textContent = content;
+    feedback.className = isCorrect ? 'feedback-correct' : 'feedback-incorrect';
+    feedback.classList.remove('hidden');
+    return;
+  }
+  
+  // 对于桌面设备，添加到解析列表
+  const list = document.getElementById('explanation-list');
+  if (!list) return;
+  
+  // 创建新的解析项
+  const item = document.createElement('li');
+  item.className = `explanation-item ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+  item.textContent = content;
+  
+  // 将新解析添加到列表顶部
+  if (list.firstChild) {
+    list.insertBefore(item, list.firstChild);
+  } else {
+    list.appendChild(item);
+  }
+  
+  // 隐藏原始反馈元素
+  const feedback = document.getElementById('feedback');
+  feedback.classList.add('hidden');
+  
+  // 滚动到顶部以显示最新解析
+  list.scrollTop = 0;
+}
 
 /**
  * 初始化游戏说明弹窗
@@ -134,7 +238,13 @@ async function fetchQuestions() {
         return null;
       }
       
-      const diffConf = difficultyMap[q.difficulty] || difficultyMap[1];
+      const diffConf = {
+        1: { options: 3, score: 5 },
+        2: { options: 4, score: 10 },
+        3: { options: 5, score: 15 },
+        4: { options: 6, score: 20 }
+      }[q.difficulty] || { options: 3, score: 5 };
+      
       // 确保正确答案在选项中
       if (!q.options.includes(q.answer)) {
         q.options.push(q.answer);
@@ -256,18 +366,11 @@ function loadNewQuestion() {
     const btn = document.createElement('button');
     btn.textContent = option;
     btn.addEventListener('click', () => {
-      checkAnswer(option, btn, shuffledOptions);
+      checkAnswer(option, btn, shuffledOptions, q);
     });
     
     optionsDiv.appendChild(btn);
   });
-  
-  // 重置反馈
-  const feedback = document.getElementById('feedback');
-  if (feedback) {
-    feedback.classList.add('hidden');
-    feedback.textContent = '';
-  }
 }
 
 /**
@@ -275,20 +378,19 @@ function loadNewQuestion() {
  * @param {string} selected - 选中的答案
  * @param {HTMLButtonElement} selectedBtn - 选中的按钮元素
  * @param {Array} allOptions - 所有选项
+ * @param {Object} question - 当前题目对象
  */
-function checkAnswer(selected, selectedBtn, allOptions) {
-  const q = questions[currentQuestionIndex];
-  const feedback = document.getElementById('feedback');
+function checkAnswer(selected, selectedBtn, allOptions, question) {
   const optionsDiv = document.getElementById('options');
   
-  if (!feedback || !optionsDiv) {
-    console.error('找不到反馈或选项容器元素');
+  if (!optionsDiv) {
+    console.error('找不到选项容器元素');
     return;
   }
   
-  let addScore = q.diffConf.score;
+  let addScore = question.diffConf.score;
   let feedbackText = '';
-  const isCorrect = selected === q.answer;
+  const isCorrect = selected === question.answer;
 
   // 禁止再次选择
   Array.from(optionsDiv.children).forEach(btn => {
@@ -299,32 +401,23 @@ function checkAnswer(selected, selectedBtn, allOptions) {
     score += addScore;
     correctAnswers++;
     selectedBtn.classList.add('correct');
-    feedbackText = `回答正确！+${addScore}分 🎉`;
-    feedback.className = 'feedback-correct';
+    feedbackText = `第${currentQuestionIndex + 1}题：回答正确！+${addScore}分 🎉`;
   } else {
     incorrectAnswers++;
     selectedBtn.classList.add('incorrect');
-    feedbackText = `回答错误！正确答案：${q.answer} 😢`;
-    feedback.className = 'feedback-incorrect';
-    
-    // 高亮正确选项
-    Array.from(optionsDiv.children).forEach(btn => {
-      if (btn.textContent === q.answer) {
-        btn.classList.add('correct');
-      }
-    });
+    feedbackText = `第${currentQuestionIndex + 1}题：回答错误！正确答案：${question.answer} 😢`;
   }
-
-  totalAnswered++;
-  updateAccuracyDisplay();
 
   // 添加解析
-  if (q.explanation) {
-    feedbackText += `\n解析：${q.explanation}`;
+  if (question.explanation) {
+    feedbackText += `\n解析：${question.explanation}`;
   }
   
-  feedback.textContent = feedbackText;
-  feedback.classList.remove('hidden');
+  // 添加到解析列表（电脑端）或显示为单条反馈（移动端）
+  addExplanation(feedbackText, isCorrect);
+  
+  totalAnswered++;
+  updateAccuracyDisplay();
   
   // 更新分数
   const scoreElement = document.getElementById('score-value');
@@ -491,6 +584,19 @@ function startGame() {
   totalAnswered = 0;
   startTime = new Date();
   
+  // 清空解析列表
+  const explanationList = document.getElementById('explanation-list');
+  if (explanationList) {
+    explanationList.innerHTML = '';
+  }
+  
+  // 重置反馈
+  const feedback = document.getElementById('feedback');
+  if (feedback) {
+    feedback.classList.add('hidden');
+    feedback.textContent = '';
+  }
+  
   // 更新显示
   document.getElementById('score-value').textContent = '0';
   document.getElementById('time-left').textContent = '60';
@@ -545,7 +651,7 @@ function endGame() {
   // 更新游戏结束界面
   document.getElementById('final-score').textContent = score;
   
-  // 修改答题时间为正确数/错误数/答题总数-正确率格式
+  // 显示正确数/错误数/答题总数-正确率格式
   const statsElement = document.getElementById('quiz-completion-time');
   statsElement.textContent = `${correctAnswers}/${incorrectAnswers}/${totalAnswered}-${accuracy}%`;
   
