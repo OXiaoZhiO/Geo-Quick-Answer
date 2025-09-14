@@ -28,7 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 绑定按钮事件
     document.getElementById('start-game-btn').addEventListener('click', startGame);
-    document.getElementById('view-leaderboard-btn').addEventListener('click', viewLeaderboard);
+    document.getElementById('view-leaderboard-btn').addEventListener('click', () => {
+        viewLeaderboard();
+        populateLibraryFilter();
+    });
     document.getElementById('back-to-menu-btn').addEventListener('click', backToMenu);
     document.getElementById('restart-game-btn').addEventListener('click', backToMenu); // 返回主界面
     document.getElementById('clear-leaderboard-btn').addEventListener('click', clearLeaderboard);
@@ -36,6 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('select-library-btn').addEventListener('click', showLibrarySelector);
     document.getElementById('back-from-library-btn').addEventListener('click', hideLibrarySelector);
     document.getElementById('library-file-input').addEventListener('change', handleLibraryFileSelect);
+    
+    // 绑定排行榜筛选事件
+    document.getElementById('library-filter').addEventListener('change', function() {
+        updateLeaderboardDisplay('leaderboard', this.value);
+    });
     
     // 初始化游戏说明弹窗
     setupInstructionsModal();
@@ -97,6 +105,9 @@ function renderLibraryList() {
 
 /**
  * 选择题库
+ * @param {string} filePath - 题库文件路径
+ * @param {string} name - 题库名称
+ * @param {number} questionCount - 题目数量
  */
 function selectLibrary(filePath, name, questionCount) {
     currentLibrary = {
@@ -122,13 +133,19 @@ function selectLibrary(filePath, name, questionCount) {
  * 从本地存储加载选中的题库
  */
 function loadSelectedLibrary() {
-    const savedLibrary = localStorage.getItem(selectedLibraryKey);
-    if (savedLibrary) {
-        try {
+    try {
+        const savedLibrary = localStorage.getItem(selectedLibraryKey);
+        if (savedLibrary) {
             currentLibrary = JSON.parse(savedLibrary);
-        } catch (e) {
-            console.error('加载保存的题库失败', e);
         }
+    } catch (e) {
+        console.error('加载保存的题库失败', e);
+        // 加载失败时使用默认题库
+        currentLibrary = {
+            file: 'data/1.json',
+            name: '默认题库',
+            questionCount: 0
+        };
     }
     
     // 更新当前选择显示
@@ -151,6 +168,7 @@ function loadCurrentLibrary() {
 
 /**
  * 处理用户选择本地题库文件
+ * @param {Event} event - 文件选择事件
  */
 function handleLibraryFileSelect(event) {
     const file = event.target.files[0];
@@ -183,6 +201,8 @@ function handleLibraryFileSelect(event) {
 
 /**
  * 获取题库信息（名称和题数）
+ * @param {string} filePath - 题库文件路径
+ * @returns {Promise} 包含题库信息的Promise对象
  */
 async function fetchLibraryInfo(filePath) {
     try {
@@ -207,6 +227,8 @@ async function fetchLibraryInfo(filePath) {
 
 /**
  * 从文件加载题库
+ * @param {string} filePath - 题库文件路径
+ * @returns {Promise} 加载是否成功的Promise对象
  */
 async function loadQuestionsFromFile(filePath) {
     try {
@@ -214,7 +236,7 @@ async function loadQuestionsFromFile(filePath) {
         if (window.location.protocol === 'file:') {
             // 本地模式，提示用户选择文件
             document.getElementById('library-file-input').click();
-            return;
+            return false;
         }
         
         const res = await fetch(filePath);
@@ -234,6 +256,8 @@ async function loadQuestionsFromFile(filePath) {
 
 /**
  * 处理题库内容
+ * @param {Object} content - 题库内容
+ * @param {string} filePath - 题库文件路径
  */
 function processLibraryContent(content, filePath) {
     // 验证题库格式
@@ -253,6 +277,7 @@ function processLibraryContent(content, filePath) {
             return null;
         }
         
+        // 根据难度设置选项数量和分数
         const diffConf = {
             1: { options: 3, score: 5 },
             2: { options: 4, score: 10 },
@@ -290,6 +315,7 @@ function processLibraryContent(content, filePath) {
         throw new Error('未加载到有效题目，请检查题库文件');
     }
     
+    // 打乱题目顺序
     shuffleArray(questions);
     console.log(`成功加载 ${questions.length} 道题目 (${currentLibrary.name})`);
     
@@ -299,6 +325,7 @@ function processLibraryContent(content, filePath) {
 
 /**
  * 显示临时消息
+ * @param {string} message - 消息内容
  */
 function showTemporaryMessage(message) {
     const msgElement = document.createElement('div');
@@ -314,6 +341,7 @@ function showTemporaryMessage(message) {
     
     document.body.appendChild(msgElement);
     
+    // 2秒后自动消失
     setTimeout(() => {
         msgElement.style.opacity = '0';
         msgElement.style.transition = 'opacity 0.5s';
@@ -464,22 +492,6 @@ function setupInstructionsModal() {
 }
 
 /**
- * 格式化日期时间
- * @param {Date} date - 日期对象
- * @returns {string} 格式化后的日期时间字符串
- */
-function formatDateTime(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
-
-/**
  * 更新正确率显示
  * 显示正确/错误/总答题数及正确率
  */
@@ -503,6 +515,10 @@ function updateAccuracyDisplay() {
  * @param {string} message - 错误信息内容
  */
 function showErrorMessage(message) {
+    // 先移除已存在的错误信息
+    const existingErrors = document.querySelectorAll('.feedback-incorrect[style*="position: fixed"]');
+    existingErrors.forEach(el => el.remove());
+    
     const errorDiv = document.createElement('div');
     errorDiv.className = 'feedback-incorrect';
     errorDiv.style.position = 'fixed';
@@ -649,6 +665,7 @@ function startGame() {
     document.getElementById('time-left').textContent = timeLeft;
     updateAccuracyDisplay();
     document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('progress-fill').style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
     
     // 清空解析列表
     const explanationList = document.getElementById('explanation-list');
@@ -717,8 +734,8 @@ function endGame() {
     // 保存成绩到排行榜
     saveScore(score, timeSpent, correctAnswers, incorrectAnswers, totalAnswered);
     
-    // 更新游戏结束界面的排行榜
-    updateLeaderboardDisplay('game-over-leaderboard');
+    // 更新游戏结束界面的排行榜（只显示当前题库）
+    updateLeaderboardDisplay('game-over-leaderboard', currentLibrary.name);
     
     // 切换到游戏结束界面
     document.getElementById('game').classList.add('hidden');
@@ -727,44 +744,53 @@ function endGame() {
 
 /**
  * 保存分数到本地存储
+ * @param {number} score - 分数
+ * @param {number} timeSpent - 用时（秒）
+ * @param {number} correct - 正确题数
+ * @param {number} incorrect - 错误题数
+ * @param {number} total - 总题数
  */
 function saveScore(score, timeSpent, correct, incorrect, total) {
-    // 获取现有排行榜数据
-    let leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
-    
-    // 添加新分数记录
-    const newScore = {
-        score: score,
-        date: new Date().toISOString(),
-        timeSpent: timeSpent,
-        correct: correct,
-        incorrect: incorrect,
-        total: total,
-        library: currentLibrary.name
-    };
-    
-    leaderboard.push(newScore);
-    
-    // 按分数排序，保留前10名
-    leaderboard.sort((a, b) => b.score - a.score);
-    if (leaderboard.length > 10) {
-        leaderboard = leaderboard.slice(0, 10);
-    }
-    
-    // 保存回本地存储
-    localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard));
-    
-    // 检查是否是新纪录
-    if (leaderboard.length === 1 || score === leaderboard[0].score) {
-        setTimeout(() => {
-            document.getElementById('celebration-message').classList.remove('hidden');
+    try {
+        // 获取现有排行榜数据
+        let leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
+        
+        // 添加新分数记录
+        const newScore = {
+            score: score,
+            date: new Date().toISOString(),
+            timeSpent: timeSpent,
+            correct: correct,
+            incorrect: incorrect,
+            total: total,
+            library: currentLibrary.name
+        };
+        
+        leaderboard.push(newScore);
+        
+        // 保存回本地存储
+        localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard));
+        
+        // 检查是否是新纪录
+        // 筛选当前题库的记录
+        const libraryScores = leaderboard
+            .filter(entry => entry.library === currentLibrary.name)
+            .sort((a, b) => b.score - a.score);
+            
+        if (libraryScores.length === 1 || score >= libraryScores[0].score) {
             setTimeout(() => {
-                document.getElementById('celebration-message').classList.add('hidden');
-            }, 2000);
-        }, 500);
-        document.getElementById('record-message').classList.remove('hidden');
-    } else {
-        document.getElementById('record-message').classList.add('hidden');
+                document.getElementById('celebration-message').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('celebration-message').classList.add('hidden');
+                }, 2000);
+            }, 500);
+            document.getElementById('record-message').classList.remove('hidden');
+        } else {
+            document.getElementById('record-message').classList.add('hidden');
+        }
+    } catch (error) {
+        console.error('保存分数失败:', error);
+        showErrorMessage('保存成绩失败: ' + error.message);
     }
 }
 
@@ -774,44 +800,113 @@ function saveScore(score, timeSpent, correct, incorrect, total) {
 function viewLeaderboard() {
     document.getElementById('start-menu').classList.add('hidden');
     document.getElementById('leaderboard-menu').classList.remove('hidden');
-    updateLeaderboardDisplay('leaderboard');
+    updateLeaderboardDisplay('leaderboard', 'all');
+}
+
+/**
+ * 填充题库筛选下拉菜单
+ */
+function populateLibraryFilter() {
+    const filter = document.getElementById('library-filter');
+    if (!filter) return;
+    
+    // 保存当前选中的值
+    const currentValue = filter.value;
+    
+    // 保留"所有题库"选项，清除其他选项
+    while (filter.options.length > 1) {
+        filter.remove(1);
+    }
+    
+    try {
+        // 获取所有记录
+        const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
+        
+        // 获取所有独特的题库名称
+        const libraries = new Set();
+        leaderboard.forEach(entry => {
+            libraries.add(entry.library);
+        });
+        
+        // 添加到筛选器
+        Array.from(libraries).forEach(library => {
+            const option = document.createElement('option');
+            option.value = library;
+            option.textContent = library;
+            filter.appendChild(option);
+        });
+        
+        // 恢复之前的选择
+        if (currentValue && filter.querySelector(`option[value="${currentValue}"]`)) {
+            filter.value = currentValue;
+        }
+    } catch (error) {
+        console.error('填充题库筛选器失败:', error);
+    }
 }
 
 /**
  * 更新排行榜显示
+ * @param {string} elementId - 排行榜元素ID
+ * @param {string} libraryFilter - 题库筛选条件，"all"表示所有题库
  */
-function updateLeaderboardDisplay(elementId) {
+function updateLeaderboardDisplay(elementId, libraryFilter) {
     const leaderboardElement = document.getElementById(elementId);
     if (!leaderboardElement) return;
     
-    // 获取排行榜数据
-    const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
-    
-    // 清空现有内容
-    leaderboardElement.innerHTML = '';
-    
-    // 如果没有记录
-    if (leaderboard.length === 0) {
-        const emptyItem = document.createElement('li');
-        emptyItem.textContent = '暂无记录';
-        emptyItem.style.textAlign = 'center';
-        leaderboardElement.appendChild(emptyItem);
-        return;
+    try {
+        // 获取排行榜数据
+        let leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
+        
+        // 根据题库筛选
+        if (libraryFilter && libraryFilter !== 'all') {
+            leaderboard = leaderboard.filter(entry => entry.library === libraryFilter);
+        }
+        
+        // 按分数排序
+        leaderboard.sort((a, b) => b.score - a.score);
+        
+        // 只显示前10名
+        const topScores = leaderboard.slice(0, 10);
+        
+        // 清空现有内容
+        leaderboardElement.innerHTML = '';
+        
+        // 如果没有记录
+        if (topScores.length === 0) {
+            const emptyItem = document.createElement('li');
+            emptyItem.textContent = '暂无记录';
+            emptyItem.style.textAlign = 'center';
+            leaderboardElement.appendChild(emptyItem);
+            return;
+        }
+        
+        // 添加每条记录
+        topScores.forEach((entry, index) => {
+            // 解析日期
+            const date = new Date(entry.date);
+            const formattedDate = `${date.getMonth() + 1}/${date.getDate()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+            
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+                <div>
+                    <strong>${index + 1}. ${entry.score}分</strong>
+                    <div class="library-meta">${formattedDate} · ${entry.library}</div>
+                </div>
+                <div>${entry.correct}/${entry.incorrect}/${entry.total}</div>
+            `;
+            
+            // 为第一名添加特殊样式
+            if (index === 0) {
+                listItem.classList.add('first-place');
+            }
+            
+            leaderboardElement.appendChild(listItem);
+        });
+    } catch (error) {
+        console.error('更新排行榜失败:', error);
+        leaderboardElement.innerHTML = '<li>加载排行榜失败</li>';
     }
-    
-    // 添加每条记录
-    leaderboard.forEach((entry, index) => {
-        const date = new Date(entry.date);
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `
-            <div>
-                <strong>${index + 1}. ${entry.score}分</strong>
-                <div class="library-meta">${formatDateTime(date)} · ${entry.library}</div>
-            </div>
-            <div>${entry.correct}/${entry.incorrect}/${entry.total}</div>
-        `;
-        leaderboardElement.appendChild(listItem);
-    });
 }
 
 /**
@@ -837,7 +932,10 @@ function backToMenu() {
 function clearLeaderboard() {
     if (confirm('确定要清空所有排行榜记录吗？此操作不可恢复。')) {
         localStorage.removeItem(leaderboardKey);
-        updateLeaderboardDisplay('leaderboard');
-        updateLeaderboardDisplay('game-over-leaderboard');
+        updateLeaderboardDisplay('leaderboard', document.getElementById('library-filter').value);
+        updateLeaderboardDisplay('game-over-leaderboard', currentLibrary.name);
+        
+        // 更新筛选器
+        populateLibraryFilter();
     }
 }
