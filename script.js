@@ -588,7 +588,7 @@ function loadNewQuestion() {
     optionsElement.innerHTML = '';
     
     // 显示问题
-    questionElement.textContent = `NO.${q.id} ${q.question}`;
+    questionElement.textContent = currentQuestion.question;
     
     // 打乱选项顺序并显示
     const shuffledOptions = shuffleOptions(currentQuestion.options);
