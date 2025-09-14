@@ -8,9 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- 动态背景元素 -->
-    <div class="bg-animation"></div>
-    
     <div id="app">
         <!-- 开始菜单界面 -->
         <div id="start-menu" class="screen">
@@ -19,7 +16,7 @@
                 <div class="version-info">
                     <span class="author">by 晓炙云溪</span>
                     <span class="version-separator">|</span>
-                    <span class="version">v1.3.0</span>
+                    <span class="version">v1.1.8-beta</span>
                 </div>
                 <p>挑战你的学科知识储备，在限定时间内尽可能回答更多问题！</p>
                 
@@ -27,38 +24,11 @@
                     <button id="start-game-btn" class="primary-btn">
                         <i class="fas fa-play"></i> 开始游戏
                     </button>
-                    <button id="select-library-btn" class="secondary-btn">
-                        <i class="fas fa-book"></i> 选择题库
-                    </button>
                     <button id="view-leaderboard-btn" class="secondary-btn">
                         <i class="fas fa-trophy"></i> 查看排行榜
                     </button>
                     <button id="show-instructions-btn" class="secondary-btn">
                         <i class="fas fa-info-circle"></i> 游戏说明
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 题库选择界面 -->
-        <div id="library-selector" class="screen hidden">
-            <div class="card">
-                <h2>选择题库</h2>
-                <p>当前选择: <span id="current-library-name">加载中...</span></p>
-                
-                <div id="library-list" class="library-list">
-                    <!-- 题库列表将动态生成 -->
-                </div>
-                
-                <div id="local-file-upload" class="file-upload-section">
-                    <p>或选择本地题库文件：</p>
-                    <input type="file" id="library-file-input" accept=".json" />
-                    <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
-                </div>
-                
-                <div class="button-group">
-                    <button id="back-from-library-btn" class="primary-btn">
-                        <i class="fas fa-arrow-left"></i> 返回
                     </button>
                 </div>
             </div>
@@ -106,13 +76,26 @@
             <div class="card">
                 <h2>排行榜</h2>
                 
-                <!-- 新增：排行榜筛选 -->
-                <div class="leaderboard-filter">
-                    <label for="library-filter">题库筛选：</label>
-                    <select id="library-filter">
+                <div class="leaderboard-filters">
+                    <label for="quiz-filter">题库筛选:</label>
+                    <select id="quiz-filter" class="filter-select">
                         <option value="all">所有题库</option>
-                        <!-- 选项将动态生成 -->
                     </select>
+                </div>
+                
+                <div class="leaderboard-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-players">0</div>
+                        <div class="stat-label">总玩家</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-games">0</div>
+                        <div class="stat-label">总游戏</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="avg-score">0</div>
+                        <div class="stat-label">平均得分</div>
+                    </div>
                 </div>
                 
                 <ul id="leaderboard" class="score-list"></ul>
@@ -137,7 +120,7 @@
                 <p id="record-message" class="hidden">恭喜你创造了新纪录！</p>
                 <p>答题统计: <span id="quiz-completion-time">0/0/0-0%</span></p>
                 
-                <h3>当前题库排行榜</h3>
+                <h3>排行榜</h3>
                 <ul id="game-over-leaderboard" class="score-list"></ul>
                 
                 <div class="button-group">
