@@ -1,0 +1,405 @@
+{
+"name":"csp-j/s题库",
+"questions":[
+  {
+    "id": 1,
+    "question": "在计算机中，1字节（Byte）等于多少位（bit）？",
+    "options": ["8", "16", "32", "64", "1024", "2048"],
+    "answer": "8",
+    "difficulty": 1,
+    "explanation": "字节是计算机存储的基本单位，1字节等于8位，位是计算机中最小的信息单位。"
+  },
+  {
+    "id": 2,
+    "question": "下列哪种不属于计算机编程语言？",
+    "options": ["HTML", "Python", "C++", "Java", "JavaScript", "SQL"],
+    "answer": "HTML",
+    "difficulty": 2,
+    "explanation": "HTML是超文本标记语言，用于构建网页结构，不属于编程语言，其余均为编程语言。"
+  },
+  {
+    "id": 3,
+    "question": "队列的操作特点是？",
+    "options": ["先进先出", "先进后出", "随机存取", "尾进尾出", "无序存取", "双向存取"],
+    "answer": "先进先出",
+    "difficulty": 2,
+    "explanation": "队列是一种线性数据结构，遵循“先进先出”（FIFO）的操作原则。"
+  },
+  {
+    "id": 4,
+    "question": "十进制数36转换成二进制数是？",
+    "options": ["100100", "101000", "110000", "100010", "101100", "111000"],
+    "answer": "100100",
+    "difficulty": 2,
+    "explanation": "通过除2取余法，36÷2=18余0，18÷2=9余0，9÷2=4余1，4÷2=2余0，2÷2=1余0，1÷2=0余1，倒序得100100。"
+  },
+  {
+    "id": 5,
+    "question": "以下哪种排序算法是稳定排序？",
+    "options": ["冒泡排序", "快速排序", "选择排序", "堆排序", "希尔排序", "基数排序"],
+    "answer": "冒泡排序",
+    "difficulty": 3,
+    "explanation": "稳定排序是指相等元素的相对顺序在排序后保持不变，冒泡排序属于稳定排序，其余选项多为不稳定排序。"
+  },
+  {
+    "id": 6,
+    "question": "在C++中，以下哪个关键字用于定义常量？",
+    "options": ["const", "static", "volatile", "register", "auto", "extern"],
+    "answer": "const",
+    "difficulty": 2,
+    "explanation": "const关键字用于定义常量，其值在程序运行过程中不能被修改。"
+  },
+  {
+    "id": 7,
+    "question": "计算机网络OSI模型分为几层？",
+    "options": ["7", "5", "6", "4", "3", "8"],
+    "answer": "7",
+    "difficulty": 2,
+    "explanation": "OSI模型从下到上依次为物理层、数据链路层、网络层、传输层、会话层、表示层、应用层，共7层。"
+  },
+  {
+    "id": 8,
+    "question": "一棵满二叉树有15个节点，其叶子节点数为？",
+    "options": ["8", "7", "15", "1", "14", "4"],
+    "answer": "8",
+    "difficulty": 3,
+    "explanation": "满二叉树中，叶子节点数等于非叶子节点数加1，15个节点的满二叉树叶子节点数为8。"
+  },
+  {
+    "id": 9,
+    "question": "下列哪种数据结构适合实现哈希表？",
+    "options": ["数组", "链表", "栈", "队列", "二叉树", "图"],
+    "answer": "数组",
+    "difficulty": 2,
+    "explanation": "哈希表通常通过数组存储数据，利用哈希函数计算索引，实现快速存取。"
+  },
+  {
+    "id": 10,
+    "question": "十六进制数A5对应的十进制数是？",
+    "options": ["165", "155", "175", "145", "185", "195"],
+    "answer": "165",
+    "difficulty": 2,
+    "explanation": "十六进制转十进制：10×16¹ + 5×16⁰ = 160 + 5 = 165。"
+  },
+  {
+    "id": 11,
+    "question": "以下哪种不是操作系统的功能？",
+    "options": ["编译程序", "进程管理", "内存管理", "文件管理", "设备管理", "作业管理"],
+    "answer": "编译程序",
+    "difficulty": 2,
+    "explanation": "编译程序是将高级语言转换为机器语言的工具，属于语言处理程序，不是操作系统的功能。"
+  },
+  {
+    "id": 12,
+    "question": "逻辑运算中，“真 or 假”的结果是？",
+    "options": ["真", "假", "不确定", "0", "1", "以上都不对"],
+    "answer": "真",
+    "difficulty": 1,
+    "explanation": "逻辑或运算中，只要有一边为真，结果就为真。"
+  },
+  {
+    "id": 13,
+    "question": "链表相对于数组的优势是？",
+    "options": ["插入删除效率高", "随机访问效率高", "存储密度大", "占用空间小", "实现简单", "适合大量数据存储"],
+    "answer": "插入删除效率高",
+    "difficulty": 2,
+    "explanation": "链表不需要连续存储空间，插入和删除元素时只需修改指针，效率高于数组。"
+  },
+  {
+    "id": 14,
+    "question": "以下哪个算法用于在有序数组中查找元素？",
+    "options": ["二分查找", "冒泡排序", "快速排序", "选择排序", "插入排序", "归并排序"],
+    "answer": "二分查找",
+    "difficulty": 2,
+    "explanation": "二分查找利用有序数组的特性，每次缩小一半查找范围，效率高于顺序查找。"
+  },
+  {
+    "id": 15,
+    "question": "二进制数110101对应的十进制数是？",
+    "options": ["53", "51", "55", "49", "61", "63"],
+    "answer": "53",
+    "difficulty": 2,
+    "explanation": "1×2⁵ + 1×2⁴ + 0×2³ + 1×2² + 0×2¹ + 1×2⁰ = 32 + 16 + 0 + 4 + 0 + 1 = 53。"
+  },
+  {
+    "id": 16,
+    "question": "CSP-S认证中，S指的是？",
+    "options": ["提高级", "入门级", "专业级", "进阶级", "基础级", "精英级"],
+    "answer": "提高级",
+    "difficulty": 1,
+    "explanation": "CSP-J/S是软件能力认证，J为入门级（Junior），S为提高级（Senior）。"
+  },
+  {
+    "id": 17,
+    "question": "以下哪种不是计算机的输入设备？",
+    "options": ["打印机", "键盘", "鼠标", "扫描仪", "摄像头", "麦克风"],
+    "answer": "打印机",
+    "difficulty": 1,
+    "explanation": "打印机是输出设备，用于将计算机处理结果打印出来，其余均为输入设备。"
+  },
+  {
+    "id": 18,
+    "question": "一棵二叉树的前序遍历为ABCDE，中序遍历为BADCE，则后序遍历是？",
+    "options": ["BEDCA", "BDCEA", "BDECA", "BEDAC", "BDACE", "BDEAC"],
+    "answer": "BEDCA",
+    "difficulty": 4,
+    "explanation": "由前序可知根为A，中序中A左边为B（左子树），右边为DCE（右子树）；右子树前序为CDE，中序为DCE，可推知结构，后序遍历为BEDCA。"
+  },
+  {
+    "id": 19,
+    "question": "在C++中，以下哪个函数用于读取键盘输入？",
+    "options": ["cin", "cout", "printf", "scanf", "fread", "fwrite"],
+    "answer": "cin",
+    "difficulty": 2,
+    "explanation": "cin是C++标准输入流对象，用于从标准输入设备（键盘）读取数据。"
+  },
+  {
+    "id": 20,
+    "question": "十进制数255转换成十六进制数是？",
+    "options": ["FF", "FE", "FD", "FC", "FA", "FB"],
+    "answer": "FF",
+    "difficulty": 2,
+    "explanation": "255÷16=15余15，15在十六进制中表示为F，故为FF。"
+  },
+  {
+    "id": 21,
+    "question": "以下哪种排序算法的最坏时间复杂度为O(n²)？",
+    "options": ["冒泡排序", "快速排序", "归并排序", "堆排序", "基数排序", "希尔排序"],
+    "answer": "冒泡排序",
+    "difficulty": 3,
+    "explanation": "冒泡排序在最坏情况下（逆序）需要比较n(n-1)/2次，时间复杂度为O(n²)。"
+  },
+  {
+    "id": 22,
+    "question": "计算机网络中，IP地址v4的长度是多少位？",
+    "options": ["32", "64", "128", "48", "24", "16"],
+    "answer": "32",
+    "difficulty": 2,
+    "explanation": "IPv4地址由32位二进制数组成，通常表示为4个十进制数（点分十进制）。"
+  },
+  {
+    "id": 23,
+    "question": "栈和队列的共同点是？",
+    "options": ["只允许在端点处插入和删除元素", "都是先进先出", "都是先进后出", "没有共同点", "都可以随机访问", "都需要连续存储空间"],
+    "answer": "只允许在端点处插入和删除元素",
+    "difficulty": 2,
+    "explanation": "栈只允许在栈顶操作，队列只允许在队尾插入、队头删除，均只能在端点操作。"
+  },
+  {
+    "id": 24,
+    "question": "在C++中，以下哪个是单目运算符？",
+    "options": ["++", "+", "-", "*", "/", "%"],
+    "answer": "++",
+    "difficulty": 2,
+    "explanation": "单目运算符只需要一个操作数，++（自增）是单目运算符，其余为双目运算符。"
+  },
+  {
+    "id": 25,
+    "question": "二进制数10000000对应的十进制数是？",
+    "options": ["128", "64", "256", "32", "16", "8"],
+    "answer": "128",
+    "difficulty": 1,
+    "explanation": "1×2⁷ = 128。"
+  },
+  {
+    "id": 26,
+    "question": "以下哪种数据结构用于实现优先级队列？",
+    "options": ["堆", "栈", "链表", "数组", "队列", "图"],
+    "answer": "堆",
+    "difficulty": 3,
+    "explanation": "堆（通常是二叉堆）能高效地获取和删除最大（或最小）元素，适合实现优先级队列。"
+  },
+  {
+    "id": 27,
+    "question": "下列哪个不是计算机网络协议？",
+    "options": ["HTTP", "HTML", "TCP", "IP", "FTP", "SMTP"],
+    "answer": "HTML",
+    "difficulty": 2,
+    "explanation": "HTML是标记语言，其余均为网络协议（HTTP超文本传输协议、TCP传输控制协议等）。"
+  },
+  {
+    "id": 28,
+    "question": "一棵有n个节点的完全二叉树，其深度为？（根节点深度为1）",
+    "options": ["floor(log₂n) + 1", "ceil(log₂n)", "n", "log₂n", "floor(log₂n)", "ceil(log₂n) + 1"],
+    "answer": "floor(log₂n) + 1",
+    "difficulty": 4,
+    "explanation": "完全二叉树的深度计算公式为 floor(log₂n) + 1，其中floor为向下取整函数。"
+  },
+  {
+    "id": 29,
+    "question": "在C++中，以下哪个循环语句至少执行一次循环体？",
+    "options": ["do-while", "while", "for", "if", "switch", "goto"],
+    "answer": "do-while",
+    "difficulty": 2,
+    "explanation": "do-while循环先执行循环体，再判断条件，因此至少执行一次；while和for先判断条件，可能一次不执行。"
+  },
+  {
+    "id": 30,
+    "question": "十进制数127转换成二进制数是？",
+    "options": ["1111111", "1111110", "1111101", "1111011", "1110111", "1101111"],
+    "answer": "1111111",
+    "difficulty": 2,
+    "explanation": "127是2⁷ - 1，二进制表示为7个1，即1111111。"
+  },
+  {
+    "id": 31,
+    "question": "以下哪种算法是分治算法的典型应用？",
+    "options": ["归并排序", "冒泡排序", "插入排序", "选择排序", "希尔排序", "基数排序"],
+    "answer": "归并排序",
+    "difficulty": 3,
+    "explanation": "归并排序将数组分成两半，分别排序后合并，是分治算法的典型例子。"
+  },
+  {
+    "id": 32,
+    "question": "计算机的CPU主要由哪两部分组成？",
+    "options": ["运算器和控制器", "内存和外存", "输入和输出设备", "主机和外设", "硬件和软件", "主板和显卡"],
+    "answer": "运算器和控制器",
+    "difficulty": 1,
+    "explanation": "CPU（中央处理器）由运算器（执行算术和逻辑运算）和控制器（控制指令执行）组成。"
+  },
+  {
+    "id": 33,
+    "question": "图的深度优先搜索（DFS）通常使用哪种数据结构实现？",
+    "options": ["栈", "队列", "数组", "链表", "堆", "哈希表"],
+    "answer": "栈",
+    "difficulty": 3,
+    "explanation": "DFS通过递归（隐式栈）或显式栈实现，优先沿着路径深入搜索。"
+  },
+  {
+    "id": 34,
+    "question": "在C++中，以下哪个关键字用于继承类？",
+    "options": ["public", "class", "struct", "enum", "union", "namespace"],
+    "answer": "public",
+    "difficulty": 3,
+    "explanation": "在C++中，类的继承方式通过public、private、protected指定，public表示公有继承。"
+  },
+  {
+    "id": 35,
+    "question": "十六进制数1F对应的二进制数是？",
+    "options": ["11111", "10000", "11110", "10101", "11001", "10111"],
+    "answer": "11111",
+    "difficulty": 2,
+    "explanation": "十六进制1对应二进制0001，F对应1111，合并为11111（省略前导0）。"
+  },
+  {
+    "id": 36,
+    "question": "以下哪种不是线性数据结构？",
+    "options": ["二叉树", "数组", "链表", "栈", "队列", "字符串"],
+    "answer": "二叉树",
+    "difficulty": 2,
+    "explanation": "线性结构中数据元素呈线性排列，二叉树是层次结构，属于非线性数据结构。"
+  },
+  {
+    "id": 37,
+    "question": "计算机中，RAM的特点是？",
+    "options": ["断电后数据丢失", "断电后数据不丢失", "只能读取不能写入", "存储容量大", "速度慢", "属于外存"],
+    "answer": "断电后数据丢失",
+    "difficulty": 1,
+    "explanation": "RAM（随机存取存储器）是临时存储，断电后数据丢失；ROM断电后数据不丢失。"
+  },
+  {
+    "id": 38,
+    "question": "对n个元素进行冒泡排序，最好情况下的比较次数是？",
+    "options": ["n-1", "n", "n(n-1)/2", "n²", "log₂n", "n log₂n"],
+    "answer": "n-1",
+    "difficulty": 3,
+    "explanation": "最好情况是数组已有序，只需比较n-1次（一趟完成）。"
+  },
+  {
+    "id": 39,
+    "question": "在C++中，以下哪个函数用于输出信息到屏幕？",
+    "options": ["cout", "cin", "printf", "scanf", "fprintf", "fscanf"],
+    "answer": "cout",
+    "difficulty": 1,
+    "explanation": "cout是C++标准输出流对象，用于向标准输出设备（屏幕）输出数据。"
+  },
+  {
+    "id": 40,
+    "question": "十进制数5对应的二进制、八进制、十六进制表示中，正确的是？",
+    "options": ["101,5,5", "100,4,4", "110,6,6", "111,7,7", "101,6,5", "100,5,4"],
+    "answer": "101,5,5",
+    "difficulty": 2,
+    "explanation": "5的二进制为101，八进制为5，十六进制为5。"
+  },
+  {
+    "id": 41,
+    "question": "以下哪种图的遍历方式类似于树的层次遍历？",
+    "options": ["广度优先搜索（BFS）", "深度优先搜索（DFS）", "先序遍历", "中序遍历", "后序遍历", "随机遍历"],
+    "answer": "广度优先搜索（BFS）",
+    "difficulty": 3,
+    "explanation": "BFS按层次逐层访问节点，与树的层次遍历思想一致，通常用队列实现。"
+  },
+  {
+    "id": 42,
+    "question": "下列哪个是计算机的外存储设备？",
+    "options": ["硬盘", "内存", "CPU", "主板", "显卡", "声卡"],
+    "answer": "硬盘",
+    "difficulty": 1,
+    "explanation": "硬盘属于外存，用于长期存储数据；内存是临时存储，属于内存设备。"
+  },
+  {
+    "id": 43,
+    "question": "在一个长度为n的顺序表中，删除第i个元素（1≤i≤n）需要移动的元素个数是？",
+    "options": ["n-i", "n-i+1", "i", "i-1", "n", "1"],
+    "answer": "n-i",
+    "difficulty": 3,
+    "explanation": "删除第i个元素后，其后面的n-i个元素需向前移动一位。"
+  },
+  {
+    "id": 44,
+    "question": "C++中，以下哪个不是循环控制语句？",
+    "options": ["if", "for", "while", "do-while", "break", "continue"],
+    "answer": "if",
+    "difficulty": 1,
+    "explanation": "if是条件判断语句，其余均与循环控制相关（for、while、do-while是循环语句，break、continue用于控制循环流程）。"
+  },
+  {
+    "id": 45,
+    "question": "二进制数111001转换成十六进制数是？",
+    "options": ["39", "3A", "3B", "3C", "3D", "3E"],
+    "answer": "39",
+    "difficulty": 2,
+    "explanation": "二进制111001从右分组为0011 1001，对应十六进制3和9，即39。"
+  },
+  {
+    "id": 46,
+    "question": "以下哪种算法可用于求最短路径？",
+    "options": ["Dijkstra算法", "冒泡排序", "快速排序", "归并排序", "希尔排序", "堆排序"],
+    "answer": "Dijkstra算法",
+    "difficulty": 3,
+    "explanation": "Dijkstra算法用于求解带权有向图中从一个源点到其他所有顶点的最短路径。"
+  },
+  {
+    "id": 47,
+    "question": "计算机中，1GB等于多少MB？",
+    "options": ["1024", "1000", "2048", "512", "1024×1024", "1000×1000"],
+    "answer": "1024",
+    "difficulty": 1,
+    "explanation": "计算机存储单位中，1GB = 1024MB，1MB = 1024KB，基于2的幂次。"
+  },
+  {
+    "id": 48,
+    "question": "一棵二叉树的中序遍历为ABCDE，后序遍历为ABCDE，则其前序遍历是？",
+    "options": ["EDCBA", "ABCDE", "EABCD", "DCBAE", "BAEDC", "CDEAB"],
+    "answer": "EDCBA",
+    "difficulty": 4,
+    "explanation": "后序遍历最后一个元素为根，中序遍历与后序遍历相同，说明该树为左斜树（每个节点只有左子树），根为E，前序遍历为EDCBA。"
+  },
+  {
+    "id": 49,
+    "question": "在C++中，以下哪个是动态内存分配的运算符？",
+    "options": ["new", "delete", "malloc", "free", "sizeof", "auto"],
+    "answer": "new",
+    "difficulty": 2,
+    "explanation": "new是C++的动态内存分配运算符，malloc是C语言的函数，delete用于释放new分配的内存。"
+  },
+  {
+    "id": 50,
+    "question": "十进制数0.25转换成二进制数是？",
+    "options": ["0.01", "0.1", "0.11", "0.101", "0.001", "0.1001"],
+    "answer": "0.01",
+    "difficulty": 3,
+    "explanation": "小数部分乘2取整：0.25×2=0.5取0，0.5×2=1.0取1，结果为0.01。"
+  }
+]
+}
