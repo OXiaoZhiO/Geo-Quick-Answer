@@ -1,142 +1,144 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>地理快回答！</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学科快回答！</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <div id="app">
-    <!-- 开始菜单 -->
-    <div id="start-menu" class="screen">
-      <div class="card">
-        <h1>地理快回答！</h1>
-        <p>测试你的地理知识，挑战极限分数！⏱️</p>
-        
-        <!-- 新增：题库选择区域 -->
-        <div class="quiz-selector">
-          <h3>选择题库</h3>
-          <div id="quiz-list" class="quiz-list">
-            <!-- 题库选项将通过JS动态生成 -->
-          </div>
-          <div id="local-file-selector" class="local-file-selector hidden">
-            <p>请选择data文件夹中的题库文件：</p>
-            <input type="file" id="quiz-file-input" accept=".json" />
-          </div>
-        </div>
-        
-        <div class="button-group">
-          <button id="start-game-btn" class="primary-btn">
-            <span>开始游戏</span> 🚀
-          </button>
-          <button id="view-leaderboard-btn" class="secondary-btn">
-            <span>查看排行榜</span> 🏆
-          </button>
-          <button id="show-instructions-btn" class="secondary-btn">
-            <span>游戏说明</span> ℹ️
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 游戏说明弹窗 -->
-    <div id="instructions-modal" class="modal hidden">
-      <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>游戏说明</h2>
-        <ul>
-          <li>游戏限时60秒，在规定时间内尽可能回答更多问题</li>
-          <li>题目分为4个难度等级，难度越高，选项越多，得分越高：
-            <ul>
-              <li>难度1：3个选项，每题5分</li>
-              <li>难度2：4个选项，每题10分</li>
-              <li>难度3：5个选项，每题15分</li>
-              <li>难度4：6个选项，每题20分</li>
-            </ul>
-          </li>
-          <li>选择正确答案将获得对应分值，错误则不加分</li>
-          <li>每道题回答后会显示正确答案及解析</li>
-          <li>游戏结束后可查看你的得分和排行榜</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- 游戏界面 -->
-    <div id="game" class="screen hidden">
-      <div class="card">
-        <header>
-          <div class="status-bar">
-            <div class="status-item">⏱️ 时间: <span id="time-left">60</span> 秒</div>
-            <div class="status-item">💯 分数: <span id="score-value">0</span></div>
-            <div class="status-item">📅 <span id="current-time">--:--:--</span></div>
-          </div>
-          <div class="progress-container">
-            <div class="progress-bar">
-              <div class="progress-fill" id="progress-fill"></div>
+    <div id="app">
+        <!-- 开始菜单界面 -->
+        <div id="start-menu" class="screen">
+            <div class="card">
+                <h1>学科快回答！</h1>
+                <div class="version-info">
+                    <span class="author">by 晓炙云溪</span>
+                    <span class="version-separator">|</span>
+                    <span class="version">v1.1.8-beta</span>
+                </div>
+                <p>挑战你的学科知识储备，在限定时间内尽可能回答更多问题！</p>
+                
+                <div class="button-group">
+                    <button id="start-game-btn" class="primary-btn">
+                        <i class="fas fa-play"></i> 开始游戏
+                    </button>
+                    <button id="view-leaderboard-btn" class="secondary-btn">
+                        <i class="fas fa-trophy"></i> 查看排行榜
+                    </button>
+                    <button id="show-instructions-btn" class="secondary-btn">
+                        <i class="fas fa-info-circle"></i> 游戏说明
+                    </button>
+                </div>
             </div>
-          </div>
-          <div class="question-count">
-            第 <span id="current-question">1</span>/<span id="total-questions">0</span> 题
-          </div>
-        </header>
+        </div>
         
-        <div class="game-content">
-          <main class="question-section">
-            <div id="question-area">
-              <p id="question">题目将显示在这里</p>
-              <div id="options"></div>
+        <!-- 游戏界面 -->
+        <div id="game" class="screen hidden">
+            <div class="card">
+                <div class="status-bar">
+                    <div class="status-item">
+                        <i class="fas fa-clock"></i> 剩余时间: <span id="time-left">60</span>秒
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-scoreboard"></i> 分数: <span id="score-value">0</span>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-chart-pie"></i> 正确率: <span id="accuracy-display">0/0/0-0%</span>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="game-content">
+                    <div class="question-section">
+                        <div id="question-area">
+                            <div id="question">问题将在这里显示</div>
+                            <div id="options"></div>
+                        </div>
+                        <div id="feedback" class="hidden"></div>
+                    </div>
+                    
+                    <div class="explanation-section">
+                        <!-- 解析列表将在这里动态生成 -->
+                    </div>
+                </div>
             </div>
-          </main>
-          
-          <aside class="explanation-section">
-            <p id="feedback" class="hidden"></p>
-          </aside>
         </div>
-      </div>
+        
+        <!-- 排行榜界面 -->
+        <div id="leaderboard-menu" class="screen hidden">
+            <div class="card">
+                <h2>排行榜</h2>
+                <ul id="leaderboard" class="score-list"></ul>
+                
+                <div class="button-group">
+                    <button id="back-to-menu-btn" class="primary-btn">
+                        <i class="fas fa-home"></i> 返回主菜单
+                    </button>
+                    <button id="clear-leaderboard-btn" class="secondary-btn">
+                        <i class="fas fa-trash"></i> 清空排行榜
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 游戏结束界面 -->
+        <div id="game-over-menu" class="screen hidden">
+            <div class="card">
+                <h2>游戏结束</h2>
+                <p>你的最终得分是:</p>
+                <p class="final-score" id="final-score">0</p>
+                <p id="record-message" class="hidden">恭喜你创造了新纪录！</p>
+                <p>答题统计: <span id="quiz-completion-time">0/0/0-0%</span></p>
+                
+                <h3>排行榜</h3>
+                <ul id="game-over-leaderboard" class="score-list"></ul>
+                
+                <div class="button-group">
+                    <button id="restart-game-btn" class="primary-btn">
+                        <i class="fas fa-redo"></i> 返回主菜单
+                    </button>
+                    <button id="clear-records-btn" class="secondary-btn">
+                        <i class="fas fa-trash"></i> 清空记录
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 破纪录庆祝弹窗 -->
+        <div id="celebration-message" class="celebration hidden">
+            恭喜你创造了新纪录！
+        </div>
+        
+        <!-- 游戏说明弹窗 -->
+        <div id="instructions-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>游戏说明</h2>
+                <ul>
+                    <li>游戏时间为60秒，在限定时间内尽可能回答更多问题</li>
+                    <li>题目难度分为4级，难度越高，得分越多：
+                        <ul>
+                            <li>难度1：3个选项，每题5分</li>
+                            <li>难度2：4个选项，每题10分</li>
+                            <li>难度3：5个选项，每题15分</li>
+                            <li>难度4：6个选项，每题20分</li>
+                        </ul>
+                    </li>
+                    <li>回答正确加分，回答错误不扣分</li>
+                    <li>电脑端右侧会显示所有题目的解析记录</li>
+                    <li>游戏结束后可以查看自己的排名</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
-    <!-- 排行榜界面 -->
-    <div id="leaderboard-menu" class="screen hidden">
-      <div class="card">
-        <h2>🏆 排行榜</h2>
-        <ul id="leaderboard" class="score-list"></ul>
-        <div class="button-group">
-          <button id="back-to-menu-btn" class="secondary-btn">
-            <span>返回主菜单</span> ↩️
-          </button>
-          <button id="clear-leaderboard-btn" class="secondary-btn">
-            <span>清空排行榜</span> 🗑️
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 游戏结束菜单 -->
-    <div id="game-over-menu" class="screen hidden">
-      <div class="card">
-        <h2>游戏结束！🎉</h2>
-        <div id="record-message" class="hidden">新纪录！恭喜你打破了最高记录！🥇</div>
-        <p>你的得分是: <span id="final-score" class="final-score">0</span></p>
-        <p>答题时间: <span id="quiz-completion-time">--:--:--</span></p>
-        <h3>🏆 排行榜</h3>
-        <ul id="game-over-leaderboard" class="score-list"></ul>
-        <div class="button-group">
-          <button id="restart-game-btn" class="primary-btn">
-            <span>重新开始</span> 🔄
-          </button>
-          <button id="clear-records-btn" class="secondary-btn">
-            <span>清空排行榜</span> 🗑️
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 破纪录提示 -->
-    <div id="celebration-message" class="celebration hidden">
-      🎉 恭喜你创造了新纪录！🎉
-    </div>
-  </div>
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
