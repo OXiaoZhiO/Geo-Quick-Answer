@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 创建解析列表容器
     createExplanationList();
     
-    // 绑定按钮事件
+    // 绑定按钮事件 - 修复：移除了对不存在的clear-records-btn的绑定
     document.getElementById('start-game-btn').addEventListener('click', startGame);
     document.getElementById('view-leaderboard-btn').addEventListener('click', () => {
         viewLeaderboard();
@@ -35,15 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('back-to-menu-btn').addEventListener('click', backToMenu);
     document.getElementById('restart-game-btn').addEventListener('click', backToMenu); // 返回主界面
     document.getElementById('clear-leaderboard-btn').addEventListener('click', clearLeaderboard);
-    document.getElementById('clear-records-btn').addEventListener('click', clearLeaderboard);
     document.getElementById('select-library-btn').addEventListener('click', showLibrarySelector);
     document.getElementById('back-from-library-btn').addEventListener('click', hideLibrarySelector);
     document.getElementById('library-file-input').addEventListener('change', handleLibraryFileSelect);
     
     // 绑定排行榜筛选事件
-    document.getElementById('library-filter').addEventListener('change', function() {
-        updateLeaderboardDisplay('leaderboard', this.value);
-    });
+    const libraryFilter = document.getElementById('library-filter');
+    if (libraryFilter) {
+        libraryFilter.addEventListener('change', function() {
+            updateLeaderboardDisplay('leaderboard', this.value);
+        });
+    }
     
     // 初始化游戏说明弹窗
     setupInstructionsModal();
@@ -120,7 +122,10 @@ function selectLibrary(filePath, name, questionCount) {
     localStorage.setItem(selectedLibraryKey, JSON.stringify(currentLibrary));
     
     // 更新当前选择显示
-    document.getElementById('current-library-name').textContent = currentLibrary.name;
+    const libraryNameElement = document.getElementById('current-library-name');
+    if (libraryNameElement) {
+        libraryNameElement.textContent = currentLibrary.name;
+    }
     
     // 重新渲染列表以更新选中状态
     renderLibraryList();
@@ -149,7 +154,10 @@ function loadSelectedLibrary() {
     }
     
     // 更新当前选择显示
-    document.getElementById('current-library-name').textContent = currentLibrary.name;
+    const libraryNameElement = document.getElementById('current-library-name');
+    if (libraryNameElement) {
+        libraryNameElement.textContent = currentLibrary.name;
+    }
 }
 
 /**
@@ -188,10 +196,16 @@ function handleLibraryFileSelect(event) {
             };
             
             localStorage.setItem(selectedLibraryKey, JSON.stringify(currentLibrary));
-            document.getElementById('current-library-name').textContent = currentLibrary.name;
+            const libraryNameElement = document.getElementById('current-library-name');
+            if (libraryNameElement) {
+                libraryNameElement.textContent = currentLibrary.name;
+            }
             
             // 清空文件输入，允许重新选择同一个文件
-            document.getElementById('library-file-input').value = '';
+            const fileInput = document.getElementById('library-file-input');
+            if (fileInput) {
+                fileInput.value = '';
+            }
         } catch (error) {
             showErrorMessage('解析题库文件失败: ' + error.message);
         }
@@ -235,7 +249,10 @@ async function loadQuestionsFromFile(filePath) {
         // 检查是否是本地file协议
         if (window.location.protocol === 'file:') {
             // 本地模式，提示用户选择文件
-            document.getElementById('library-file-input').click();
+            const fileInput = document.getElementById('library-file-input');
+            if (fileInput) {
+                fileInput.click();
+            }
             return false;
         }
         
@@ -428,9 +445,11 @@ function addExplanation(content, isCorrect) {
     // 对于移动设备，仍然使用原来的反馈方式
     if (window.innerWidth <= 899) {
         const feedback = document.getElementById('feedback');
-        feedback.textContent = content;
-        feedback.className = isCorrect ? 'feedback-correct' : 'feedback-incorrect';
-        feedback.classList.remove('hidden');
+        if (feedback) {
+            feedback.textContent = content;
+            feedback.className = isCorrect ? 'feedback-correct' : 'feedback-incorrect';
+            feedback.classList.remove('hidden');
+        }
         return;
     }
     
@@ -452,7 +471,9 @@ function addExplanation(content, isCorrect) {
     
     // 隐藏原始反馈元素
     const feedback = document.getElementById('feedback');
-    feedback.classList.add('hidden');
+    if (feedback) {
+        feedback.classList.add('hidden');
+    }
     
     // 滚动到顶部以显示最新解析
     list.scrollTop = 0;
@@ -584,6 +605,8 @@ function loadNewQuestion() {
     const questionElement = document.getElementById('question');
     const optionsElement = document.getElementById('options');
     
+    if (!questionElement || !optionsElement) return;
+    
     // 清空之前的内容
     optionsElement.innerHTML = '';
     
@@ -616,7 +639,10 @@ function loadNewQuestion() {
             if (isCorrect) {
                 score += currentQuestion.diffConf.score;
                 correctAnswers++;
-                document.getElementById('score-value').textContent = score;
+                const scoreElement = document.getElementById('score-value');
+                if (scoreElement) {
+                    scoreElement.textContent = score;
+                }
             } else {
                 incorrectAnswers++;
             }
@@ -661,22 +687,40 @@ function startGame() {
     startTime = new Date();
     
     // 更新UI
-    document.getElementById('score-value').textContent = score;
-    document.getElementById('time-left').textContent = timeLeft;
+    const scoreElement = document.getElementById('score-value');
+    if (scoreElement) {
+        scoreElement.textContent = score;
+    }
+    
+    const timeElement = document.getElementById('time-left');
+    if (timeElement) {
+        timeElement.textContent = timeLeft;
+    }
+    
     updateAccuracyDisplay();
-    document.getElementById('progress-fill').style.width = '100%';
-    document.getElementById('progress-fill').style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
+    
+    const progressFill = document.getElementById('progress-fill');
+    if (progressFill) {
+        progressFill.style.width = '100%';
+        progressFill.style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
+    }
     
     // 清空解析列表
     const explanationList = document.getElementById('explanation-list');
     if (explanationList) explanationList.innerHTML = '';
     
     // 隐藏反馈
-    document.getElementById('feedback').classList.add('hidden');
+    const feedback = document.getElementById('feedback');
+    if (feedback) {
+        feedback.classList.add('hidden');
+    }
     
     // 切换界面
     document.getElementById('start-menu').classList.add('hidden');
-    document.getElementById('game').classList.remove('hidden');
+    const gameScreen = document.getElementById('game');
+    if (gameScreen) {
+        gameScreen.classList.remove('hidden');
+    }
     
     // 启动计时器
     if (timerInterval) clearInterval(timerInterval);
@@ -691,18 +735,23 @@ function startGame() {
  */
 function updateTimer() {
     timeLeft--;
-    document.getElementById('time-left').textContent = timeLeft;
+    const timeElement = document.getElementById('time-left');
+    if (timeElement) {
+        timeElement.textContent = timeLeft;
+    }
     
     // 更新进度条
     const progressPercent = (timeLeft / 60) * 100;
-    document.getElementById('progress-fill').style.width = `${progressPercent}%`;
-    
-    // 改变进度条颜色表示紧急程度
     const progressFill = document.getElementById('progress-fill');
-    if (timeLeft < 10) {
-        progressFill.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
-    } else if (timeLeft < 20) {
-        progressFill.style.background = 'linear-gradient(90deg, #f39c12, #d35400)';
+    if (progressFill) {
+        progressFill.style.width = `${progressPercent}%`;
+        
+        // 改变进度条颜色表示紧急程度
+        if (timeLeft < 10) {
+            progressFill.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+        } else if (timeLeft < 20) {
+            progressFill.style.background = 'linear-gradient(90deg, #f39c12, #d35400)';
+        }
     }
     
     // 时间到，结束游戏
@@ -724,12 +773,18 @@ function endGame() {
     const timeSpent = Math.round((completionTime - startTime) / 1000);
     
     // 更新最终得分
-    document.getElementById('final-score').textContent = score;
+    const finalScoreElement = document.getElementById('final-score');
+    if (finalScoreElement) {
+        finalScoreElement.textContent = score;
+    }
     
     // 更新答题统计
     const accuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
-    document.getElementById('quiz-completion-time').textContent = 
-        `${correctAnswers}/${incorrectAnswers}/${totalAnswered}-${accuracy}%`;
+    const completionTimeElement = document.getElementById('quiz-completion-time');
+    if (completionTimeElement) {
+        completionTimeElement.textContent = 
+            `${correctAnswers}/${incorrectAnswers}/${totalAnswered}-${accuracy}%`;
+    }
     
     // 保存成绩到排行榜
     saveScore(score, timeSpent, correctAnswers, incorrectAnswers, totalAnswered);
@@ -739,11 +794,14 @@ function endGame() {
     
     // 切换到游戏结束界面
     document.getElementById('game').classList.add('hidden');
-    document.getElementById('game-over-menu').classList.remove('hidden');
+    const gameOverScreen = document.getElementById('game-over-menu');
+    if (gameOverScreen) {
+        gameOverScreen.classList.remove('hidden');
+    }
 }
 
 /**
- * 保存分数到本地存储 - 重写逻辑，确保不同题库数据分离
+ * 保存分数到本地存储
  * @param {number} score - 分数
  * @param {number} timeSpent - 用时（秒）
  * @param {number} correct - 正确题数
@@ -752,10 +810,10 @@ function endGame() {
  */
 function saveScore(score, timeSpent, correct, incorrect, total) {
     try {
-        // 获取现有排行榜数据，按题库组织
+        // 获取现有排行榜数据
         let leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '{}');
         
-        // 如果当前题库没有记录数组，创建一个
+        // 确保当前题库的数组存在
         if (!leaderboard[currentLibrary.name]) {
             leaderboard[currentLibrary.name] = [];
         }
@@ -785,14 +843,24 @@ function saveScore(score, timeSpent, correct, incorrect, total) {
         const libraryScores = leaderboard[currentLibrary.name];
         if (libraryScores.length === 1 || score >= libraryScores[0].score) {
             setTimeout(() => {
-                document.getElementById('celebration-message').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('celebration-message').classList.add('hidden');
-                }, 2000);
+                const celebration = document.getElementById('celebration-message');
+                if (celebration) {
+                    celebration.classList.remove('hidden');
+                    setTimeout(() => {
+                        celebration.classList.add('hidden');
+                    }, 2000);
+                }
             }, 500);
-            document.getElementById('record-message').classList.remove('hidden');
+            
+            const recordMessage = document.getElementById('record-message');
+            if (recordMessage) {
+                recordMessage.classList.remove('hidden');
+            }
         } else {
-            document.getElementById('record-message').classList.add('hidden');
+            const recordMessage = document.getElementById('record-message');
+            if (recordMessage) {
+                recordMessage.classList.add('hidden');
+            }
         }
     } catch (error) {
         console.error('保存分数失败:', error);
@@ -805,12 +873,15 @@ function saveScore(score, timeSpent, correct, incorrect, total) {
  */
 function viewLeaderboard() {
     document.getElementById('start-menu').classList.add('hidden');
-    document.getElementById('leaderboard-menu').classList.remove('hidden');
+    const leaderboardScreen = document.getElementById('leaderboard-menu');
+    if (leaderboardScreen) {
+        leaderboardScreen.classList.remove('hidden');
+    }
     updateLeaderboardDisplay('leaderboard', 'all');
 }
 
 /**
- * 填充题库筛选下拉菜单 - 重写逻辑
+ * 填充题库筛选下拉菜单
  */
 function populateLibraryFilter() {
     const filter = document.getElementById('library-filter');
@@ -849,7 +920,7 @@ function populateLibraryFilter() {
 }
 
 /**
- * 更新排行榜显示 - 重写逻辑
+ * 更新排行榜显示
  * @param {string} elementId - 排行榜元素ID
  * @param {string} libraryFilter - 题库筛选条件，"all"表示所有题库
  */
@@ -858,27 +929,31 @@ function updateLeaderboardDisplay(elementId, libraryFilter) {
     if (!leaderboardElement) return;
     
     try {
-        // 获取排行榜数据（按题库组织）
-        const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '{}');
+        // 获取排行榜数据
+        let leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '{}');
         let allScores = [];
         
-        // 根据筛选条件收集分数
-        if (libraryFilter === 'all') {
-            // 收集所有题库的分数
-            Object.keys(leaderboard).forEach(library => {
-                leaderboard[library].forEach(score => {
-                    allScores.push({...score, library});
-                });
-            });
-            // 按分数排序
-            allScores.sort((a, b) => b.score - a.score);
-        } else if (leaderboard[libraryFilter]) {
+        // 根据题库筛选
+        if (libraryFilter && libraryFilter !== 'all' && leaderboard[libraryFilter]) {
             // 只显示特定题库的分数
             allScores = leaderboard[libraryFilter].map(score => ({
                 ...score,
                 library: libraryFilter
             }));
+        } else {
+            // 显示所有题库的分数
+            Object.keys(leaderboard).forEach(library => {
+                leaderboard[library].forEach(score => {
+                    allScores.push({
+                        ...score,
+                        library: library
+                    });
+                });
+            });
         }
+        
+        // 按分数排序
+        allScores.sort((a, b) => b.score - a.score);
         
         // 只显示前10名
         const topScores = allScores.slice(0, 10);
@@ -910,6 +985,11 @@ function updateLeaderboardDisplay(elementId, libraryFilter) {
                 <div>${entry.correct}/${entry.incorrect}/${entry.total}</div>
             `;
             
+            // 为第一名添加特殊样式
+            if (index === 0) {
+                listItem.classList.add('first-place');
+            }
+            
             leaderboardElement.appendChild(listItem);
         });
     } catch (error) {
@@ -936,18 +1016,19 @@ function backToMenu() {
 }
 
 /**
- * 清空排行榜 - 重写逻辑
+ * 清空排行榜
  */
 function clearLeaderboard() {
     const filter = document.getElementById('library-filter');
     const currentFilter = filter ? filter.value : 'all';
     
+    // 根据当前筛选条件决定清空范围
     if (currentFilter === 'all') {
         if (confirm('确定要清空所有题库的排行榜记录吗？此操作不可恢复。')) {
             localStorage.removeItem(leaderboardKey);
         }
     } else {
-        if (confirm(`确定要清空"${currentFilter}"的排行榜记录吗？此操作不可恢复。`)) {
+        if (confirm(`确定要清空"${currentFilter}"题库的所有记录吗？此操作不可恢复。`)) {
             try {
                 let leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '{}');
                 if (leaderboard[currentFilter]) {
@@ -955,8 +1036,8 @@ function clearLeaderboard() {
                     localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard));
                 }
             } catch (error) {
-                console.error('清空特定题库排行榜失败:', error);
-                showErrorMessage('清空榜失败: ' + error.message);
+                console.error('清空特定题库记录失败:', error);
+                showErrorMessage('清空记录失败: ' + error.message);
             }
         }
     }
