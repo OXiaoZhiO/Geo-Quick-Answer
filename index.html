@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>地理快回答！</title>
+  <title>地理快回答！🌍</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,30 +11,39 @@
     <!-- 开始菜单 -->
     <div id="start-menu" class="screen">
       <div class="card">
-        <h1>地理快回答！</h1>
+        <h1>地理快回答！🌍</h1>
         <p>测试你的地理知识，挑战极限分数！⏱️</p>
-        
-        <!-- 新增：题库选择区域 -->
-        <div class="quiz-selector">
-          <h3>选择题库</h3>
-          <div id="quiz-list" class="quiz-list">
-            <!-- 题库选项将通过JS动态生成 -->
-          </div>
-          <div id="local-file-selector" class="local-file-selector hidden">
-            <p>请选择data文件夹中的题库文件：</p>
-            <input type="file" id="quiz-file-input" accept=".json" />
-          </div>
-        </div>
-        
         <div class="button-group">
           <button id="start-game-btn" class="primary-btn">
             <span>开始游戏</span> 🚀
+          </button>
+          <button id="select-question-bank-btn" class="secondary-btn">
+            <span>选择题库</span> 📚
           </button>
           <button id="view-leaderboard-btn" class="secondary-btn">
             <span>查看排行榜</span> 🏆
           </button>
           <button id="show-instructions-btn" class="secondary-btn">
             <span>游戏说明</span> ℹ️
+          </button>
+        </div>
+        <div id="current-bank-info" class="bank-info">
+          当前题库: <span id="current-bank-name">加载中...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 题库选择界面 -->
+    <div id="bank-selection" class="screen hidden">
+      <div class="card">
+        <h2>选择题库 📚</h2>
+        <p>请选择你想使用的题库：</p>
+        <div id="bank-list" class="bank-list">
+          <!-- 题库列表将通过JS动态生成 -->
+        </div>
+        <div class="button-group">
+          <button id="back-from-bank-btn" class="secondary-btn">
+            <span>返回主菜单</span> ↩️
           </button>
         </div>
       </div>
@@ -132,11 +141,10 @@
       </div>
     </div>
 
-    <!-- 破纪录提示 -->
-    <div id="celebration-message" class="celebration hidden">
-      🎉 恭喜你创造了新纪录！🎉
-    </div>
+    <!-- 文件选择器 (仅本地模式使用) -->
+    <input type="file" id="file-chooser" accept=".json" style="display: none;" />
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
