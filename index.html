@@ -16,7 +16,7 @@
                 <div class="version-info">
                     <span class="author">by 晓炙云溪</span>
                     <span class="version-separator">|</span>
-                    <span class="version">v1.1.8-beta</span>
+                    <span class="version">v1.2.0-beta</span>
                 </div>
                 <p>挑战你的学科知识储备，在限定时间内尽可能回答更多问题！</p>
                 
@@ -24,11 +24,38 @@
                     <button id="start-game-btn" class="primary-btn">
                         <i class="fas fa-play"></i> 开始游戏
                     </button>
+                    <button id="select-library-btn" class="secondary-btn">
+                        <i class="fas fa-book"></i> 选择题库
+                    </button>
                     <button id="view-leaderboard-btn" class="secondary-btn">
                         <i class="fas fa-trophy"></i> 查看排行榜
                     </button>
                     <button id="show-instructions-btn" class="secondary-btn">
                         <i class="fas fa-info-circle"></i> 游戏说明
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 题库选择界面 -->
+        <div id="library-selector" class="screen hidden">
+            <div class="card">
+                <h2>选择题库</h2>
+                <p>当前选择: <span id="current-library-name">加载中...</span></p>
+                
+                <div id="library-list" class="library-list">
+                    <!-- 题库列表将动态生成 -->
+                </div>
+                
+                <div id="local-file-upload" class="file-upload-section">
+                    <p>或选择本地题库文件：</p>
+                    <input type="file" id="library-file-input" accept=".json" />
+                    <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
+                </div>
+                
+                <div class="button-group">
+                    <button id="back-from-library-btn" class="primary-btn">
+                        <i class="fas fa-arrow-left"></i> 返回
                     </button>
                 </div>
             </div>
