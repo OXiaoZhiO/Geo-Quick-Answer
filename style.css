@@ -32,6 +32,7 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    overflow-x: hidden;
 }
 
 #app {
@@ -49,24 +50,21 @@ body {
     display: none !important;
 }
 
-/* 卡片样式 */
+/* 卡片样式 - 添加边框，移除悬停效果 */
 .card {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 24px;
+    border: 2px solid rgba(52, 152, 219, 0.3); /* 添加边框 */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     padding: 30px;
     width: 100%;
     max-width: 800px;
     text-align: center;
     backdrop-filter: blur(10px);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* 确保内容不超出边框 */
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
-}
-
+/* 移除卡片悬停效果 */
 h1, h2, h3 {
     margin-bottom: 20px;
     color: #2c3e50;
@@ -92,11 +90,6 @@ h1:after {
     background: linear-gradient(90deg, #3498db, #9b59b6);
     border-radius: 3px;
     transform: scaleX(0);
-    transition: transform 0.3s ease;
-}
-
-.card:hover h1:after {
-    transform: scaleX(1);
 }
 
 p {
@@ -135,7 +128,7 @@ p {
     overflow: hidden;
 }
 
-/* 按钮悬停效果 */
+/* 按钮悬停效果 - 限制在边框内 */
 .primary-btn {
     background: linear-gradient(90deg, #3498db, #2980b9);
     color: white;
@@ -157,7 +150,6 @@ p {
 }
 
 .primary-btn:hover {
-    transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
 }
 
@@ -168,7 +160,6 @@ p {
 
 .secondary-btn:hover {
     background: rgba(44, 62, 80, 0.2);
-    transform: translateY(-2px);
 }
 
 /* 游戏界面样式 */
@@ -188,12 +179,6 @@ p {
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.3s ease;
-}
-
-.status-item:hover {
-    background: rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
 }
 
 .progress-container {
@@ -238,11 +223,6 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-}
-
-#question:hover {
-    background: rgba(52, 152, 219, 0.15);
 }
 
 #options {
@@ -283,7 +263,6 @@ p {
 .option-btn:hover {
     border-color: #3498db;
     background: rgba(52, 152, 219, 0.05);
-    transform: translateX(5px);
 }
 
 .option-btn.correct {
@@ -318,7 +297,6 @@ p {
     border-radius: 12px;
     margin-top: 15px;
     font-weight: 500;
-    transition: all 0.3s ease;
 }
 
 .feedback-correct {
@@ -343,7 +321,15 @@ p {
     min-width: 300px;
 }
 
-/* 排行榜样式 */
+/* 重写排行榜样式 */
+.leaderboard-container {
+    margin-top: 20px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
 .score-list {
     list-style: none;
     margin: 20px 0;
@@ -353,54 +339,43 @@ p {
 }
 
 .score-list li {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.8);
     padding: 12px 15px;
     border-radius: 10px;
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    border-left: 4px solid transparent;
 }
 
-.score-list li:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: #3498db;
-    transform: scaleY(0);
-    transition: transform 0.3s ease;
-}
-
-.score-list li:hover {
-    transform: translateX(5px);
-    background: rgba(0, 0, 0, 0.08);
-}
-
-.score-list li:hover:before {
-    transform: scaleY(1);
-}
-
+/* 排行榜前三名样式 */
 .score-list li:first-child {
     background: rgba(241, 196, 15, 0.2);
-    border: 2px solid #f1c40f;
+    border-left-color: #f1c40f;
 }
 
-.score-list li:first-child:before {
-    background: #f1c40f;
+.score-list li:nth-child(2) {
+    background: rgba(189, 195, 199, 0.2);
+    border-left-color: #bdc3c7;
+}
+
+.score-list li:nth-child(3) {
+    background: rgba(230, 126, 34, 0.2);
+    border-left-color: #e67e22;
 }
 
 /* 排行榜筛选 */
+.leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
 .leaderboard-filter {
-    margin: 20px 0;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
 }
 
@@ -411,12 +386,6 @@ p {
     background: white;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-#library-filter:hover {
-    border-color: #3498db;
-    box-shadow: 0 2px 5px rgba(52, 152, 219, 0.1);
 }
 
 /* 弹窗样式 */
@@ -535,7 +504,6 @@ p {
 
 .library-item:hover {
     background: rgba(52, 152, 219, 0.1);
-    transform: translateX(5px);
     border-left-color: #3498db;
 }
 
@@ -554,11 +522,6 @@ p {
     padding: 20px;
     border-radius: 12px;
     background: rgba(0, 0, 0, 0.03);
-    transition: all 0.3s ease;
-}
-
-.file-upload-section:hover {
-    background: rgba(0, 0, 0, 0.05);
 }
 
 #library-file-input {
@@ -593,7 +556,9 @@ p {
         font-size: 2rem;
     }
     
-    .leaderboard-filter {
+    .leaderboard-header {
         flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
 }
