@@ -13,7 +13,8 @@ const leaderboardKey = 'leaderboard';// 本地存储排行榜的键名
 const selectedLibraryKey = 'selectedLibrary'; // 存储选中的题库
 let availableLibraries = [           // 可用题库列表
     { id: '1', file: 'data/1.json' },
-    { id: '2', file: 'data/2.json' }
+    { id: '2', file: 'data/2.json' },
+    { id: '3', file: 'data/3.json' }
 ];
 let currentLibrary = {               // 当前选中的题库
     file: 'data/1.json',
