@@ -52,8 +52,14 @@
                 
                 <div id="local-file-upload" class="file-upload-section">
                     <p>或选择本地题库文件：</p>
-                    <input type="file" id="library-file-input" accept=".json" />
-                    <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
+                    <div class="custom-upload-area">
+                        <input type="file" id="library-file-input" accept=".json" />
+                        <div class="upload-hint">
+                            <i class="fas fa-upload"></i>
+                            <p>点击或拖拽JSON文件到此处上传</p>
+                            <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="button-group">
@@ -178,6 +184,9 @@
             </div>
         </div>
     </div>
+
+    <!-- 通知提示容器 -->
+    <div id="notification-container"></div>
 
     <script src="script.js"></script>
 </body>
