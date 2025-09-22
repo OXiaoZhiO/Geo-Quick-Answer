@@ -21,6 +21,7 @@ let currentLibrary = {               // 当前选中的题库
     questionCount: 0
 };
 let isSubmittingScore = false;       // 防止重复提交分数的标记
+let answerHistory = [];              // 记录答题历史，用于生成解析
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
@@ -57,6 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 初始化文件上传区域的拖放功能
     initFileUploadDragDrop();
+    
+    // 绑定排行榜点击事件
+    document.getElementById('leaderboard').addEventListener('click', handleLeaderboardItemClick);
 });
 
 /**
@@ -214,7 +218,7 @@ function hideLibrarySelector() {
 }
 
 /**
- * 渲染题库列表
+ * 渲染题库列表 - 确保不重复且顺序固定
  */
 function renderLibraryList() {
     const libraryList = document.getElementById('library-list');
@@ -222,24 +226,34 @@ function renderLibraryList() {
     
     libraryList.innerHTML = '';
     
+    // 使用Set确保不重复
+    const uniqueLibraries = [...new Map(availableLibraries.map(item => [item.file, item])).values()];
+    
+    // 按ID排序，确保顺序固定
+    uniqueLibraries.sort((a, b) => a.id.localeCompare(b.id));
+    
     // 添加内置题库
-    availableLibraries.forEach(library => {
+    uniqueLibraries.forEach(library => {
         fetchLibraryInfo(library.file).then(info => {
-            const item = document.createElement('div');
-            item.className = `library-item ${currentLibrary.file === library.file ? 'selected' : ''}`;
-            item.innerHTML = `
-                <div>
-                    <div>${info.name || library.file}</div>
-                    <div class="library-meta">${info.questionCount || '未知'} 题</div>
-                </div>
-                ${currentLibrary.file === library.file ? '<i class="fas fa-check"></i>' : ''}
-            `;
-            
-            item.addEventListener('click', () => {
-                selectLibrary(library.file, info.name, info.questionCount);
-            });
-            
-            libraryList.appendChild(item);
+            // 检查元素是否已存在，避免重复添加
+            if (!document.querySelector(`.library-item[data-file="${library.file}"]`)) {
+                const item = document.createElement('div');
+                item.className = `library-item ${currentLibrary.file === library.file ? 'selected' : ''}`;
+                item.dataset.file = library.file;
+                item.innerHTML = `
+                    <div>
+                        <div>${info.name || library.file}</div>
+                        <div class="library-meta">${info.questionCount || '未知'} 题</div>
+                    </div>
+                    ${currentLibrary.file === library.file ? '<i class="fas fa-check"></i>' : ''}
+                `;
+                
+                item.addEventListener('click', () => {
+                    selectLibrary(library.file, info.name, info.questionCount);
+                });
+                
+                libraryList.appendChild(item);
+            }
         }).catch(error => {
             showErrorMessage(`加载题库信息失败: ${error.message}`);
         });
@@ -427,17 +441,17 @@ function processLibraryContent(content, filePath) {
     currentLibrary.questionCount = content.questions.length;
     
     // 处理每道题，过滤无效题目
-    questions = content.questions.map((q, idx) => {
+    questions = content.questions.map((q) => {
         // 验证题目必要字段
         if (!q.question || !q.answer || !q.options || q.difficulty === undefined) {
-            console.warn(`题目ID ${idx+1} 格式不完整，已跳过`);
+            console.warn(`题目ID ${q.id || '未知'} 格式不完整，已跳过`);
             return null;
         }
         
         // 确保ID存在
         if (q.id === undefined) {
-            q.id = idx + 1;
-            console.warn(`题目 ${idx+1} 缺少ID，已自动分配`);
+            q.id = questions.length + 1;
+            console.warn(`题目缺少ID，已自动分配ID: ${q.id}`);
         }
         
         // 根据难度设置选项数量和分数
@@ -463,9 +477,6 @@ function processLibraryContent(content, filePath) {
                 q.options.push(`选项 ${q.options.length + 1}`);
             }
         }
-        
-        // 随机排序选项
-        q.options = shuffleArray([...q.options]);
         
         // 添加分数信息
         q.score = diffConf.score;
@@ -517,6 +528,7 @@ function resetGameState() {
     totalAnswered = 0;
     completionTime = null;
     isSubmittingScore = false;
+    answerHistory = []; // 重置答题历史
     
     // 重置UI
     document.getElementById('score-value').textContent = '0';
@@ -526,7 +538,7 @@ function resetGameState() {
     
     // 清空解析列表
     const explanationSection = document.querySelector('.explanation-section');
-    explanationSection.innerHTML = '';
+    explanationSection.innerHTML = '<div class="explanation-header">答题记录</div>';
 }
 
 /**
@@ -562,7 +574,7 @@ function startTimer() {
 }
 
 /**
- * 显示下一题
+ * 显示下一题 - 使用JSON中的id作为前缀
  */
 function showNextQuestion() {
     // 检查是否还有题目
@@ -578,11 +590,11 @@ function showNextQuestion() {
     // 获取当前题目
     const question = questions[currentQuestionIndex];
     
-    // 显示题目（包含ID）
+    // 显示题目（包含JSON中的id）
     const questionElement = document.getElementById('question');
     questionElement.innerHTML = `NO.${question.id} ${question.question}`;
     
-    // 显示选项
+    // 显示选项（保持原顺序）
     const optionsElement = document.getElementById('options');
     optionsElement.innerHTML = '';
     
@@ -590,6 +602,7 @@ function showNextQuestion() {
         const optionElement = document.createElement('button');
         optionElement.className = 'option';
         optionElement.textContent = option;
+        optionElement.dataset.option = option; // 存储选项文本用于记录
         optionElement.addEventListener('click', () => {
             checkAnswer(option, question);
         });
@@ -618,6 +631,16 @@ function checkAnswer(selectedOption, question) {
     // 判断是否正确
     const isCorrect = selectedOption === question.answer;
     
+    // 记录答题历史
+    answerHistory.push({
+        questionId: question.id,
+        question: question.question,
+        yourAnswer: selectedOption,
+        correctAnswer: question.answer,
+        isCorrect: isCorrect,
+        explanation: question.explanation || '无解析信息'
+    });
+    
     // 更新统计
     totalAnswered++;
     if (isCorrect) {
@@ -644,7 +667,7 @@ function checkAnswer(selectedOption, question) {
     }
     
     // 添加到解析记录
-    addExplanation(question, isCorrect);
+    addExplanation(question, isCorrect, selectedOption);
     
     // 延迟显示下一题
     setTimeout(() => {
@@ -666,22 +689,27 @@ function updateAccuracyDisplay() {
  * 添加解析记录
  * @param {Object} question - 题目对象
  * @param {boolean} isCorrect - 是否回答正确
+ * @param {string} selectedOption - 选中的选项
  */
-function addExplanation(question, isCorrect) {
+function addExplanation(question, isCorrect, selectedOption) {
     const explanationSection = document.querySelector('.explanation-section');
     
     const item = document.createElement('div');
     item.className = `explanation-item ${isCorrect ? 'explanation-correct' : 'explanation-incorrect'}`;
     
-    // 按照指定格式显示解析
+    // 按照指定格式显示解析，包含题目ID
     item.innerHTML = `
         <div>第${question.id}题：${isCorrect ? '回答正确' : '回答错误'}</div>
         <div class="explanation-question">题目：${question.question}</div>
+        <div class="explanation-options">
+            <div class="explanation-your-option">你的选项：${selectedOption}</div>
+            <div class="explanation-correct-option">正确选项：${question.answer}</div>
+        </div>
         <div class="explanation-text">解析：${question.explanation || '无解析信息'}</div>
     `;
     
     // 添加到解析区域顶部
-    explanationSection.insertBefore(item, explanationSection.firstChild);
+    explanationSection.insertBefore(item, explanationSection.children[1]); // 在标题后插入
     
     // 滚动到顶部
     explanationSection.scrollTop = 0;
@@ -709,13 +737,16 @@ function endGame() {
     document.getElementById('game').classList.add('hidden');
     document.getElementById('game-over-menu').classList.remove('hidden');
     
-    // 显示最终得分
+    // 显示最终得分（加大加粗并渐变）
     document.getElementById('final-score').textContent = score;
     
     // 更新答题统计
     const accuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
     document.getElementById('quiz-completion-time').textContent = 
         `${correctAnswers}/${incorrectAnswers}/${totalAnswered}-${accuracy}%`;
+    
+    // 显示本次答题解析
+    displayGameOverExplanations();
     
     // 保存成绩到排行榜（确保只提交一次）
     if (!isSubmittingScore) {
@@ -728,6 +759,38 @@ function endGame() {
 }
 
 /**
+ * 显示游戏结束时的解析
+ */
+function displayGameOverExplanations() {
+    const explanationContainer = document.getElementById('game-over-explanation');
+    explanationContainer.innerHTML = '<div class="explanation-header">本次答题解析</div>';
+    
+    if (answerHistory.length === 0) {
+        explanationContainer.innerHTML += '<div class="empty-state">没有答题记录</div>';
+        return;
+    }
+    
+    // 按题目ID排序显示
+    answerHistory.sort((a, b) => a.questionId - b.questionId)
+                 .forEach(item => {
+        const explanationItem = document.createElement('div');
+        explanationItem.className = `explanation-item ${item.isCorrect ? 'explanation-correct' : 'explanation-incorrect'}`;
+        
+        explanationItem.innerHTML = `
+            <div>第${item.questionId}题：${item.isCorrect ? '回答正确' : '回答错误'}</div>
+            <div class="explanation-question">题目：${item.question}</div>
+            <div class="explanation-options">
+                <div class="explanation-your-option">你的选项：${item.yourAnswer}</div>
+                <div class="explanation-correct-option">正确选项：${item.correctAnswer}</div>
+            </div>
+            <div class="explanation-text">解析：${item.explanation}</div>
+        `;
+        
+        explanationContainer.appendChild(explanationItem);
+    });
+}
+
+/**
  * 保存分数到排行榜
  */
 function saveScoreToLeaderboard() {
@@ -735,7 +798,7 @@ function saveScoreToLeaderboard() {
         // 获取现有排行榜数据
         let leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
         
-        // 创建新记录
+        // 创建新记录，包含答题历史用于解析显示
         const newRecord = {
             score: score,
             correct: correctAnswers,
@@ -744,7 +807,8 @@ function saveScoreToLeaderboard() {
             date: new Date().toLocaleDateString(),
             time: new Date().toLocaleTimeString(),
             library: currentLibrary.file,
-            libraryName: currentLibrary.name
+            libraryName: currentLibrary.name,
+            answers: answerHistory // 保存答题历史
         };
         
         // 检查是否是新纪录
@@ -818,6 +882,84 @@ function viewLeaderboard() {
     document.getElementById('start-menu').classList.add('hidden');
     document.getElementById('leaderboard-menu').classList.remove('hidden');
     updateLeaderboardDisplay('leaderboard', document.getElementById('library-filter').value);
+    
+    // 清空解析区域
+    const explanationContainer = document.getElementById('leaderboard-explanation');
+    explanationContainer.innerHTML = `
+        <div class="explanation-header">答题解析</div>
+        <div class="empty-state">选择一条记录查看详细解析</div>
+    `;
+}
+
+/**
+ * 处理排行榜项目点击
+ * @param {Event} e - 点击事件
+ */
+function handleLeaderboardItemClick(e) {
+    const scoreItem = e.target.closest('.score-item');
+    if (!scoreItem) return;
+    
+    // 移除其他项目的选中状态
+    document.querySelectorAll('.score-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // 添加当前项目的选中状态
+    scoreItem.classList.add('selected');
+    
+    // 获取记录索引
+    const index = Array.from(document.getElementById('leaderboard').children).indexOf(scoreItem);
+    
+    // 获取对应记录并显示解析
+    const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
+    const libraryFilter = document.getElementById('library-filter').value;
+    
+    // 应用筛选
+    let filteredLeaderboard = leaderboard;
+    if (libraryFilter && libraryFilter !== 'all') {
+        filteredLeaderboard = leaderboard.filter(record => record.library === libraryFilter);
+    }
+    
+    // 排序
+    filteredLeaderboard.sort((a, b) => b.score - a.score);
+    
+    const record = filteredLeaderboard[index];
+    if (record && record.answers) {
+        displayLeaderboardExplanations(record.answers);
+    }
+}
+
+/**
+ * 显示排行榜记录的解析
+ * @param {Array} answers - 答题记录数组
+ */
+function displayLeaderboardExplanations(answers) {
+    const explanationContainer = document.getElementById('leaderboard-explanation');
+    explanationContainer.innerHTML = '<div class="explanation-header">答题解析</div>';
+    
+    if (!answers || answers.length === 0) {
+        explanationContainer.innerHTML += '<div class="empty-state">没有答题记录</div>';
+        return;
+    }
+    
+    // 按题目ID排序显示
+    answers.sort((a, b) => a.questionId - b.questionId)
+           .forEach(item => {
+        const explanationItem = document.createElement('div');
+        explanationItem.className = `explanation-item ${item.isCorrect ? 'explanation-correct' : 'explanation-incorrect'}`;
+        
+        explanationItem.innerHTML = `
+            <div>第${item.questionId}题：${item.isCorrect ? '回答正确' : '回答错误'}</div>
+            <div class="explanation-question">题目：${item.question}</div>
+            <div class="explanation-options">
+                <div class="explanation-your-option">你的选项：${item.yourAnswer}</div>
+                <div class="explanation-correct-option">正确选项：${item.correctAnswer}</div>
+            </div>
+            <div class="explanation-text">解析：${item.explanation}</div>
+        `;
+        
+        explanationContainer.appendChild(explanationItem);
+    });
 }
 
 /**
@@ -839,7 +981,9 @@ function populateLibraryFilter() {
     }
     
     // 添加题库选项
-    libraries.forEach(library => {
+    const libraryArray = Array.from(libraries);
+    // 排序确保选项顺序固定
+    libraryArray.sort().forEach(library => {
         // 找到题库名称
         let libraryName = library;
         const recordWithName = leaderboard.find(r => r.library === library);
@@ -887,6 +1031,7 @@ function updateLeaderboardDisplay(elementId, libraryFilter) {
     leaderboard.forEach((record, index) => {
         const item = document.createElement('li');
         item.className = 'score-item';
+        item.dataset.index = index;
         
         // 计算正确率
         const accuracy = record.total > 0 ? Math.round((record.correct / record.total) * 100) : 0;
@@ -897,6 +1042,13 @@ function updateLeaderboardDisplay(elementId, libraryFilter) {
             <span>正确率: ${accuracy}%</span>
             <span class="score-date">${record.date}</span>
         `;
+        
+        // 如果是当前显示的排行榜（不是游戏结束时的），添加点击事件
+        if (elementId === 'leaderboard') {
+            item.addEventListener('click', () => handleLeaderboardItemClick({
+                target: item
+            }));
+        }
         
         leaderboardElement.appendChild(item);
     });
@@ -930,6 +1082,14 @@ function clearLeaderboard() {
         localStorage.removeItem(leaderboardKey);
         updateLeaderboardDisplay('leaderboard', document.getElementById('library-filter').value);
         updateLeaderboardDisplay('game-over-leaderboard', currentLibrary.file);
+        
+        // 清空解析区域
+        const explanationContainer = document.getElementById('leaderboard-explanation');
+        explanationContainer.innerHTML = `
+            <div class="explanation-header">答题解析</div>
+            <div class="empty-state">选择一条记录查看详细解析</div>
+        `;
+        
         showNotification('排行榜已清空', 'success');
     }
 }
@@ -958,18 +1118,4 @@ function setupInstructionsModal() {
             modal.classList.add('hidden');
         }
     });
-}
-
-/**
- * 随机打乱数组顺序
- * @param {Array} array - 要打乱的数组
- * @returns {Array} 打乱后的数组
- */
-function shuffleArray(array) {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
 }
