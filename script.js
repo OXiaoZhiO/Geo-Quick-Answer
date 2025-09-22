@@ -1,5 +1,6 @@
 // 游戏状态变量
-let questions = [];                  // 题库数组
+let originalQuestions = [];          // 原始题库数组（用于重置）
+let questions = [];                  // 当前使用的题库数组（随机排序后）
 let currentQuestionIndex = 0;        // 当前题目索引
 let score = 0;                       // 当前分数
 let timeLeft = 60;                   // 剩余时间(秒)
@@ -61,7 +62,28 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 绑定排行榜点击事件
     document.getElementById('leaderboard').addEventListener('click', handleLeaderboardItemClick);
+    
+    // 确保游戏结束界面的按钮初始状态正确
+    ensureGameOverButtonsVisible();
 });
+
+/**
+ * 确保游戏结束界面的按钮可见
+ */
+function ensureGameOverButtonsVisible() {
+    const backBtn = document.getElementById('back-to-menu-btn');
+    const clearBtn = document.getElementById('clear-records-btn');
+    
+    if (backBtn) {
+        backBtn.classList.remove('hidden');
+        backBtn.style.display = 'inline-block';
+    }
+    
+    if (clearBtn) {
+        clearBtn.classList.remove('hidden');
+        clearBtn.style.display = 'inline-block';
+    }
+}
 
 /**
  * 初始化文件上传区域的拖放功能
@@ -421,7 +443,7 @@ async function loadQuestionsFromFile(filePath) {
 }
 
 /**
- * 处理题库内容
+ * 处理题库内容 - 不在这里随机排序，保留原始顺序
  * @param {Object} content - 题库内容
  * @param {string} filePath - 题库文件路径
  */
@@ -440,8 +462,8 @@ function processLibraryContent(content, filePath) {
     currentLibrary.name = content.name || filePath;
     currentLibrary.questionCount = content.questions.length;
     
-    // 处理每道题，过滤无效题目
-    questions = content.questions.map((q) => {
+    // 处理每道题，过滤无效题目，保存到原始题库数组
+    originalQuestions = content.questions.map((q) => {
         // 验证题目必要字段
         if (!q.question || !q.answer || !q.options || q.difficulty === undefined) {
             console.warn(`题目ID ${q.id || '未知'} 格式不完整，已跳过`);
@@ -450,7 +472,7 @@ function processLibraryContent(content, filePath) {
         
         // 确保ID存在
         if (q.id === undefined) {
-            q.id = questions.length + 1;
+            q.id = originalQuestions.length + 1;
             console.warn(`题目缺少ID，已自动分配ID: ${q.id}`);
         }
         
@@ -484,18 +506,18 @@ function processLibraryContent(content, filePath) {
         return q;
     }).filter(q => q !== null); // 过滤无效题目
     
-    if (questions.length === 0) {
+    if (originalQuestions.length === 0) {
         throw new Error('没有有效的题目，请检查题库文件');
     }
     
-    console.log(`成功加载题库: ${currentLibrary.name}，共 ${questions.length} 题`);
+    console.log(`成功加载题库: ${currentLibrary.name}，共 ${originalQuestions.length} 题`);
 }
 
 /**
- * 开始游戏
+ * 开始游戏 - 在这里随机排序题目
  */
 function startGame() {
-    if (questions.length === 0) {
+    if (originalQuestions.length === 0) {
         showErrorMessage('请先选择并加载一个有效的题库');
         showLibrarySelector();
         return;
@@ -503,6 +525,9 @@ function startGame() {
     
     // 重置游戏状态
     resetGameState();
+    
+    // 随机排序题目
+    questions = shuffleArray([...originalQuestions]);
     
     // 显示游戏界面
     document.getElementById('start-menu').classList.add('hidden');
@@ -574,7 +599,7 @@ function startTimer() {
 }
 
 /**
- * 显示下一题 - 使用JSON中的id作为前缀
+ * 显示下一题 - 每次显示时随机排序选项
  */
 function showNextQuestion() {
     // 检查是否还有题目
@@ -594,11 +619,14 @@ function showNextQuestion() {
     const questionElement = document.getElementById('question');
     questionElement.innerHTML = `NO.${question.id} ${question.question}`;
     
-    // 显示选项（保持原顺序）
+    // 随机排序选项，但确保正确答案在其中
+    const shuffledOptions = shuffleArray([...question.options]);
+    
+    // 显示选项（随机顺序）
     const optionsElement = document.getElementById('options');
     optionsElement.innerHTML = '';
     
-    question.options.forEach(option => {
+    shuffledOptions.forEach(option => {
         const optionElement = document.createElement('button');
         optionElement.className = 'option';
         optionElement.textContent = option;
@@ -726,7 +754,7 @@ function createExplanationList() {
 }
 
 /**
- * 结束游戏
+ * 结束游戏 - 确保按钮可见
  */
 function endGame() {
     // 清除计时器
@@ -737,7 +765,7 @@ function endGame() {
     document.getElementById('game').classList.add('hidden');
     document.getElementById('game-over-menu').classList.remove('hidden');
     
-    // 显示最终得分（加大加粗并渐变）
+    // 显示最终得分
     document.getElementById('final-score').textContent = score;
     
     // 更新答题统计
@@ -756,6 +784,9 @@ function endGame() {
     
     // 显示当前题库的排行榜
     updateLeaderboardDisplay('game-over-leaderboard', currentLibrary.file);
+    
+    // 确保游戏结束界面的按钮可见
+    ensureGameOverButtonsVisible();
 }
 
 /**
@@ -889,6 +920,27 @@ function viewLeaderboard() {
         <div class="explanation-header">答题解析</div>
         <div class="empty-state">选择一条记录查看详细解析</div>
     `;
+    
+    // 确保排行榜界面的按钮可见
+    ensureLeaderboardButtonsVisible();
+}
+
+/**
+ * 确保排行榜界面的按钮可见
+ */
+function ensureLeaderboardButtonsVisible() {
+    const backBtn = document.getElementById('back-to-menu-btn');
+    const clearBtn = document.getElementById('clear-leaderboard-btn');
+    
+    if (backBtn) {
+        backBtn.classList.remove('hidden');
+        backBtn.style.display = 'inline-block';
+    }
+    
+    if (clearBtn) {
+        clearBtn.classList.remove('hidden');
+        clearBtn.style.display = 'inline-block';
+    }
 }
 
 /**
@@ -1118,4 +1170,18 @@ function setupInstructionsModal() {
             modal.classList.add('hidden');
         }
     });
+}
+
+/**
+ * 随机打乱数组顺序
+ * @param {Array} array - 要打乱的数组
+ * @returns {Array} 打乱后的数组
+ */
+function shuffleArray(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
 }
