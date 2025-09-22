@@ -1,4 +1,4 @@
-<// 游戏状态变量
+// 游戏状态变量
 let originalQuestions = [];          // 原始题库数组（用于重置）
 let questions = [];                  // 当前使用的题库数组（随机排序后）
 let currentQuestionIndex = 0;        // 当前题目索引
