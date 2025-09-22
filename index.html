@@ -19,7 +19,7 @@
                 <div class="version-info">
                     <span class="author">by 晓炙云溪</span>
                     <span class="version-separator">|</span>
-                    <span class="version">v1.1.8-beta</span>
+                    <span class="version">v1.1.9-beta</span>
                 </div>
                 <p>挑战你的学科知识储备，在限定时间内尽可能回答更多问题！</p>
                 
@@ -112,7 +112,7 @@
             <div class="card">
                 <h2>排行榜</h2>
                 
-                <!-- 新增：排行榜筛选 -->
+                <!-- 排行榜筛选 -->
                 <div class="leaderboard-filter">
                     <label for="library-filter">题库筛选：</label>
                     <select id="library-filter">
@@ -121,7 +121,15 @@
                     </select>
                 </div>
                 
-                <ul id="leaderboard" class="score-list"></ul>
+                <div class="leaderboard-content">
+                    <ul id="leaderboard" class="score-list"></ul>
+                    
+                    <!-- 排行榜右侧解析栏 -->
+                    <div id="leaderboard-explanation" class="explanation-section">
+                        <div class="explanation-header">答题解析</div>
+                        <div class="empty-state">选择一条记录查看详细解析</div>
+                    </div>
+                </div>
                 
                 <div class="button-group">
                     <button id="back-to-menu-btn" class="primary-btn">
@@ -143,8 +151,17 @@
                 <p id="record-message" class="hidden">恭喜你创造了新纪录！</p>
                 <p>答题统计: <span id="quiz-completion-time">0/0/0-0%</span></p>
                 
-                <h3>当前题库排行榜</h3>
-                <ul id="game-over-leaderboard" class="score-list"></ul>
+                <div class="game-over-content">
+                    <div>
+                        <h3>当前题库排行榜</h3>
+                        <ul id="game-over-leaderboard" class="score-list"></ul>
+                    </div>
+                    
+                    <!-- 游戏结束解析栏 -->
+                    <div id="game-over-explanation" class="explanation-section">
+                        <div class="explanation-header">本次答题解析</div>
+                    </div>
+                </div>
                 
                 <div class="button-group">
                     <button id="restart-game-btn" class="primary-btn">
@@ -179,7 +196,7 @@
                     </li>
                     <li>回答正确加分，回答错误不扣分</li>
                     <li>电脑端右侧会显示所有题目的解析记录</li>
-                    <li>游戏结束后可以查看自己的排名</li>
+                    <li>游戏结束后可以查看自己的排名和详细解析</li>
                 </ul>
             </div>
         </div>
