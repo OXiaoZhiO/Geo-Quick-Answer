@@ -3,259 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学科快回答</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>学科快答</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <!-- 通知容器 -->
-    <div id="notification-container" class="fixed top-4 right-4 z-50"></div>
+    <div id="notification-container"></div>
     
     <!-- 庆祝信息 -->
-    <div id="celebration-message" class="hidden">
-        <i class="fas fa-trophy"></i>
-        <div>新纪录！</div>
-        <div>恭喜你创造了当前题库的最高分！</div>
+    <div id="celebration-message" class="celebration-message hidden">
+        <div>🎉 恭喜你创造了新纪录！🎉</div>
     </div>
-    
-    <!-- 游戏说明弹窗 -->
-    <div id="instructions-modal" class="hidden">
-        <div class="modal-content">
-            <button class="close-modal">&times;</button>
-            <h2>游戏说明</h2>
-            <p>欢迎参加"学科快回答"挑战！这是一个测试你知识储备和反应速度的游戏。</p>
-            <p>游戏规则：</p>
-            <ul>
-                <li>游戏时间为60秒，在规定时间内尽可能回答更多题目</li>
-                <li>每道题有多个选项，选择你认为正确的答案</li>
-                <li>不同难度的题目有不同的分值，难度越高分值越高</li>
-                <li>回答正确加分，回答错误不扣分</li>
-                <li>答题结束后可以查看详细解析和排行榜</li>
-            </ul>
-            <p>祝你取得好成绩！</p>
-        </div>
-    </div>
-    
+
     <!-- 主菜单界面 -->
     <div id="start-menu" class="screen">
-        <div class="main-card">
-            <div class="main-header">
-                <h1>学科快回答</h1>
-                <p>挑战你的知识极限，测试你的反应速度</p>
-            </div>
+        <div class="menu-card">
+            <h1>学科快答</h1>
+            <p>当前题库: <span id="current-library-name">加载中...</span></p>
             
-            <div class="main-content">
-                <div class="current-library">
-                    <div class="text-gray-600">当前题库</div>
-                    <div id="current-library-name">加载中...</div>
-                </div>
-                
-                <div class="button-group">
-                    <button id="start-game-btn" class="menu-btn primary-btn">
-                        <i class="fas fa-play mr-2"></i>开始答题
-                    </button>
-                    <button id="select-library-btn" class="menu-btn secondary-btn">
-                        <i class="fas fa-book mr-2"></i>选择题库
-                    </button>
-                    <button id="view-leaderboard-btn" class="menu-btn tertiary-btn">
-                        <i class="fas fa-chart-line mr-2"></i>排行榜
-                    </button>
-                </div>
-                
-                <div class="instructions-section">
-                    <button id="show-instructions-btn">
-                        <i class="fas fa-info-circle mr-1"></i>游戏说明
-                    </button>
-                </div>
-            </div>
-            
-            <div class="main-footer">
-                知识挑战 &copy; 2023
-            </div>
-        </div>
-    </div>
-    
-    <!-- 题库选择界面 -->
-    <div id="library-selector" class="screen hidden">
-        <div class="library-selector-card">
-            <div class="library-selector-header">
-                <h2>选择题库</h2>
-                <button id="back-from-library-btn" class="close-btn">
-                    <i class="fas fa-times"></i>
+            <div class="menu-buttons">
+                <button id="start-game-btn" class="main-btn">
+                    <i class="fas fa-play"></i> 开始答题
+                </button>
+                <button id="select-library-btn" class="main-btn">
+                    <i class="fas fa-book"></i> 选择题库
+                </button>
+                <button id="view-leaderboard-btn" class="main-btn">
+                    <i class="fas fa-trophy"></i> 查看排行榜
+                </button>
+                <button id="show-instructions-btn" class="main-btn">
+                    <i class="fas fa-info-circle"></i> 游戏说明
                 </button>
             </div>
             
-            <div id="library-list">
+            <div class="menu-footer">
+                <div>by 晓炙云溪</div>
+                <div>v1.3.22-beta</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 题库选择界面 -->
+    <div id="library-selector" class="screen hidden">
+        <div class="card">
+            <h2>选择题库</h2>
+            
+            <div id="library-list" class="library-list">
                 <!-- 题库列表将通过JS动态生成 -->
             </div>
             
-            <div id="local-file-upload">
+            <div id="local-file-upload" class="local-file-upload">
+                <h3>本地题库</h3>
                 <div class="custom-upload-area">
-                    <i class="fas fa-file-upload"></i>
-                    <p>上传本地题库文件</p>
-                    <p>支持JSON格式的题库文件</p>
-                    <input type="file" id="library-file-input" accept=".json" class="hidden">
+                    <i class="fas fa-upload"></i>
+                    <p>点击或拖拽JSON文件到此处</p>
+                    <input type="file" id="library-file-input" accept=".json" style="display: none;">
                 </div>
             </div>
             
-            <div style="text-align: center;">
-                <button id="back-from-library-btn-text" class="btn secondary-btn">
-                    <i class="fas fa-arrow-left mr-2"></i>返回
+            <div class="back-button-container">
+                <button id="back-from-library-btn" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
                 </button>
+                <button id="back-from-library-btn-text" class="back-btn-text">返回主菜单</button>
             </div>
         </div>
     </div>
-    
+
     <!-- 游戏界面 -->
     <div id="game" class="screen hidden">
         <div class="game-container">
-            <div class="game-header">
-                <div class="score-display">
-                    <div class="text-gray-600">得分</div>
-                    <div id="score-value">0</div>
+            <div class="stats">
+                <div class="stat-item">
+                    <span>分数: </span>
+                    <span id="score-value">0</span>
                 </div>
-                
-                <div class="time-display">
-                    <div class="text-gray-600">剩余时间</div>
-                    <div class="flex items-center justify-center">
-                        <i class="fas fa-clock text-orange-500 mr-2"></i>
-                        <div id="time-left">60</div>
-                        <div class="text-gray-600 ml-1">秒</div>
-                    </div>
+                <div class="stat-item">
+                    <span>时间: </span>
+                    <span id="time-left">60</span>
                 </div>
-                
-                <div class="accuracy-display">
-                    <div class="text-gray-600">正确率</div>
-                    <div id="accuracy-display">0/0/0-0%</div>
+                <div class="stat-item">
+                    <span>正确率: </span>
+                    <span id="accuracy-display">0/0/0-0%</span>
                 </div>
             </div>
             
-            <div class="progress-container">
-                <div id="progress-fill" class="h-full w-100"></div>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
             </div>
             
-            <div class="game-card">
-                <div id="question" class="text-center">
-                    准备开始...
-                </div>
-                
-                <div id="options">
-                    <!-- 选项将通过JS动态生成 -->
-                </div>
-                
-                <div id="feedback" class="hidden"></div>
-                
-                <!-- 游戏中解析容器 -->
-                <div class="explanation-section">
-                    <div class="explanation-header">答题记录</div>
-                </div>
-            </div>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <button id="quit-game-btn" class="btn secondary-btn" onclick="backToMenu()">
-                    <i class="fas fa-sign-out-alt mr-2"></i>退出游戏
-                </button>
+            <div class="question-container">
+                <h2 id="question">题目将在这里显示</h2>
+                <div id="options" class="options"></div>
+                <div id="feedback" class="feedback hidden"></div>
             </div>
         </div>
+        
+        <div class="explanation-section">
+            <div class="explanation-header">答题记录</div>
+            <!-- 答题记录将通过JS动态生成 -->
+        </div>
     </div>
-    
+
     <!-- 游戏结束界面 -->
     <div id="game-over-menu" class="screen hidden">
-        <div class="game-over-container">
-            <div class="layout-grid">
-                <!-- 左侧：得分和排行榜 -->
-                <div>
-                    <div class="game-over-card">
-                        <h2>游戏结束!</h2>
-                        
-                        <div class="final-score-container">
-                            <div class="text-gray-600">你的得分</div>
-                            <div id="final-score">0</div>
-                            <div id="quiz-completion-time">0/0/0-0%</div>
-                        </div>
-                        
-                        <div id="record-message" class="hidden">
-                            <i class="fas fa-medal mr-2"></i>恭喜！你创造了当前题库的新纪录！
-                        </div>
-                        
-                        <div class="leaderboard-section">
-                            <h3>当前题库排行榜</h3>
-                            <ul id="game-over-leaderboard" class="leaderboard-list">
-                                <!-- 排行榜将通过JS动态生成 -->
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <!-- 按钮卡片 -->
-                    <div class="button-card">
-                        <div class="game-over-buttons">
-                            <button id="back-to-menu-btn" class="btn primary-btn">
-                                <i class="fas fa-home mr-2"></i>返回主菜单
-                            </button>
-                            <button id="restart-game-btn" class="btn secondary-btn">
-                                <i class="fas fa-redo mr-2"></i>再玩一次
-                            </button>
-                        </div>
-                    </div>
+        <div class="results-container">
+            <div class="card">
+                <h2>答题结束!</h2>
+                <div id="record-message" class="record-message hidden">
+                    <i class="fas fa-trophy"></i> 恭喜你创造了新纪录！
                 </div>
+                <p>你的得分: <span id="final-score">0</span></p>
+                <p>答题统计: <span id="quiz-completion-time">0/0/0-0%</span></p>
                 
-                <!-- 右侧：解析卡片 -->
-                <div>
-                    <div class="explanation-card">
-                        <div id="game-over-explanation" class="explanation-container">
-                            <div class="explanation-header">本次答题解析</div>
-                        </div>
-                    </div>
+                <h3>当前题库排行榜</h3>
+                <ul id="game-over-leaderboard" class="leaderboard">
+                    <!-- 排行榜将通过JS动态生成 -->
+                </ul>
+                
+                <div class="button-group">
+                    <button id="restart-game-btn" class="action-btn">
+                        <i class="fas fa-redo"></i> 再玩一次
+                    </button>
+                    <button id="back-to-menu-btn" class="action-btn">
+                        <i class="fas fa-home"></i> 返回主菜单
+                    </button>
                 </div>
             </div>
         </div>
+        
+        <div id="game-over-explanation" class="explanation-section">
+            <!-- 游戏结束解析将通过JS动态生成 -->
+        </div>
     </div>
-    
+
     <!-- 排行榜界面 -->
     <div id="leaderboard-menu" class="screen hidden">
         <div class="leaderboard-container">
-            <div class="layout-grid">
-                <!-- 左侧：排行榜 -->
-                <div>
-                    <div class="leaderboard-card">
-                        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-                            <h2 style="margin: 0;">排行榜</h2>
-                            <div class="library-filter-container" style="margin-left: 20px;">
-                                <select id="library-filter">
-                                    <option value="all">所有题库</option>
-                                    <!-- 选项将通过JS动态生成 -->
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <ul id="leaderboard" class="leaderboard-list">
-                            <!-- 排行榜将通过JS动态生成 -->
-                        </ul>
-                    </div>
-                    
-                    <!-- 按钮卡片 -->
-                    <div class="button-card">
-                        <div class="leaderboard-buttons">
-                            <button id="back-to-menu-btn" class="btn primary-btn">
-                                <i class="fas fa-home mr-2"></i>返回主菜单
-                            </button>
-                            <button id="clear-leaderboard-btn" class="btn danger-btn">
-                                <i class="fas fa-trash mr-2"></i>清空排行榜
-                            </button>
-                        </div>
-                    </div>
+            <div class="card">
+                <h2>排行榜</h2>
+                
+                <div class="filter-container">
+                    <label for="library-filter">题库筛选:</label>
+                    <select id="library-filter">
+                        <option value="all">所有题库</option>
+                        <!-- 选项将通过JS动态生成 -->
+                    </select>
                 </div>
                 
-                <!-- 右侧：解析卡片 -->
-                <div>
-                    <div class="explanation-card">
-                        <div id="leaderboard-explanation" class="explanation-container">
-                            <div class="explanation-header">答题解析</div>
-                            <div class="empty-state">选择一条记录查看详细解析</div>
-                        </div>
-                    </div>
+                <ul id="leaderboard" class="leaderboard">
+                    <!-- 排行榜将通过JS动态生成 -->
+                </ul>
+                
+                <div class="button-group">
+                    <button id="clear-leaderboard-btn" class="action-btn warning">
+                        <i class="fas fa-trash"></i> 清空记录
+                    </button>
+                    <button id="back-to-menu-btn" class="action-btn">
+                        <i class="fas fa-home"></i> 返回主菜单
+                    </button>
                 </div>
+            </div>
+        </div>
+        
+        <div id="leaderboard-explanation" class="explanation-section">
+            <!-- 排行榜解析将通过JS动态生成 -->
+        </div>
+    </div>
+
+    <!-- 游戏说明弹窗 -->
+    <div id="instructions-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>游戏说明</h2>
+            <div class="instructions-content">
+                <p>1. 游戏时间为60秒，在规定时间内尽可能回答更多题目</p>
+                <p>2. 不同难度的题目有不同的分值：
+                    <ul>
+                        <li>难度1：3个选项，每题5分</li>
+                        <li>难度2：4个选项，每题10分</li>
+                        <li>难度3：5个选项，每题15分</li>
+                        <li>难度4：6个选项，每题20分</li>
+                    </ul>
+                </p>
+                <p>3. 回答正确将获得相应分数，回答错误不扣分</p>
+                <p>4. 时间结束或答完所有题目后游戏结束</p>
+                <p>5. 可以查看排行榜了解自己的成绩排名</p>
             </div>
         </div>
     </div>
@@ -263,3 +197,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+    
