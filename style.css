@@ -1,993 +1,851 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学科快回答</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        /* 全局样式 */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(52, 152, 219, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 20%);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-        
-        .screen {
-            transition: all 0.5s ease-in-out;
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        /* 主菜单样式 - 重写优化 */
-        #start-menu {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        
-        .main-card {
-            background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin: 20px auto;
-        }
-        
-        .main-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-        
-        .main-header {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .main-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-        
-        .main-header h1 {
-            font-size: 2.5rem;
-            margin: 0 0 10px 0;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .main-header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin: 0;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .main-content {
-            padding: 30px 20px;
-            text-align: center;
-        }
-        
-        .current-library {
-            margin-bottom: 30px;
-            padding: 15px;
-            background-color: #f8fafc;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-        
-        .current-library:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-        
-        .current-library .text-gray-600 {
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            color: #64748b;
-        }
-        
-        .current-library #current-library-name {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #2563eb;
-        }
-        
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .menu-btn {
-            padding: 14px 20px;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 300px;
-            margin: 0 auto;
-        }
-        
-        .primary-btn {
-            background: linear-gradient(135deg, #3498db, #2563eb);
-            color: white;
-        }
-        
-        .primary-btn:hover {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
-        .secondary-btn {
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-            color: #334155;
-        }
-        
-        .secondary-btn:hover {
-            background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(148, 163, 184, 0.3);
-        }
-        
-        .tertiary-btn {
-            background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
-            color: #0f766e;
-        }
-        
-        .tertiary-btn:hover {
-            background: linear-gradient(135deg, #ccfbf1, #99f6e4);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
-        }
-        
-        .instructions-section {
-            margin-top: 20px;
-        }
-        
-        #show-instructions-btn {
-            color: #3b82f6;
-            background: none;
-            border: none;
-            font-size: 1rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: all 0.2s ease;
-        }
-        
-        #show-instructions-btn:hover {
-            color: #1d4ed8;
-            background-color: #eff6ff;
-        }
-        
-        .main-footer {
-            background-color: #f8fafc;
-            padding: 15px 20px;
-            text-align: center;
-            color: #94a3b8;
-            font-size: 0.9rem;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        /* 游戏界面样式 */
-        #game {
-            padding: 20px;
-        }
-        
-        .game-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .game-header {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .score-display, .time-display, .accuracy-display {
-            flex: 1;
-            min-width: 120px;
-            background-color: white;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-        
-        .score-display .text-gray-600,
-        .time-display .text-gray-600,
-        .accuracy-display .text-gray-600 {
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            color: #64748b;
-        }
-        
-        #score-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #3b82f6;
-        }
-        
-        #time-left {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #ea580c;
-        }
-        
-        #accuracy-display {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #10b981;
-        }
-        
-        .progress-container {
-            height: 8px;
-            background-color: #e2e8f0;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        
-        #progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #10b981, #3b82f6);
-            transition: width 1s linear;
-        }
-        
-        .game-card {
-            background-color: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            min-height: 500px;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        #question {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 25px;
-            padding: 15px;
-            background-color: #f8fafc;
-            border-radius: 10px;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        
-        #options {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-bottom: 25px;
-            flex-grow: 1;
-        }
-        
-        @media (min-width: 640px) {
-            #options {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        .option {
-            padding: 15px 12px;
-            background-color: #f1f5f9;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #334155;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        
-        .option:hover {
-            background-color: #e2e8f0;
-            transform: translateY(-2px);
-        }
-        
-        .option:disabled {
-            cursor: not-allowed;
-        }
-        
-        .option.correct {
-            background-color: #dcfce7;
-            border-color: #10b981;
-            color: #059669;
-        }
-        
-        .option.incorrect {
-            background-color: #fee2e2;
-            border-color: #ef4444;
-            color: #dc2626;
-        }
-        
-        #feedback {
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        
-        .feedback-correct {
-            background-color: #dcfce7;
-            color: #059669;
-        }
-        
-        .feedback-incorrect {
-            background-color: #fee2e2;
-            color: #dc2626;
-        }
-        
-        /* 游戏结束和排行榜界面 - 解决按钮被顶出问题 */
-        #game-over-menu, #leaderboard-menu {
-            padding: 20px;
-        }
-        
-        .game-over-container, .leaderboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .layout-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        
-        @media (min-width: 1024px) {
-            .layout-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        .game-over-card, .leaderboard-card, .explanation-card, .button-card {
-            background-color: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-        
-        .game-over-card h2, .leaderboard-card h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-top: 0;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .final-score-container {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .final-score-container .text-gray-600 {
-            font-size: 1rem;
-            color: #64748b;
-            margin-bottom: 10px;
-        }
-        
-        #final-score {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin: 10px 0;
-        }
-        
-        #quiz-completion-time {
-            font-size: 1.1rem;
-            color: #64748b;
-        }
-        
-        #record-message {
-            background-color: #fef3c7;
-            color: #d97706;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 500;
-            display: none;
-        }
-        
-        .leaderboard-section h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #334155;
-            margin-top: 0;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .leaderboard-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .score-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            border-bottom: 1px solid #f1f5f9;
-            transition: background-color 0.2s ease;
-        }
-        
-        .score-item:last-child {
-            border-bottom: none;
-        }
-        
-        .score-item:hover {
-            background-color: #f8fafc;
-        }
-        
-        .score-item.selected {
-            background-color: #eff6ff;
-            border-left: 4px solid #3b82f6;
-        }
-        
-        .score-rank {
-            font-weight: 700;
-            color: #64748b;
-            min-width: 30px;
-            text-align: center;
-        }
-        
-        .score-rank::after {
-            content: ".";
-        }
-        
-        .score-value {
-            font-weight: 700;
-            color: #3b82f6;
-            text-align: center;
-            flex: 1;
-        }
-        
-        .score-date {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            min-width: 80px;
-            text-align: right;
-        }
-        
-        /* 题库名称小字显示 */
-        .library-name-small {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin-top: -5px;
-            display: block;
-            font-weight: normal;
-        }
-        
-        .empty-leaderboard {
-            text-align: center;
-            padding: 30px 15px;
-            color: #94a3b8;
-            font-style: italic;
-        }
-        
-        .explanation-header {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #334155;
-            margin-top: 0;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f1f5f9;
-            text-align: center;
-        }
-        
-        .explanation-container {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        
-        .explanation-item {
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .explanation-correct {
-            border-left: 4px solid #10b981;
-        }
-        
-        .explanation-incorrect {
-            border-left: 4px solid #ef4444;
-        }
-        
-        .explanation-question {
-            font-weight: 500;
-            margin: 8px 0;
-            color: #1e293b;
-        }
-        
-        .explanation-options {
-            margin: 10px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .explanation-your-option {
-            font-size: 0.95rem;
-            color: #64748b;
-        }
-        
-        .explanation-correct-option {
-            font-size: 0.95rem;
-            color: #059669;
-            font-weight: 500;
-        }
-        
-        .explanation-text {
-            font-size: 0.95rem;
-            color: #334155;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px dashed #e2e8f0;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #94a3b8;
-            font-style: italic;
-        }
-        
-        /* 按钮卡片确保按钮可见 */
-        .button-card {
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        
-        .game-over-buttons, .leaderboard-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .btn {
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .danger-btn {
-            background: linear-gradient(135deg, #fee2e2, #fecaca);
-            color: #dc2626;
-        }
-        
-        .danger-btn:hover {
-            background: linear-gradient(135deg, #fecaca, #fca5a5);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
-        }
-        
-        /* 题库选择界面 */
-        #library-selector {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        
-        .library-selector-card {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            width: 100%;
-            max-width: 800px;
-            padding: 25px;
-        }
-        
-        .library-selector-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .library-selector-header h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin: 0;
-        }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #64748b;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        
-        .close-btn:hover {
-            color: #1e293b;
-        }
-        
-        #library-list {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        @media (min-width: 640px) {
-            #library-list {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        .library-item {
-            padding: 20px;
-            background-color: #f8fafc;
-            border-radius: 10px;
-            border: 2px solid #e2e8f0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .library-item:hover {
-            background-color: #eff6ff;
-            border-color: #93c5fd;
-            transform: translateY(-2px);
-        }
-        
-        .library-item.selected {
-            background-color: #eff6ff;
-            border-color: #3b82f6;
-        }
-        
-        .library-item.selected i {
-            color: #3b82f6;
-        }
-        
-        .library-item i {
-            color: transparent;
-            font-size: 1.2rem;
-        }
-        
-        .library-meta {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            margin-top: 5px;
-        }
-        
-        .custom-upload-area {
-            border: 2px dashed #e2e8f0;
-            border-radius: 10px;
-            padding: 30px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 25px;
-        }
-        
-        .custom-upload-area:hover {
-            border-color: #93c5fd;
-            background-color: #f8fafc;
-        }
-        
-        .custom-upload-area.dragover {
-            border-color: #3b82f6;
-            background-color: #eff6ff;
-        }
-        
-        .custom-upload-area i {
-            font-size: 3rem;
-            color: #94a3b8;
-            margin-bottom: 15px;
-        }
-        
-        .custom-upload-area p {
-            margin: 0 0 10px 0;
-            color: #64748b;
-        }
-        
-        .custom-upload-area p:last-child {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            margin-bottom: 0;
-        }
-        
-        #library-file-input {
-            display: none;
-        }
-        
-        .library-filter-container {
-            margin-left: auto;
-        }
-        
-        #library-filter {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
-            background-color: #f8fafc;
-            color: #334155;
-            font-size: 1rem;
-        }
-        
-        /* 通知样式 */
-        #notification-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-        
-        .notification {
-            background-color: white;
-            border-radius: 8px;
-            padding: 15px 20px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            animation: slideIn 0.3s ease;
-            border-left: 4px solid;
-            min-width: 280px;
-        }
-        
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        .notification-success {
-            border-color: #10b981;
-        }
-        
-        .notification-success i {
-            color: #10b981;
-        }
-        
-        .notification-error {
-            border-color: #ef4444;
-        }
-        
-        .notification-error i {
-            color: #ef4444;
-        }
-        
-        .notification-info {
-            border-color: #3b82f6;
-        }
-        
-        .notification-info i {
-            color: #3b82f6;
-        }
-        
-        .notification-warning {
-            border-color: #f59e0b;
-        }
-        
-        .notification-warning i {
-            color: #f59e0b;
-        }
-        
-        .notification i {
-            margin-right: 12px;
-            font-size: 1.2rem;
-        }
-        
-        .notification span {
-            flex-grow: 1;
-        }
-        
-        .notification .close-btn {
-            background: none;
-            border: none;
-            font-size: 1rem;
-            cursor: pointer;
-            color: #94a3b8;
-            margin-left: 10px;
-        }
-        
-        /* 庆祝信息 */
-        #celebration-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            padding: 30px 40px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(217, 119, 6, 0.3);
-            z-index: 1001;
-            display: none;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
-        @keyframes popIn {
-            0% {
-                transform: translate(-50%, -50%) scale(0.8);
-                opacity: 0;
-            }
-            70% {
-                transform: translate(-50%, -50%) scale(1.1);
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-        }
-        
-        #celebration-message i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-        
-        #celebration-message div:first-of-type {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        /* 游戏说明弹窗 */
-        #instructions-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(3px);
-        }
-        
-        #instructions-modal:not(.hidden) {
-            display: flex;
-        }
-        
-        .modal-content {
-            background-color: white;
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .modal-content h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-top: 0;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .modal-content p {
-            color: #334155;
-            margin: 0 0 15px 0;
-            line-height: 1.6;
-        }
-        
-        .modal-content ul {
-            margin: 0 0 20px 0;
-            padding-left: 20px;
-        }
-        
-        .modal-content li {
-            margin-bottom: 10px;
-            color: #334155;
-            line-height: 1.6;
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #94a3b8;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        
-        .close-modal:hover {
-            color: #1e293b;
-        }
-    </style>
-</head>
-</html>
+/* 基础样式设置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+    background-attachment: fixed;
+    color: #333;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 通用样式 */
+.screen {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+h1, h2, h3, p {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.2rem;
+    background: linear-gradient(90deg, #1a2a6c, #b21f1f, #fdbb2d);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 200% auto;
+    animation: textShine 3s linear infinite;
+}
+
+@keyframes textShine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+h2 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    margin: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+    transform: translateY(-1px);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 主菜单样式 */
+.menu-card {
+    padding: 40px 30px;
+    position: relative;
+}
+
+.menu-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.main-btn {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    font-size: 1.1rem;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.main-btn:hover {
+    background: linear-gradient(135deg, #4aa3df, #2980b9);
+    box-shadow: 0 8px 15px rgba(52, 152, 219, 0.3);
+}
+
+.menu-footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #666;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* 游戏界面样式 */
+.game-container {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.stat-item {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.stat-item span:last-child {
+    color: #e74c3c;
+}
+
+.progress-bar {
+    height: 10px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #3b82f6);
+    width: 100%;
+    transition: width 0.3s ease;
+}
+
+.question-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
+}
+
+#question {
+    font-size: 1.4rem;
+    margin-bottom: 25px;
+    color: #2c3e50;
+    line-height: 1.5;
+}
+
+.options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.option {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    border: 2px solid #dee2e6;
+    padding: 15px 10px;
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option:hover:not(:disabled) {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+    transform: translateY(-2px);
+}
+
+.option:disabled {
+    cursor: not-allowed;
+    opacity: 0.9;
+}
+
+.option.correct {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.option.incorrect {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.feedback {
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.feedback-correct {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.feedback-incorrect {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* 解析区域样式 */
+.explanation-section {
+    width: 100%;
+    max-width: 600px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.explanation-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f1f1f1;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.explanation-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #3498db;
+}
+
+.explanation-correct {
+    border-left-color: #28a745;
+}
+
+.explanation-incorrect {
+    border-left-color: #dc3545;
+}
+
+.explanation-question {
+    font-weight: 600;
+    margin: 8px 0;
+    color: #2c3e50;
+}
+
+.explanation-options {
+    margin: 8px 0;
+    font-size: 0.95rem;
+}
+
+.explanation-your-option {
+    color: #6c757d;
+    margin-bottom: 4px;
+}
+
+.explanation-correct-option {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.explanation-text {
+    margin-top: 8px;
+    font-size: 0.95rem;
+    color: #495057;
+    font-style: italic;
+}
+
+/* 游戏结束界面样式 */
+.results-container {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+#final-score {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.record-message {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* 排行榜样式 */
+.leaderboard-container {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+.leaderboard {
+    list-style-type: none;
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.score-item {
+    background-color: #f8f9fa;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+}
+
+.score-item:hover {
+    transform: translateX(5px);
+    background-color: #e9ecef;
+}
+
+.score-item.selected {
+    background-color: #e3f2fd;
+    border-left-color: #2196f3;
+}
+
+.score-rank {
+    font-weight: bold;
+    width: 30px;
+    height: 30px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-value {
+    font-weight: bold;
+    color: #2c3e50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.library-name-small {
+    font-size: 0.7rem;
+    color: #6c757d;
+    font-weight: normal;
+    margin-top: 2px;
+}
+
+.score-date {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.empty-leaderboard {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.filter-container {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.filter-container label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.filter-container select {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    font-size: 1rem;
+    background-color: white;
+}
+
+/* 按钮组样式 */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.action-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+
+.warning {
+    background-color: #e74c3c;
+}
+
+.warning:hover {
+    background-color: #c0392b;
+    box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3);
+}
+
+/* 题库选择界面样式 */
+.library-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.library-item {
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.library-item:hover:not(.selected) {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+    transform: translateY(-2px);
+}
+
+.library-item.selected {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+    font-weight: 500;
+}
+
+.library-item .library-meta {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.back-button-container {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.back-btn {
+    background-color: transparent;
+    color: #6c757d;
+    padding: 5px;
+    font-size: 1.2rem;
+}
+
+.back-btn-text {
+    background-color: transparent;
+    color: #6c757d;
+    padding: 5px 10px;
+}
+
+.back-btn:hover, .back-btn-text:hover {
+    color: #3498db;
+    background-color: transparent;
+    transform: none;
+}
+
+/* 本地文件上传区域 */
+.local-file-upload {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.custom-upload-area {
+    border: 2px dashed #adb5bd;
+    border-radius: 8px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+.custom-upload-area:hover {
+    border-color: #3498db;
+    background-color: #f1f7fc;
+}
+
+.custom-upload-area i {
+    font-size: 2rem;
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.custom-upload-area.dragover {
+    border-color: #2196f3;
+    background-color: #e3f2fd;
+}
+
+/* 通知样式 */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.notification {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 300px;
+    max-width: 400px;
+    animation: slideIn 0.3s ease;
+    border-left: 4px solid;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.notification i {
+    font-size: 1.2rem;
+}
+
+.notification span {
+    flex: 1;
+}
+
+.notification-success {
+    border-color: #28a745;
+}
+
+.notification-success i {
+    color: #28a745;
+}
+
+.notification-error {
+    border-color: #dc3545;
+}
+
+.notification-error i {
+    color: #dc3545;
+}
+
+.notification-warning {
+    border-color: #ffc107;
+}
+
+.notification-warning i {
+    color: #ffc107;
+}
+
+.notification-info {
+    border-color: #17a2b8;
+}
+
+.notification-info i {
+    color: #17a2b8;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    color: #343a40;
+    transform: none;
+    box-shadow: none;
+}
+
+/* 庆祝信息 */
+.celebration-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 215, 0, 0.95);
+    color: #856404;
+    padding: 30px 50px;
+    border-radius: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    text-align: center;
+    animation: popIn 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
+}
+
+@keyframes popIn {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    70% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* 游戏说明弹窗 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.close-modal:hover {
+    color: #343a40;
+}
+
+.instructions-content {
+    text-align: left;
+    line-height: 1.6;
+}
+
+.instructions-content p {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.instructions-content ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+/* 空状态样式 */
+.empty-state {
+    text-align: center;
+    padding: 30px 20px;
+    color: #6c757d;
+    font-style: italic;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .card {
+        padding: 20px 15px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .options {
+        grid-template-columns: 1fr;
+    }
+    
+    .menu-footer {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .library-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .stat-item {
+        flex: 1 0 40%;
+        text-align: center;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .explanation-section {
+        max-height: 300px;
+    }
+    
+    .notification {
+        min-width: auto;
+        max-width: calc(100% - 40px);
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-buttons {
+        gap: 10px;
+    }
+    
+    button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+    
+    #question {
+        font-size: 1.2rem;
+    }
+    
+    .score-item {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .score-date {
+        width: 100%;
+        text-align: right;
+    }
+}
+    
