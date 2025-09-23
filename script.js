@@ -26,6 +26,9 @@ let answerHistory = [];              // 记录答题历史，用于生成解析
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
+    // 创建解析列表容器
+    createExplanationList();
+    
     // 绑定按钮事件
     document.getElementById('start-game-btn').addEventListener('click', startGame);
     document.getElementById('view-leaderboard-btn').addEventListener('click', () => {
@@ -35,9 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('back-to-menu-btn').addEventListener('click', backToMenu);
     document.getElementById('restart-game-btn').addEventListener('click', backToMenu); // 返回主界面
     document.getElementById('clear-leaderboard-btn').addEventListener('click', clearLeaderboard);
+    document.getElementById('clear-records-btn').addEventListener('click', clearLeaderboard);
     document.getElementById('select-library-btn').addEventListener('click', showLibrarySelector);
     document.getElementById('back-from-library-btn').addEventListener('click', hideLibrarySelector);
-    document.getElementById('back-from-library-btn-text').addEventListener('click', hideLibrarySelector);
     document.getElementById('library-file-input').addEventListener('change', handleLibraryFileSelect);
     
     // 绑定排行榜筛选事件
@@ -59,7 +62,28 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 绑定排行榜点击事件
     document.getElementById('leaderboard').addEventListener('click', handleLeaderboardItemClick);
+    
+    // 确保游戏结束界面的按钮初始状态正确
+    ensureGameOverButtonsVisible();
 });
+
+/**
+ * 确保游戏结束界面的按钮可见
+ */
+function ensureGameOverButtonsVisible() {
+    const backBtn = document.getElementById('back-to-menu-btn');
+    const clearBtn = document.getElementById('clear-records-btn');
+    
+    if (backBtn) {
+        backBtn.classList.remove('hidden');
+        backBtn.style.display = 'inline-block';
+    }
+    
+    if (clearBtn) {
+        clearBtn.classList.remove('hidden');
+        clearBtn.style.display = 'inline-block';
+    }
+}
 
 /**
  * 初始化文件上传区域的拖放功能
@@ -198,7 +222,7 @@ function showLibrarySelector() {
         fileUploadSection.style.display = 'block';
     } else {
         // 网页模式，显示所有选项
-        libraryList.style.display = 'grid';
+        libraryList.style.display = 'flex';
         fileUploadSection.style.display = 'block';
         renderLibraryList();
     }
@@ -419,7 +443,7 @@ async function loadQuestionsFromFile(filePath) {
 }
 
 /**
- * 处理题库内容
+ * 处理题库内容 - 不在这里随机排序，保留原始顺序
  * @param {Object} content - 题库内容
  * @param {string} filePath - 题库文件路径
  */
@@ -438,17 +462,17 @@ function processLibraryContent(content, filePath) {
     currentLibrary.name = content.name || filePath;
     currentLibrary.questionCount = content.questions.length;
     
-    // 处理每道题，过滤无效题目
-    originalQuestions = content.questions.map((q, index) => {
+    // 处理每道题，过滤无效题目，保存到原始题库数组
+    originalQuestions = content.questions.map((q) => {
         // 验证题目必要字段
         if (!q.question || !q.answer || !q.options || q.difficulty === undefined) {
-            console.warn(`题目ID ${q.id || (index + 1)} 格式不完整，已跳过`);
+            console.warn(`题目ID ${q.id || '未知'} 格式不完整，已跳过`);
             return null;
         }
         
         // 确保ID存在
         if (q.id === undefined) {
-            q.id = index + 1;
+            q.id = originalQuestions.length + 1;
             console.warn(`题目缺少ID，已自动分配ID: ${q.id}`);
         }
         
@@ -490,7 +514,7 @@ function processLibraryContent(content, filePath) {
 }
 
 /**
- * 开始游戏
+ * 开始游戏 - 在这里随机排序题目
  */
 function startGame() {
     if (originalQuestions.length === 0) {
@@ -539,9 +563,7 @@ function resetGameState() {
     
     // 清空解析列表
     const explanationSection = document.querySelector('.explanation-section');
-    if (explanationSection) {
-        explanationSection.innerHTML = '<div class="explanation-header">答题记录</div>';
-    }
+    explanationSection.innerHTML = '<div class="explanation-header">答题记录</div>';
 }
 
 /**
@@ -567,8 +589,6 @@ function startTimer() {
             progressFill.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
         } else if (timeLeft < 20) {
             progressFill.style.background = 'linear-gradient(90deg, #f39c12, #d35400)';
-        } else {
-            progressFill.style.background = 'linear-gradient(90deg, #10b981, #3b82f6)';
         }
         
         // 时间到，结束游戏
@@ -701,7 +721,6 @@ function updateAccuracyDisplay() {
  */
 function addExplanation(question, isCorrect, selectedOption) {
     const explanationSection = document.querySelector('.explanation-section');
-    if (!explanationSection) return;
     
     const item = document.createElement('div');
     item.className = `explanation-item ${isCorrect ? 'explanation-correct' : 'explanation-incorrect'}`;
@@ -725,7 +744,17 @@ function addExplanation(question, isCorrect, selectedOption) {
 }
 
 /**
- * 结束游戏
+ * 创建解析列表容器
+ */
+function createExplanationList() {
+    const explanationSection = document.querySelector('.explanation-section');
+    if (explanationSection) {
+        explanationSection.innerHTML = '<div class="explanation-header">答题记录</div>';
+    }
+}
+
+/**
+ * 结束游戏 - 确保按钮可见
  */
 function endGame() {
     // 清除计时器
@@ -755,6 +784,9 @@ function endGame() {
     
     // 显示当前题库的排行榜
     updateLeaderboardDisplay('game-over-leaderboard', currentLibrary.file);
+    
+    // 确保游戏结束界面的按钮可见
+    ensureGameOverButtonsVisible();
 }
 
 /**
@@ -810,8 +842,8 @@ function saveScoreToLeaderboard() {
             answers: answerHistory // 保存答题历史
         };
         
-        // 检查是否是当前题库的最高分
-        const isNewRecord = isCurrentLibraryHighScore(newRecord, leaderboard);
+        // 检查是否是新纪录
+        const isNewRecord = isRecordScore(newRecord, leaderboard);
         
         // 添加新记录
         leaderboard.push(newRecord);
@@ -835,12 +867,12 @@ function saveScoreToLeaderboard() {
 }
 
 /**
- * 检查是否是当前题库的最高分
+ * 检查是否是记录分数
  * @param {Object} newRecord - 新记录
  * @param {Array} leaderboard - 现有排行榜
- * @returns {boolean} 是否是当前题库的最高分
+ * @returns {boolean} 是否是新纪录
  */
-function isCurrentLibraryHighScore(newRecord, leaderboard) {
+function isRecordScore(newRecord, leaderboard) {
     // 筛选当前题库的记录
     const libraryRecords = leaderboard.filter(
         record => record.library === newRecord.library
@@ -851,9 +883,14 @@ function isCurrentLibraryHighScore(newRecord, leaderboard) {
         return true;
     }
     
-    // 检查是否分数高于现有最高分
+    // 检查是否能进入前五名，或者分数高于现有最高分
+    const topScores = [...libraryRecords]
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+    
     const highestScore = Math.max(...libraryRecords.map(r => r.score));
-    return newRecord.score > highestScore;
+    
+    return newRecord.score > highestScore || topScores.length < 5;
 }
 
 /**
@@ -883,6 +920,27 @@ function viewLeaderboard() {
         <div class="explanation-header">答题解析</div>
         <div class="empty-state">选择一条记录查看详细解析</div>
     `;
+    
+    // 确保排行榜界面的按钮可见
+    ensureLeaderboardButtonsVisible();
+}
+
+/**
+ * 确保排行榜界面的按钮可见
+ */
+function ensureLeaderboardButtonsVisible() {
+    const backBtn = document.getElementById('back-to-menu-btn');
+    const clearBtn = document.getElementById('clear-leaderboard-btn');
+    
+    if (backBtn) {
+        backBtn.classList.remove('hidden');
+        backBtn.style.display = 'inline-block';
+    }
+    
+    if (clearBtn) {
+        clearBtn.classList.remove('hidden');
+        clearBtn.style.display = 'inline-block';
+    }
 }
 
 /**
@@ -1030,14 +1088,9 @@ function updateLeaderboardDisplay(elementId, libraryFilter) {
         // 计算正确率
         const accuracy = record.total > 0 ? Math.round((record.correct / record.total) * 100) : 0;
         
-        // 当显示所有题库时，添加小字显示题库名
-        const libraryNameHtml = libraryFilter === 'all' 
-            ? `<span class="library-name-small">${record.libraryName || record.library}</span>`
-            : '';
-        
         item.innerHTML = `
             <span class="score-rank">${index + 1}</span>
-            <span class="score-value">${record.score}分${libraryNameHtml}</span>
+            <span class="score-value">${record.score}分</span>
             <span>正确率: ${accuracy}%</span>
             <span class="score-date">${record.date}</span>
         `;
