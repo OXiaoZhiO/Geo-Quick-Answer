@@ -13,24 +13,27 @@
     
     <!-- 悬浮控制按钮 -->
     <div class="floating-controls">
-        <button id="float-back-btn" class="float-btn hidden" title="返回主菜单">
+        <button id="floating-back-btn" class="floating-btn hidden" title="返回主菜单">
             <i class="fas fa-home"></i>
-            <span class="float-btn-text">返回主菜单</span>
+            <span class="floating-text">返回主菜单</span>
         </button>
-        <button id="float-clear-btn" class="float-btn hidden" title="清空记录">
+        <button id="floating-clear-btn" class="floating-btn hidden" title="清空记录">
             <i class="fas fa-trash"></i>
-            <span class="float-btn-text">清空记录</span>
+            <span class="floating-text">清空记录</span>
         </button>
-        <button id="float-restart-btn" class="float-btn hidden" title="重新开始">
+        <button id="floating-restart-btn" class="floating-btn hidden" title="重新开始">
             <i class="fas fa-redo"></i>
-            <span class="float-btn-text">重新开始</span>
+            <span class="floating-text">重新开始</span>
         </button>
     </div>
+    
+    <!-- 通知弹窗容器 -->
+    <div id="notification-container"></div>
     
     <div id="app">
         <!-- 开始菜单界面 -->
         <div id="start-menu" class="screen">
-            <div class="card">
+            <div class="card wider-card">
                 <h1>学科快回答！</h1>
                 <div class="version-info">
                     <span class="author">by 晓炙云溪</span>
@@ -56,11 +59,8 @@
                 
                 <!-- 知识卡片 -->
                 <div id="knowledge-card" class="knowledge-card">
-                    <div class="knowledge-content">
-                        <p class="knowledge-id">NO.加载中...</p>
-                        <p class="knowledge-question">点击卡片加载随机题目...</p>
-                        <p class="knowledge-answer hidden">答案：加载中...</p>
-                        <p class="knowledge-explanation hidden">解析：加载中...</p>
+                    <div class="knowledge-card-content">
+                        <p>点击卡片获取随机知识点</p>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
         
         <!-- 题库选择界面 -->
         <div id="library-selector" class="screen hidden">
-            <div class="card">
+            <div class="card wider-card">
                 <h2>选择题库</h2>
                 <p>当前选择: <span id="current-library-name">加载中...</span></p>
                 
@@ -76,10 +76,23 @@
                     <!-- 题库列表将动态生成 -->
                 </div>
                 
+                <!-- 改进的文件上传区域 -->
                 <div id="local-file-upload" class="file-upload-section">
                     <p>或选择本地题库文件：</p>
-                    <input type="file" id="library-file-input" accept=".json" />
+                    <div class="custom-file-upload">
+                        <label for="library-file-input" class="file-upload-label">
+                            <i class="fas fa-upload"></i> 选择文件
+                        </label>
+                        <input type="file" id="library-file-input" accept=".json" />
+                        <p class="file-upload-text">拖放JSON文件到此处或点击选择</p>
+                    </div>
                     <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
+                </div>
+                
+                <div class="button-group">
+                    <button id="back-from-library-btn" class="primary-btn">
+                        <i class="fas fa-arrow-left"></i> 返回
+                    </button>
                 </div>
             </div>
         </div>
@@ -87,7 +100,7 @@
         <!-- 游戏界面 -->
         <div id="game" class="screen hidden">
             <div class="game-container">
-                <div class="card question-card">
+                <div class="card wider-card game-card">
                     <div class="status-bar">
                         <div class="status-item">
                             <i class="fas fa-clock"></i> 剩余时间: <span id="time-left">60</span>秒
@@ -115,9 +128,9 @@
                     </div>
                 </div>
                 
-                <div class="card explanation-card">
-                    <h3>答题记录</h3>
-                    <div class="explanation-section">
+                <div class="card wider-card explanation-card">
+                    <h3>解析记录</h3>
+                    <div class="explanation-section" id="explanation-container">
                         <!-- 解析列表将在这里动态生成 -->
                     </div>
                 </div>
@@ -126,7 +139,7 @@
         
         <!-- 排行榜界面 -->
         <div id="leaderboard-menu" class="screen hidden">
-            <div class="card">
+            <div class="card wider-card">
                 <h2>排行榜</h2>
                 
                 <!-- 排行榜筛选 -->
@@ -139,12 +152,21 @@
                 </div>
                 
                 <ul id="leaderboard" class="score-list"></ul>
+                
+                <div class="button-group">
+                    <button id="back-to-menu-btn" class="primary-btn">
+                        <i class="fas fa-home"></i> 返回主菜单
+                    </button>
+                    <button id="clear-leaderboard-btn" class="secondary-btn">
+                        <i class="fas fa-trash"></i> 清空排行榜
+                    </button>
+                </div>
             </div>
         </div>
         
         <!-- 游戏结束界面 -->
         <div id="game-over-menu" class="screen hidden">
-            <div class="card">
+            <div class="card wider-card">
                 <h2>游戏结束</h2>
                 <p>你的最终得分是:</p>
                 <p class="final-score" id="final-score">0</p>
@@ -153,6 +175,15 @@
                 
                 <h3>当前题库排行榜</h3>
                 <ul id="game-over-leaderboard" class="score-list"></ul>
+                
+                <div class="button-group">
+                    <button id="restart-game-btn" class="primary-btn">
+                        <i class="fas fa-redo"></i> 返回主菜单
+                    </button>
+                    <button id="clear-records-btn" class="secondary-btn">
+                        <i class="fas fa-trash"></i> 清空记录
+                    </button>
+                </div>
             </div>
         </div>
         
