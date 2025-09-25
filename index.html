@@ -11,6 +11,22 @@
     <!-- 动态背景元素 -->
     <div class="bg-animation"></div>
     
+    <!-- 悬浮控制按钮 -->
+    <div class="floating-controls">
+        <button id="float-back-btn" class="float-btn hidden" title="返回主菜单">
+            <i class="fas fa-home"></i>
+            <span class="float-btn-text">返回主菜单</span>
+        </button>
+        <button id="float-clear-btn" class="float-btn hidden" title="清空记录">
+            <i class="fas fa-trash"></i>
+            <span class="float-btn-text">清空记录</span>
+        </button>
+        <button id="float-restart-btn" class="float-btn hidden" title="重新开始">
+            <i class="fas fa-redo"></i>
+            <span class="float-btn-text">重新开始</span>
+        </button>
+    </div>
+    
     <div id="app">
         <!-- 开始菜单界面 -->
         <div id="start-menu" class="screen">
@@ -19,7 +35,7 @@
                 <div class="version-info">
                     <span class="author">by 晓炙云溪</span>
                     <span class="version-separator">|</span>
-                    <span class="version">v1.1.9-beta</span>
+                    <span class="version">v1.3.25-beta</span>
                 </div>
                 <p>挑战你的学科知识储备，在限定时间内尽可能回答更多问题！</p>
                 
@@ -37,6 +53,16 @@
                         <i class="fas fa-info-circle"></i> 游戏说明
                     </button>
                 </div>
+                
+                <!-- 知识卡片 -->
+                <div id="knowledge-card" class="knowledge-card">
+                    <div class="knowledge-content">
+                        <p class="knowledge-id">NO.加载中...</p>
+                        <p class="knowledge-question">点击卡片加载随机题目...</p>
+                        <p class="knowledge-answer hidden">答案：加载中...</p>
+                        <p class="knowledge-explanation hidden">解析：加载中...</p>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -52,46 +78,34 @@
                 
                 <div id="local-file-upload" class="file-upload-section">
                     <p>或选择本地题库文件：</p>
-                    <div class="custom-upload-area">
-                        <input type="file" id="library-file-input" accept=".json" />
-                        <div class="upload-hint">
-                            <i class="fas fa-upload"></i>
-                            <p>点击或拖拽JSON文件到此处上传</p>
-                            <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="button-group">
-                    <button id="back-from-library-btn" class="primary-btn">
-                        <i class="fas fa-arrow-left"></i> 返回
-                    </button>
+                    <input type="file" id="library-file-input" accept=".json" />
+                    <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
                 </div>
             </div>
         </div>
         
         <!-- 游戏界面 -->
         <div id="game" class="screen hidden">
-            <div class="card">
-                <div class="status-bar">
-                    <div class="status-item">
-                        <i class="fas fa-clock"></i> 剩余时间: <span id="time-left">60</span>秒
+            <div class="game-container">
+                <div class="card question-card">
+                    <div class="status-bar">
+                        <div class="status-item">
+                            <i class="fas fa-clock"></i> 剩余时间: <span id="time-left">60</span>秒
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-scoreboard"></i> 分数: <span id="score-value">0</span>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-chart-pie"></i> 正确率: <span id="accuracy-display">0/0/0-0%</span>
+                        </div>
                     </div>
-                    <div class="status-item">
-                        <i class="fas fa-scoreboard"></i> 分数: <span id="score-value">0</span>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
                     </div>
-                    <div class="status-item">
-                        <i class="fas fa-chart-pie"></i> 正确率: <span id="accuracy-display">0/0/0-0%</span>
-                    </div>
-                </div>
-                
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div id="progress-fill" class="progress-fill"></div>
-                    </div>
-                </div>
-                
-                <div class="game-content">
+                    
                     <div class="question-section">
                         <div id="question-area">
                             <div id="question">问题将在这里显示</div>
@@ -99,7 +113,10 @@
                         </div>
                         <div id="feedback" class="hidden"></div>
                     </div>
-                    
+                </div>
+                
+                <div class="card explanation-card">
+                    <h3>答题记录</h3>
                     <div class="explanation-section">
                         <!-- 解析列表将在这里动态生成 -->
                     </div>
@@ -121,24 +138,7 @@
                     </select>
                 </div>
                 
-                <div class="leaderboard-content">
-                    <ul id="leaderboard" class="score-list"></ul>
-                    
-                    <!-- 排行榜右侧解析栏 -->
-                    <div id="leaderboard-explanation" class="explanation-section">
-                        <div class="explanation-header">答题解析</div>
-                        <div class="empty-state">选择一条记录查看详细解析</div>
-                    </div>
-                </div>
-                
-                <div class="button-group">
-                    <button id="back-to-menu-btn" class="primary-btn">
-                        <i class="fas fa-home"></i> 返回主菜单
-                    </button>
-                    <button id="clear-leaderboard-btn" class="secondary-btn">
-                        <i class="fas fa-trash"></i> 清空排行榜
-                    </button>
-                </div>
+                <ul id="leaderboard" class="score-list"></ul>
             </div>
         </div>
         
@@ -151,26 +151,8 @@
                 <p id="record-message" class="hidden">恭喜你创造了新纪录！</p>
                 <p>答题统计: <span id="quiz-completion-time">0/0/0-0%</span></p>
                 
-                <div class="game-over-content">
-                    <div>
-                        <h3>当前题库排行榜</h3>
-                        <ul id="game-over-leaderboard" class="score-list"></ul>
-                    </div>
-                    
-                    <!-- 游戏结束解析栏 -->
-                    <div id="game-over-explanation" class="explanation-section">
-                        <div class="explanation-header">本次答题解析</div>
-                    </div>
-                </div>
-                
-                <div class="button-group">
-                    <button id="restart-game-btn" class="primary-btn">
-                        <i class="fas fa-redo"></i> 返回主菜单
-                    </button>
-                    <button id="clear-records-btn" class="secondary-btn">
-                        <i class="fas fa-trash"></i> 清空记录
-                    </button>
-                </div>
+                <h3>当前题库排行榜</h3>
+                <ul id="game-over-leaderboard" class="score-list"></ul>
             </div>
         </div>
         
@@ -196,14 +178,11 @@
                     </li>
                     <li>回答正确加分，回答错误不扣分</li>
                     <li>电脑端右侧会显示所有题目的解析记录</li>
-                    <li>游戏结束后可以查看自己的排名和详细解析</li>
+                    <li>游戏结束后可以查看自己的排名</li>
                 </ul>
             </div>
         </div>
     </div>
-
-    <!-- 通知提示容器 -->
-    <div id="notification-container"></div>
 
     <script src="script.js"></script>
 </body>
