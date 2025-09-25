@@ -563,9 +563,9 @@ function showNextQuestion() {
     
     // 根据难度设置选项布局
     if (question.difficulty === 4) {
-        optionsElement.className = 'options-grid';
+        optionsElement.className = 'options-grid'; // 两列布局
     } else {
-        optionsElement.className = '';
+        optionsElement.className = ''; // 单列布局
     }
     
     // 创建选项按钮
