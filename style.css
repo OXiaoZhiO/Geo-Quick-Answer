@@ -626,8 +626,6 @@ h2 {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    flex-direction: column;
-    gap: 20px;
 }
 
 .spinner {
@@ -637,6 +635,7 @@ h2 {
     border-top: 5px solid #3498db;
     border-radius: 50%;
     animation: spin 1s linear infinite;
+    margin-bottom: 15px;
 }
 
 @keyframes spin {
@@ -647,6 +646,7 @@ h2 {
 .loading-content p {
     font-size: 1.2rem;
     color: #2c3e50;
+    text-align: center;
 }
 
 /* 悬浮控制按钮 */
@@ -664,7 +664,7 @@ h2 {
     display: flex;
     align-items: center;
     gap: 0;
-    padding: 10px 10px;
+    padding: 10px;
     border-radius: 50px;
     border: none;
     background: rgba(255, 255, 255, 0.9);
@@ -690,6 +690,11 @@ h2 {
 .float-btn-text {
     font-weight: 500;
     color: #2c3e50;
+    display: none;
+}
+
+.float-btn:hover .float-btn-text {
+    display: inline;
 }
 
 /* 知识卡片样式 */
