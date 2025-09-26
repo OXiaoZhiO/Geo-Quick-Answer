@@ -45,7 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.getElementById('restart-game-btn').addEventListener('click', backToMenu); // 返回主界面
     
-    document.getElementById('clear-records-btn').addEventListener('click', clearLeaderboard);
+    const clearRecordsBtn = document.getElementById('clear-records-btn');
+if (clearRecordsBtn) {
+    clearRecordsBtn.addEventListener('click', clearLeaderboard);
+}
     document.getElementById('select-library-btn').addEventListener('click', showLibrarySelector);
     document.getElementById('back-from-library-btn').addEventListener('click', hideLibrarySelector);
     document.getElementById('library-file-input').addEventListener('change', handleLibraryFileSelect);
