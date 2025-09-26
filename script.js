@@ -27,7 +27,7 @@ let isLoading = true;                // 是否正在加载
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
     // 显示加载界面
-    showLoadingScreen();
+    //showLoadingScreen();
     
     // 创建解析列表容器
     createExplanationList();
@@ -39,9 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
         populateLibraryFilter();
         showClearButton(true);
     });
-    document.getElementById('back-to-menu-btn').addEventListener('click', backToMenu);
+   
     document.getElementById('restart-game-btn').addEventListener('click', backToMenu); // 返回主界面
-    document.getElementById('clear-leaderboard-btn').addEventListener('click', clearLeaderboard);
+    
     document.getElementById('clear-records-btn').addEventListener('click', clearLeaderboard);
     document.getElementById('select-library-btn').addEventListener('click', showLibrarySelector);
     document.getElementById('back-from-library-btn').addEventListener('click', hideLibrarySelector);
