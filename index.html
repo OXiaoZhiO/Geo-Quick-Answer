@@ -8,8 +8,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <!-- 加载中界面 -->
+    <div id="loading-screen" class="loading-screen hidden">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loading-text">加载中...</p>
+            <p id="loading-library" class="loading-library">正在加载题库...</p>
+        </div>
+    </div>
+    
     <!-- 动态背景元素 -->
     <div class="bg-animation"></div>
+    
+    <!-- 控制按钮区域 -->
+    <div id="control-buttons" class="control-buttons">
+        <button id="control-back-btn" class="control-btn hidden">
+            <i class="fas fa-home"></i>
+            <span class="control-text">返回主菜单</span>
+        </button>
+        <button id="control-clear-btn" class="control-btn hidden">
+            <i class="fas fa-trash"></i>
+            <span class="control-text">清空记录</span>
+        </button>
+    </div>
+    
+    <!-- 通知提示区域 -->
+    <div id="notification-container" class="notification-container"></div>
     
     <div id="app">
         <!-- 开始菜单界面 -->
@@ -19,7 +43,7 @@
                 <div class="version-info">
                     <span class="author">by 晓炙云溪</span>
                     <span class="version-separator">|</span>
-                    <span class="version">v1.1.8-beta</span>
+                    <span class="version">v1.4.31-beta</span>
                 </div>
                 <p>挑战你的学科知识储备，在限定时间内尽可能回答更多问题！</p>
                 
@@ -37,6 +61,14 @@
                         <i class="fas fa-info-circle"></i> 游戏说明
                     </button>
                 </div>
+                
+                <!-- 知识卡片 -->
+                <div id="knowledge-card" class="knowledge-card">
+                    <h3>知识卡片</h3>
+                    <div id="knowledge-content">
+                        <p>请先选择一个题库</p>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -52,7 +84,13 @@
                 
                 <div id="local-file-upload" class="file-upload-section">
                     <p>或选择本地题库文件：</p>
-                    <input type="file" id="library-file-input" accept=".json" />
+                    <div class="upload-area" id="upload-area">
+                        <input type="file" id="library-file-input" accept=".json" />
+                        <div class="upload-text">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>拖放JSON文件到此处或点击选择</p>
+                        </div>
+                    </div>
                     <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
                 </div>
                 
@@ -69,7 +107,7 @@
             <div class="card">
                 <div class="status-bar">
                     <div class="status-item">
-                        <i class="fas fa-clock"></i> 剩余时间: <span id="time-left">60</span>秒
+                        <i class="fas fa-clock"></i> 时间: <span id="time-left">60</span>秒
                     </div>
                     <div class="status-item">
                         <i class="fas fa-scoreboard"></i> 分数: <span id="score-value">0</span>
@@ -95,7 +133,11 @@
                     </div>
                     
                     <div class="explanation-section">
-                        <!-- 解析列表将在这里动态生成 -->
+                        <div class="card explanation-card">
+                            <!-- 解析列表将在这里动态生成 -->
+                            <h3>答题记录</h3>
+                            <div id="explanation-list"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -103,27 +145,27 @@
         
         <!-- 排行榜界面 -->
         <div id="leaderboard-menu" class="screen hidden">
-            <div class="card">
-                <h2>排行榜</h2>
-                
-                <!-- 新增：排行榜筛选 -->
-                <div class="leaderboard-filter">
-                    <label for="library-filter">题库筛选：</label>
-                    <select id="library-filter">
-                        <option value="all">所有题库</option>
-                        <!-- 选项将动态生成 -->
-                    </select>
+            <div class="leaderboard-container">
+                <div class="card leaderboard-card">
+                    <h2>排行榜</h2>
+                    
+                    <!-- 排行榜筛选 -->
+                    <div class="leaderboard-filter">
+                        <label for="library-filter">题库筛选：</label>
+                        <select id="library-filter">
+                            <option value="all">所有题库</option>
+                            <!-- 选项将动态生成 -->
+                        </select>
+                    </div>
+                    
+                    <ul id="leaderboard" class="score-list"></ul>
                 </div>
                 
-                <ul id="leaderboard" class="score-list"></ul>
-                
-                <div class="button-group">
-                    <button id="back-to-menu-btn" class="primary-btn">
-                        <i class="fas fa-home"></i> 返回主菜单
-                    </button>
-                    <button id="clear-leaderboard-btn" class="secondary-btn">
-                        <i class="fas fa-trash"></i> 清空排行榜
-                    </button>
+                <div class="card explanation-card leaderboard-explanation">
+                    <h3>答题解析</h3>
+                    <div id="leaderboard-explanation-content">
+                        <p>请选择一条记录查看解析</p>
+                    </div>
                 </div>
             </div>
         </div>
