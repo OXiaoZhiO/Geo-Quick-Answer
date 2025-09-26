@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
         viewLeaderboard();
         populateLibraryFilter();
     });
-    document.getElementById('back-to-menu-btn').addEventListener('click', backToMenu);
+    
     document.getElementById('restart-game-btn').addEventListener('click', backToMenu); // 返回主界面
-    document.getElementById('clear-leaderboard-btn').addEventListener('click', clearLeaderboard);
+    
     document.getElementById('clear-records-btn').addEventListener('click', clearLeaderboard);
     document.getElementById('select-library-btn').addEventListener('click', showLibrarySelector);
     document.getElementById('back-from-library-btn').addEventListener('click', hideLibrarySelector);
