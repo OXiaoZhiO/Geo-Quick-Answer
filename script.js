@@ -14,11 +14,7 @@ const leaderboardKey = 'leaderboard';// 本地存储排行榜的键名
 const selectedLibraryKey = 'selectedLibrary'; // 存储选中的题库
 let availableLibraries = [           // 可用题库列表
     { id: '1', file: 'data/1.json' },
-    { id: '2', file: 'data/2.json' },
-    { id: '3', file: 'data/3.json' },
-    { id: '4', file: 'data/4.json' },
-    { id: '5', file: 'data/5.json' }
-    
+    { id: '2', file: 'data/2.json' }
 ];
 let currentLibrary = {               // 当前选中的题库
     file: 'data/1.json',
@@ -43,9 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
         populateLibraryFilter();
         showClearButton(true);
     });
-    
+    document.getElementById('back-to-menu-btn').addEventListener('click', backToMenu);
     document.getElementById('restart-game-btn').addEventListener('click', backToMenu); // 返回主界面
-    
+    document.getElementById('clear-leaderboard-btn').addEventListener('click', clearLeaderboard);
     document.getElementById('clear-records-btn').addEventListener('click', clearLeaderboard);
     document.getElementById('select-library-btn').addEventListener('click', showLibrarySelector);
     document.getElementById('back-from-library-btn').addEventListener('click', hideLibrarySelector);
