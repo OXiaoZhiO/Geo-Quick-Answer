@@ -14,6 +14,7 @@ body {
     padding: 20px;
     color: #333;
     overflow-x: hidden;
+    position: relative;
 }
 
 /* 动态背景 */
@@ -35,70 +36,246 @@ body {
     100% { background-position: 0% 50%; }
 }
 
+/* 加载中界面 */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 全局控制按钮 */
+.global-controls {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.control-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50px;
+    padding: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    overflow: hidden;
+}
+
+.control-btn span {
+    opacity: 0;
+    transition: all 0.3s ease;
+    margin-left: 0;
+    white-space: nowrap;
+}
+
+.control-btn:hover {
+    width: auto;
+    padding: 10px 15px;
+}
+
+.control-btn:hover span {
+    opacity: 1;
+    margin-left: 10px;
+}
+
+/* 通知弹窗 */
+.notification-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification {
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 300px;
+    max-width: 400px;
+    animation: slideIn 0.3s ease-out forwards, fadeOut 0.3s ease-in forwards 2.7s;
+}
+
+.notification.success {
+    background-color: #2ecc71;
+}
+
+.notification.error {
+    background-color: #e74c3c;
+}
+
+.notification.info {
+    background-color: #3498db;
+}
+
+.notification.warning {
+    background-color: #f39c12;
+}
+
+.notification .close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 1.2em;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* 容器样式 */
 #app {
     width: 100%;
     max-width: 1200px;
 }
 
+/* 屏幕样式 */
 .screen {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 
 .hidden {
     display: none !important;
 }
 
+/* 卡片样式 */
 .card {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 900px;
+    max-width: 800px;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
-h1, h2, h3, p {
+/* 游戏卡片特殊样式 */
+.game-card {
+    max-width: 1200px;
+}
+
+/* 知识卡片 */
+.knowledge-card {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(245, 245, 245, 0.8);
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.knowledge-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.knowledge-card h3 {
     margin-bottom: 15px;
+    text-align: center;
+}
+
+#knowledge-content {
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+/* 标题样式 */
+h1, h2, h3 {
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #3498db, #9b59b6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     text-align: center;
 }
 
 h1 {
     font-size: 2.5rem;
-    background: linear-gradient(45deg, #3498db, #9b59b6);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 h2 {
     font-size: 1.8rem;
-    color: #2c3e50;
 }
 
+h3 {
+    font-size: 1.4rem;
+}
+
+/* 按钮样式 */
 .button-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
     justify-content: center;
-    margin-top: 20px;
+    gap: 15px;
+    margin: 25px 0;
 }
 
 .primary-btn, .secondary-btn {
     padding: 12px 25px;
     border: none;
-    border-radius: 30px;
-    cursor: pointer;
+    border-radius: 50px;
     font-size: 1rem;
     font-weight: 600;
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 10px;
     transition: all 0.3s ease;
 }
 
@@ -114,7 +291,7 @@ h2 {
 
 .secondary-btn {
     background: linear-gradient(45deg, #ecf0f1, #bdc3c7);
-    color: #2c3e50;
+    color: #333;
 }
 
 .secondary-btn:hover {
@@ -122,53 +299,9 @@ h2 {
     box-shadow: 0 5px 15px rgba(189, 195, 199, 0.4);
 }
 
-/* 游戏界面样式 */
-.status-bar {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.03);
-    border-radius: 12px;
-}
-
-.status-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 500;
-}
-
-.progress-container {
-    width: 100%;
-    height: 10px;
-    background: #e0e0e0;
-    border-radius: 5px;
-    margin-bottom: 25px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 100%;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #2ecc71, #3498db);
-    width: 100%;
-    transition: width 1s linear;
-}
-
-.game-content {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-}
-
-.question-section {
-    flex: 1;
-    min-width: 300px;
+/* 题目区域样式 */
+#question-area {
+    margin: 25px 0;
 }
 
 #question {
@@ -177,31 +310,31 @@ h2 {
     padding: 15px;
     background: rgba(0, 0, 0, 0.03);
     border-radius: 12px;
-    font-weight: 500;
+    text-align: center;
 }
 
 #options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
 }
 
 .option {
     padding: 15px;
     background: white;
-    border: 2px solid #ddd;
+    border: 2px solid #ecf0f1;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 1rem;
-    text-align: left;
+    text-align: center;
 }
 
 .option:hover {
+    background: rgba(52, 152, 219, 0.1);
     border-color: #3498db;
-    background: rgba(52, 152, 219, 0.05);
-    transform: translateX(5px);
+    transform: translateY(-2px);
 }
 
 .option.correct {
@@ -214,6 +347,68 @@ h2 {
     border-color: #e74c3c;
 }
 
+/* 进度条样式 */
+.progress-container {
+    width: 100%;
+    height: 10px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #2ecc71, #3498db, #9b59b6);
+    background-size: 200% 100%;
+    transition: width 1s linear;
+    animation: gradientProgress 3s ease infinite;
+}
+
+@keyframes gradientProgress {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 状态条样式 */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.status-item {
+    background: rgba(0, 0, 0, 0.03);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 游戏内容布局 */
+.game-content {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.question-section {
+    flex: 1;
+    min-width: 300px;
+}
+
 /* 反馈和解析样式 */
 #feedback {
     padding: 15px;
@@ -221,7 +416,7 @@ h2 {
     margin-top: 15px;
     font-weight: 500;
     transition: all 0.3s ease;
-    text-align: left;
+    text-align: center;
 }
 
 .feedback-correct {
@@ -247,39 +442,56 @@ h2 {
 }
 
 .explanation-card {
-    max-height: 450px;
+    max-height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+#explanation-list {
     overflow-y: auto;
-    text-align: left;
-    padding: 20px;
+    flex-grow: 1;
+    margin-top: 15px;
 }
 
 .explanation-item {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
+    padding: 15px;
+    border-bottom: 1px solid #ecf0f1;
+    text-align: left;
+    white-space: pre-line;
 }
 
 .explanation-item:last-child {
     border-bottom: none;
 }
 
-.explanation-correct {
-    color: #27ae60;
-    font-weight: 500;
-}
-
-.explanation-incorrect {
-    color: #c0392b;
-    font-weight: 500;
-}
-
 /* 排行榜样式 */
+.leaderboard-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.leaderboard-card {
+    flex: 1;
+    min-width: 300px;
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.leaderboard-explanation {
+    flex: 1;
+    min-width: 300px;
+    max-height: 600px;
+}
+
 .score-list {
     list-style: none;
     margin: 20px 0;
-    max-height: 350px;
+    max-height: 450px;
     overflow-y: auto;
     padding-right: 10px;
+    flex-grow: 1;
 }
 
 .score-list li {
@@ -327,7 +539,7 @@ h2 {
 }
 
 .library-name-small {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     color: #7f8c8d;
     margin-top: 3px;
 }
@@ -414,6 +626,7 @@ h2 {
     left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
     background: linear-gradient(45deg, #f1c40f, #f39c12);
+    background-size: 200% 200%;
     color: white;
     padding: 30px 60px;
     border-radius: 15px;
@@ -422,14 +635,14 @@ h2 {
     z-index: 1001;
     box-shadow: 0 10px 30px rgba(241, 196, 15, 0.5);
     opacity: 0;
-    transition: all 0.5s ease;
-    text-align: center;
+    transition: all 0.3s ease;
+    animation: gradient 5s ease infinite;
 }
 
 .celebration:not(.hidden) {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
-    animation: pulse 3s infinite alternate;
+    animation: pulse 2s infinite alternate, gradient 5s ease infinite;
 }
 
 @keyframes pulse {
@@ -488,7 +701,7 @@ h2 {
     color: #7f8c8d;
 }
 
-/* 文件上传样式 */
+/* 文件上传区域样式 */
 .file-upload-section {
     margin: 20px 0;
     padding: 20px;
@@ -501,37 +714,30 @@ h2 {
     background: rgba(0, 0, 0, 0.05);
 }
 
-.custom-file-upload {
-    position: relative;
+.upload-area {
+    border: 2px dashed #bdc3c7;
+    border-radius: 10px;
+    padding: 30px;
     margin: 15px 0;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: #3498db;
+    background: rgba(52, 152, 219, 0.05);
 }
 
 #library-file-input {
     display: none;
 }
 
-.file-label {
-    display: block;
-    padding: 20px;
-    width: 100%;
-    border: 2px dashed #bdc3c7;
-    border-radius: 12px;
-    text-align: center;
+.browse-link {
+    color: #3498db;
+    font-weight: 600;
+    text-decoration: underline;
     cursor: pointer;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.5);
-    font-weight: 500;
-    color: #2c3e50;
-}
-
-.file-label:hover {
-    border-color: #3498db;
-    background: rgba(52, 152, 219, 0.05);
-}
-
-.file-upload-section.dragover .file-label {
-    border-color: #2ecc71;
-    background: rgba(46, 204, 113, 0.1);
 }
 
 .small-text {
@@ -544,218 +750,23 @@ h2 {
 .final-score {
     font-size: 3rem;
     font-weight: bold;
+    margin: 20px 0;
     background: linear-gradient(45deg, #e74c3c, #f39c12, #f1c40f, #2ecc71, #3498db, #9b59b6);
     background-size: 300% 300%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: scoreGradient 8s ease infinite;
-    margin: 20px 0;
-}
-
-@keyframes scoreGradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* 提示弹窗样式 */
-.toast-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.toast {
-    padding: 12px 20px;
-    border-radius: 8px;
-    color: white;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
-    max-width: 350px;
-}
-
-.toast-success {
-    background: linear-gradient(45deg, #27ae60, #2ecc71);
-}
-
-.toast-error {
-    background: linear-gradient(45deg, #c0392b, #e74c3c);
-}
-
-.toast-info {
-    background: linear-gradient(45deg, #2980b9, #3498db);
-}
-
-.toast-warning {
-    background: linear-gradient(45deg, #d35400, #f39c12);
-}
-
-.toast-close {
-    cursor: pointer;
-    margin-left: auto;
-    font-weight: bold;
-}
-
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes fadeOut {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(100%); opacity: 0; }
-}
-
-/* 加载中界面 */
-.loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid rgba(52, 152, 219, 0.2);
-    border-top: 5px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 15px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.loading-content p {
-    font-size: 1.2rem;
-    color: #2c3e50;
+    animation: gradient 8s ease infinite;
     text-align: center;
-}
-
-/* 悬浮控制按钮 */
-.floating-controls {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.float-btn {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    padding: 10px;
-    border-radius: 50px;
-    border: none;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 40px;
-}
-
-.float-btn:hover {
-    width: auto;
-    padding: 10px 15px;
-    gap: 10px;
-}
-
-.float-btn i {
-    font-size: 1.2rem;
-    color: #3498db;
-}
-
-.float-btn-text {
-    font-weight: 500;
-    color: #2c3e50;
-    display: none;
-}
-
-.float-btn:hover .float-btn-text {
-    display: inline;
-}
-
-/* 知识卡片样式 */
-.knowledge-card {
-    margin-top: 30px;
-    padding: 20px;
-    background: rgba(52, 152, 219, 0.05);
-    border-radius: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: left;
-}
-
-.knowledge-card:hover {
-    background: rgba(52, 152, 219, 0.1);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
-}
-
-.knowledge-card h3 {
-    margin-bottom: 15px;
-    color: #3498db;
-    text-align: left;
-}
-
-.knowledge-content {
-    line-height: 1.6;
-    color: #2c3e50;
-}
-
-.knowledge-content .answer {
-    color: #27ae60;
-    font-weight: 500;
-    margin-top: 10px;
-}
-
-.knowledge-content .explanation {
-    color: #7f8c8d;
-    font-size: 0.9rem;
-    margin-top: 10px;
-}
-
-/* 排行榜容器 */
-.leaderboard-container {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-}
-
-.leaderboard-card {
-    flex: 1;
-}
-
-.leaderboard-explanation {
-    flex: 1;
-    max-height: 550px;
 }
 
 /* 响应式调整 */
 @media (max-width: 899px) {
-    .game-content {
+    body {
+        padding-bottom: 60px;
+    }
+    
+    .game-content, .leaderboard-container {
         flex-direction: column;
     }
     
@@ -778,19 +789,12 @@ h2 {
         flex-direction: column;
     }
     
-    .leaderboard-container {
-        flex-direction: column;
-    }
-    
-    .leaderboard-explanation {
+    .explanation-card {
         max-height: 300px;
     }
     
-    body {
-        padding: 10px;
-    }
-    
-    .final-score {
-        font-size: 2.5rem;
+    .notification {
+        min-width: auto;
+        max-width: calc(100% - 40px);
     }
 }
