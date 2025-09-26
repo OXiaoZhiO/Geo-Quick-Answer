@@ -9,29 +9,30 @@
 </head>
 <body>
     <!-- 加载中界面 -->
-    <div id="loading-screen" class="loading-screen">
+    <div id="loading-screen" class="loading-screen hidden">
         <div class="loading-content">
             <div class="spinner"></div>
-            <p>加载中...</p>
+            <p id="loading-text">加载中...</p>
+            <p id="loading-library" class="loading-library">正在加载题库...</p>
         </div>
     </div>
     
     <!-- 动态背景元素 -->
     <div class="bg-animation"></div>
     
-    <!-- 全局控制按钮 -->
-    <div id="global-controls" class="global-controls">
-        <button id="global-back-btn" class="control-btn">
-            <i class="fas fa-arrow-left"></i>
-            <span>返回</span>
+    <!-- 控制按钮区域 -->
+    <div id="control-buttons" class="control-buttons">
+        <button id="control-back-btn" class="control-btn hidden">
+            <i class="fas fa-home"></i>
+            <span class="control-text">返回主菜单</span>
         </button>
-        <button id="global-clear-btn" class="control-btn hidden">
+        <button id="control-clear-btn" class="control-btn hidden">
             <i class="fas fa-trash"></i>
-            <span>清空记录</span>
+            <span class="control-text">清空记录</span>
         </button>
     </div>
     
-    <!-- 提示弹窗容器 -->
+    <!-- 通知提示区域 -->
     <div id="notification-container" class="notification-container"></div>
     
     <div id="app">
@@ -65,7 +66,7 @@
                 <div id="knowledge-card" class="knowledge-card">
                     <h3>知识卡片</h3>
                     <div id="knowledge-content">
-                        <p>加载知识点中...</p>
+                        <p>请先选择一个题库</p>
                     </div>
                 </div>
             </div>
@@ -83,18 +84,27 @@
                 
                 <div id="local-file-upload" class="file-upload-section">
                     <p>或选择本地题库文件：</p>
-                    <div class="upload-area">
+                    <div class="upload-area" id="upload-area">
                         <input type="file" id="library-file-input" accept=".json" />
-                        <p>拖放JSON文件到此处，或<span class="browse-link">浏览文件</span></p>
+                        <div class="upload-text">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>拖放JSON文件到此处或点击选择</p>
+                        </div>
                     </div>
                     <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
+                </div>
+                
+                <div class="button-group">
+                    <button id="back-from-library-btn" class="primary-btn">
+                        <i class="fas fa-arrow-left"></i> 返回
+                    </button>
                 </div>
             </div>
         </div>
         
         <!-- 游戏界面 -->
         <div id="game" class="screen hidden">
-            <div class="card game-card">
+            <div class="card">
                 <div class="status-bar">
                     <div class="status-item">
                         <i class="fas fa-clock"></i> 剩余时间: <span id="time-left">60</span>秒
@@ -124,6 +134,7 @@
                     
                     <div class="explanation-section">
                         <div class="card explanation-card">
+                            <!-- 解析列表将在这里动态生成 -->
                             <h3>答题记录</h3>
                             <div id="explanation-list"></div>
                         </div>
@@ -153,7 +164,7 @@
                 <div class="card explanation-card leaderboard-explanation">
                     <h3>答题解析</h3>
                     <div id="leaderboard-explanation-content">
-                        <p>选择一条记录查看解析</p>
+                        <p>请选择一条记录查看解析</p>
                     </div>
                 </div>
             </div>
@@ -166,11 +177,19 @@
                 <p>你的最终得分是:</p>
                 <p class="final-score" id="final-score">0</p>
                 <p id="record-message" class="hidden">恭喜你创造了新纪录！</p>
-                
                 <p>答题统计: <span id="quiz-completion-time">0/0/0-0%</span></p>
                 
                 <h3>当前题库排行榜</h3>
                 <ul id="game-over-leaderboard" class="score-list"></ul>
+                
+                <div class="button-group">
+                    <button id="restart-game-btn" class="primary-btn">
+                        <i class="fas fa-redo"></i> 返回主菜单
+                    </button>
+                    <button id="clear-records-btn" class="secondary-btn">
+                        <i class="fas fa-trash"></i> 清空记录
+                    </button>
+                </div>
             </div>
         </div>
         
