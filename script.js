@@ -109,7 +109,7 @@ async function fetchDataFolderFiles() {
     try {
         // 注意：在实际部署中，这需要服务器支持目录列表或使用特定的API
         // 这里假设我们已经知道文件名，实际应用中可能需要后端支持
-        const possibleFiles = ['1.json', '2.json', '3.json'];
+        const possibleFiles = ['1.json', '2.json', '3.json', '4.json', '5.json'];
         const foundFiles = [];
         
         // 检查哪些文件实际存在
