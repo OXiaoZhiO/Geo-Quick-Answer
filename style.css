@@ -14,7 +14,6 @@ body {
     padding: 20px;
     color: #333;
     overflow-x: hidden;
-    position: relative;
 }
 
 /* 动态背景 */
@@ -38,7 +37,7 @@ body {
 
 #app {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1200px;
 }
 
 .screen {
@@ -56,11 +55,11 @@ body {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
     width: 100%;
-    max-width: 800px;
-    margin-bottom: 20px;
+    max-width: 900px;
     text-align: center;
+    margin-bottom: 20px;
 }
 
 h1, h2, h3, p {
@@ -82,36 +81,25 @@ h2 {
     color: #2c3e50;
 }
 
-h3 {
-    font-size: 1.3rem;
-    color: #34495e;
-}
-
-p {
-    font-size: 1rem;
-    line-height: 1.6;
-}
-
 .button-group {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
     justify-content: center;
-    margin: 20px 0;
+    margin-top: 20px;
 }
 
 .primary-btn, .secondary-btn {
     padding: 12px 25px;
     border: none;
     border-radius: 30px;
+    cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
+    transition: all 0.3s ease;
 }
 
 .primary-btn {
@@ -121,7 +109,7 @@ p {
 
 .primary-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
 }
 
 .secondary-btn {
@@ -131,7 +119,7 @@ p {
 
 .secondary-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(189, 195, 199, 0.3);
+    box-shadow: 0 5px 15px rgba(189, 195, 199, 0.4);
 }
 
 /* 游戏界面样式 */
@@ -139,7 +127,7 @@ p {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
-    padding: 10px;
+    padding: 15px;
     background: rgba(0, 0, 0, 0.03);
     border-radius: 12px;
 }
@@ -147,14 +135,14 @@ p {
 .status-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     font-weight: 500;
 }
 
 .progress-container {
     width: 100%;
     height: 10px;
-    background-color: #e0e0e0;
+    background: #e0e0e0;
     border-radius: 5px;
     margin-bottom: 25px;
     overflow: hidden;
@@ -163,23 +151,29 @@ p {
 .progress-bar {
     width: 100%;
     height: 100%;
-    position: relative;
 }
 
 .progress-fill {
     height: 100%;
-    width: 100%;
     background: linear-gradient(90deg, #2ecc71, #3498db);
+    width: 100%;
     transition: width 1s linear;
 }
 
+.game-content {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
 .question-section {
-    margin-bottom: 20px;
+    flex: 1;
+    min-width: 300px;
 }
 
 #question {
     font-size: 1.3rem;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     padding: 15px;
     background: rgba(0, 0, 0, 0.03);
     border-radius: 12px;
@@ -187,37 +181,37 @@ p {
 }
 
 #options {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 12px;
     margin-bottom: 20px;
 }
 
-.option-btn {
-    padding: 12px 15px;
-    border: 2px solid #bdc3c7;
-    border-radius: 12px;
+.option {
+    padding: 15px;
     background: white;
+    border: 2px solid #ddd;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-align: left;
     font-size: 1rem;
+    text-align: left;
 }
 
-.option-btn:hover {
+.option:hover {
     border-color: #3498db;
     background: rgba(52, 152, 219, 0.05);
-    transform: translateX(3px);
+    transform: translateX(5px);
 }
 
-.option-btn.correct {
+.option.correct {
     background: rgba(46, 204, 113, 0.2);
-    border-color: #27ae60;
+    border-color: #2ecc71;
 }
 
-.option-btn.incorrect {
+.option.incorrect {
     background: rgba(231, 76, 60, 0.2);
-    border-color: #c0392b;
+    border-color: #e74c3c;
 }
 
 /* 反馈和解析样式 */
@@ -227,6 +221,7 @@ p {
     margin-top: 15px;
     font-weight: 500;
     transition: all 0.3s ease;
+    text-align: left;
 }
 
 .feedback-correct {
@@ -246,11 +241,43 @@ p {
     to { opacity: 1; transform: translateY(0); }
 }
 
+.explanation-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.explanation-card {
+    max-height: 450px;
+    overflow-y: auto;
+    text-align: left;
+    padding: 20px;
+}
+
+.explanation-item {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.explanation-item:last-child {
+    border-bottom: none;
+}
+
+.explanation-correct {
+    color: #27ae60;
+    font-weight: 500;
+}
+
+.explanation-incorrect {
+    color: #c0392b;
+    font-weight: 500;
+}
+
 /* 排行榜样式 */
 .score-list {
     list-style: none;
     margin: 20px 0;
-    max-height: 400px;
+    max-height: 350px;
     overflow-y: auto;
     padding-right: 10px;
 }
@@ -300,7 +327,7 @@ p {
 }
 
 .library-name-small {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #7f8c8d;
     margin-top: 3px;
 }
@@ -461,7 +488,7 @@ p {
     color: #7f8c8d;
 }
 
-/* 文件上传区域样式 */
+/* 文件上传样式 */
 .file-upload-section {
     margin: 20px 0;
     padding: 20px;
@@ -474,42 +501,37 @@ p {
     background: rgba(0, 0, 0, 0.05);
 }
 
-.custom-upload-area {
+.custom-file-upload {
     position: relative;
     margin: 15px 0;
-    border: 2px dashed #bdc3c7;
-    border-radius: 12px;
-    padding: 30px;
-    text-align: center;
-    transition: all 0.3s ease;
-    cursor: pointer;
 }
 
-.custom-upload-area:hover, .custom-upload-area.dragover {
+#library-file-input {
+    display: none;
+}
+
+.file-label {
+    display: block;
+    padding: 20px;
+    width: 100%;
+    border: 2px dashed #bdc3c7;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.file-label:hover {
     border-color: #3498db;
     background: rgba(52, 152, 219, 0.05);
 }
 
-#library-file-input {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-}
-
-.upload-text {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.upload-text i {
-    font-size: 2rem;
-    color: #3498db;
+.file-upload-section.dragover .file-label {
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.1);
 }
 
 .small-text {
@@ -518,7 +540,7 @@ p {
     text-align: center;
 }
 
-/* 最终得分样式 */
+/* 游戏结束样式 */
 .final-score {
     font-size: 3rem;
     font-weight: bold;
@@ -538,7 +560,7 @@ p {
 }
 
 /* 提示弹窗样式 */
-#notification-container {
+.toast-container {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -548,42 +570,38 @@ p {
     gap: 10px;
 }
 
-.notification {
-    padding: 15px 20px;
-    border-radius: 10px;
+.toast {
+    padding: 12px 20px;
+    border-radius: 8px;
     color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     gap: 10px;
-    min-width: 300px;
-    max-width: 400px;
     animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    max-width: 350px;
 }
 
-.notification.success {
+.toast-success {
     background: linear-gradient(45deg, #27ae60, #2ecc71);
 }
 
-.notification.error {
+.toast-error {
     background: linear-gradient(45deg, #c0392b, #e74c3c);
 }
 
-.notification.warning {
-    background: linear-gradient(45deg, #f39c12, #f1c40f);
-}
-
-.notification.info {
+.toast-info {
     background: linear-gradient(45deg, #2980b9, #3498db);
 }
 
-.notification .close-btn {
-    margin-left: auto;
-    background: none;
-    border: none;
-    color: white;
+.toast-warning {
+    background: linear-gradient(45deg, #d35400, #f39c12);
+}
+
+.toast-close {
     cursor: pointer;
-    font-size: 1.2rem;
+    margin-left: auto;
+    font-weight: bold;
 }
 
 @keyframes slideIn {
@@ -592,8 +610,43 @@ p {
 }
 
 @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* 加载中界面 */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(52, 152, 219, 0.2);
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-content p {
+    font-size: 1.2rem;
+    color: #2c3e50;
 }
 
 /* 悬浮控制按钮 */
@@ -601,21 +654,21 @@ p {
     position: fixed;
     top: 20px;
     left: 20px;
-    z-index: 900;
+    z-index: 100;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.floating-btn {
+.float-btn {
     display: flex;
     align-items: center;
     gap: 0;
     padding: 10px 10px;
-    background: white;
+    border-radius: 50px;
     border: none;
-    border-radius: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
@@ -623,26 +676,20 @@ p {
     width: 40px;
 }
 
-.floating-btn:hover {
+.float-btn:hover {
     width: auto;
-    gap: 10px;
     padding: 10px 15px;
+    gap: 10px;
 }
 
-.floating-btn i {
+.float-btn i {
     font-size: 1.2rem;
     color: #3498db;
 }
 
-.floating-text {
+.float-btn-text {
     font-weight: 500;
     color: #2c3e50;
-    opacity: 0;
-    transition: opacity 0.3s ease 0.1s;
-}
-
-.floating-btn:hover .floating-text {
-    opacity: 1;
 }
 
 /* 知识卡片样式 */
@@ -662,76 +709,49 @@ p {
     box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
 }
 
-.knowledge-content {
-    margin-top: 10px;
-    line-height: 1.8;
-}
-
-.knowledge-content p {
+.knowledge-card h3 {
+    margin-bottom: 15px;
+    color: #3498db;
     text-align: left;
-    margin-bottom: 10px;
 }
 
-/* 游戏和排行榜容器 */
-.game-container, .leaderboard-container {
+.knowledge-content {
+    line-height: 1.6;
+    color: #2c3e50;
+}
+
+.knowledge-content .answer {
+    color: #27ae60;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.knowledge-content .explanation {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+/* 排行榜容器 */
+.leaderboard-container {
     display: flex;
     gap: 20px;
     width: 100%;
 }
 
-.question-card, .leaderboard-card {
+.leaderboard-card {
     flex: 1;
 }
 
-.explanation-card, .leaderboard-explanation-card {
-    flex: 0 0 400px;
-    max-height: 700px;
-    display: flex;
-    flex-direction: column;
-}
-
-.explanation-section {
+.leaderboard-explanation {
     flex: 1;
-    overflow-y: auto;
-    text-align: left;
-}
-
-.explanation-item {
-    padding: 15px;
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.03);
-    margin-bottom: 15px;
-    line-height: 1.6;
-}
-
-.explanation-item.correct {
-    border-left: 4px solid #27ae60;
-}
-
-.explanation-item.incorrect {
-    border-left: 4px solid #e74c3c;
-}
-
-.explanation-item div {
-    margin-bottom: 8px;
-}
-
-.selected-explanation {
-    text-align: left;
-    padding: 15px;
-    line-height: 1.6;
+    max-height: 550px;
 }
 
 /* 响应式调整 */
 @media (max-width: 899px) {
-    .game-container, .leaderboard-container {
+    .game-content {
         flex-direction: column;
-    }
-    
-    .explanation-card, .leaderboard-explanation-card {
-        flex: none;
-        max-height: 300px;
-        width: 100%;
     }
     
     .status-bar {
@@ -753,12 +773,19 @@ p {
         flex-direction: column;
     }
     
-    #options {
-        grid-template-columns: 1fr;
+    .leaderboard-container {
+        flex-direction: column;
     }
     
-    .notification {
-        min-width: auto;
-        max-width: calc(100% - 40px);
+    .leaderboard-explanation {
+        max-height: 300px;
+    }
+    
+    body {
+        padding: 10px;
+    }
+    
+    .final-score {
+        font-size: 2.5rem;
     }
 }
