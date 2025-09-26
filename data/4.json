@@ -1,0 +1,405 @@
+{
+  "name": "异域风情-英语-中阶",
+  "questions": [
+    {
+      "id": 1,
+      "question": "“重要的”对应的英文单词是？",
+      "options": ["important", "necessary", "different", "difficult", "interesting", "exciting"],
+      "answer": "important",
+      "difficulty": 1,
+      "explanation": "important是形容词（adj.），意为“重要的”，核心高频词汇。常见搭配：important information（重要信息）、be important to sb（对某人重要）；例句：English is important for high school students.（英语对高中生很重要。）"
+    },
+    {
+      "id": 2,
+      "question": "“发展；培养”对应的英文单词是？",
+      "options": ["develop", "improve", "increase", "reduce", "create", "support"],
+      "answer": "develop",
+      "difficulty": 2,
+      "explanation": "develop是动词（v.），意为“发展；培养”，高中核心考点。常见搭配：develop a habit（培养习惯）、develop economy（发展经济）、develop skills（提升技能）；例句：She plans to develop her interest in music.（她计划培养自己的音乐兴趣。）"
+    },
+    {
+      "id": 3,
+      "question": "“快速地”对应的英文单词是？",
+      "options": ["quickly", "slowly", "carefully", "happily", "angrily", "quietly"],
+      "answer": "quickly",
+      "difficulty": 1,
+      "explanation": "quickly是副词（adv.），由形容词quick变形而来，意为“快速地”，修饰动词。常见搭配：run quickly（跑得快）、finish quickly（快速完成）；例句：He finished his homework quickly and went out.（他快速做完作业，然后出去了。）"
+    },
+    {
+      "id": 4,
+      "question": "在句子“I need to ______ with my parents about my study plan.”中，填入合适的单词是？",
+      "options": ["communicate", "talk", "speak", "tell", "say", "discuss"],
+      "answer": "communicate",
+      "difficulty": 2,
+      "explanation": "communicate是动词（v.），意为“交流；沟通”，高频考点，强调“有目的的信息传递”。固定搭配：communicate with sb（与某人沟通）；例句：Teachers should communicate more with students.（老师应该多和学生沟通。）其他选项中，talk虽可接with，但communicate更贴合“针对具体事情（如学习计划）的深度沟通”语境。"
+    },
+    {
+      "id": 5,
+      "question": "“避免；避开”对应的英文单词是？",
+      "options": ["avoid", "escape", "prevent", "stop", "refuse", "ignore"],
+      "answer": "avoid",
+      "difficulty": 2,
+      "explanation": "avoid是动词（v.），意为“避免；避开”，关键用法是“后接动名词（doing）”。常见搭配：avoid mistakes（避免错误）、avoid doing sth（避免做某事）；例句：You should avoid eating too much junk food.（你应该避免吃太多垃圾食品。）"
+    },
+    {
+      "id": 6,
+      "question": "“好处；益处”对应的英文单词是？",
+      "options": ["benefit", "advantage", "profit", "interest", "value", "gain"],
+      "answer": "benefit",
+      "difficulty": 2,
+      "explanation": "benefit可作名词（n.）或动词（v.），此处考名词含义“好处；益处”。常见搭配：the benefit of...（……的好处）、get benefit from（从……中获益）；例句：Reading books brings many benefits to us.（读书给我们带来很多好处。）"
+    },
+    {
+      "id": 7,
+      "question": "“考虑；认为”对应的英文单词是？",
+      "options": ["consider", "think", "believe", "regard", "suppose", "guess"],
+      "answer": "consider",
+      "difficulty": 2,
+      "explanation": "consider是动词（v.），意为“考虑；认为”，高频考点，用法为“consider doing sth（考虑做某事）”或“consider sb/sth + adj.（认为某人/某物……）”。例句：I am considering studying abroad.（我正在考虑出国留学。）"
+    },
+    {
+      "id": 8,
+      "question": "“成功；成就”对应的英文单词是？",
+      "options": ["success", "achievement", "victory", "progress", "result", "goal"],
+      "answer": "success",
+      "difficulty": 2,
+      "explanation": "success是名词（n.），意为“成功；成就”，其形容词形式为successful，动词形式为succeed。常见搭配：achieve success（获得成功）、the success of...（……的成功）；例句：Hard work is the key to success.（努力是成功的关键。）"
+    },
+    {
+      "id": 9,
+      "question": "在句子“She ______ to finish the project on time last week.”中，填入合适的单词是？",
+      "options": ["managed", "tried", "wanted", "hoped", "planned", "decided"],
+      "answer": "managed",
+      "difficulty": 2,
+      "explanation": "managed是动词manage的过去式，意为“设法做到；成功完成”，强调“克服困难后达成目标”。固定搭配：manage to do sth（设法做成某事）；例句：He managed to solve the difficult math problem.（他设法解出了那道难题。）其他选项中，try表示“尝试”，不一定成功，不符合“last week”（已完成）的语境。"
+    },
+    {
+      "id": 10,
+      "question": "“环境”对应的英文单词是？",
+      "options": ["environment", "surrounding", "condition", "situation", "setting", "background"],
+      "answer": "environment",
+      "difficulty": 2,
+      "explanation": "environment是名词（n.），意为“环境”，泛指“自然环境或社会环境”，高中高频词。常见搭配：protect the environment（保护环境）、living environment（生活环境）；例句：We should take action to improve the environment.（我们应该采取行动改善环境。）"
+    },
+    {
+      "id": 11,
+      "question": "“责任；职责”对应的英文单词是？",
+      "options": ["responsibility", "duty", "task", "job", "role", "obligation"],
+      "answer": "responsibility",
+      "difficulty": 3,
+      "explanation": "responsibility是名词（n.），意为“责任；职责”，强调“个人主动承担的责任”。常见搭配：take responsibility for（为……承担责任）、sense of responsibility（责任感）；例句：Everyone should take responsibility for their own actions.（每个人都应该为自己的行为负责。）"
+    },
+    {
+      "id": 12,
+      "question": "“提高；改善”对应的英文单词是？",
+      "options": ["improve", "develop", "increase", "raise", "promote", "enhance"],
+      "answer": "improve",
+      "difficulty": 2,
+      "explanation": "improve是动词（v.），意为“提高；改善”，可接“技能、成绩、环境”等名词。常见搭配：improve English（提高英语水平）、improve living conditions（改善生活条件）；例句：Practice can help you improve your speaking skills.（练习能帮你提高口语技能。）"
+    },
+    {
+      "id": 13,
+      "question": "“挑战；质疑”对应的英文单词是？",
+      "options": ["challenge", "question", "doubt", "test", "examine", "oppose"],
+      "answer": "challenge",
+      "difficulty": 2,
+      "explanation": "challenge可作动词（v.）或名词（n.），此处考“挑战”含义。常见搭配：face a challenge（面对挑战）、challenge oneself（挑战自我）；例句：Learning a new language is a big challenge.（学一门新语言是个大挑战。）"
+    },
+    {
+      "id": 14,
+      "question": "在句子“Please ______ your attention on the main points of the passage.”中，填入合适的单词是？",
+      "options": ["focus", "pay", "put", "give", "fix", "direct"],
+      "answer": "focus",
+      "difficulty": 2,
+      "explanation": "focus是动词（v.），意为“集中（注意力）”，固定搭配：focus attention on（把注意力集中在……上）。例句：Students should focus on their studies in class.（学生在课堂上应该集中注意力学习。）其他选项中，pay虽可接attention，但搭配为“pay attention to”，需注意介词差异。"
+    },
+    {
+      "id": 15,
+      "question": "“机会；机遇”对应的英文单词是？",
+      "options": ["opportunity", "chance", "occasion", "moment", "time", "possibility"],
+      "answer": "opportunity",
+      "difficulty": 2,
+      "explanation": "opportunity是名词（n.），意为“机会；机遇”，比chance更正式，强调“难得的、有价值的机会”。常见搭配：seize an opportunity（抓住机会）、have the opportunity to do sth（有机会做某事）；例句：She got the opportunity to study in a famous university.（她获得了在名牌大学学习的机会。）"
+    },
+    {
+      "id": 16,
+      "question": "“依靠；依赖”对应的英文单词是？",
+      "options": ["depend", "rely", "trust", "count", "lean", "rest"],
+      "answer": "depend",
+      "difficulty": 2,
+      "explanation": "depend是动词（v.），意为“依靠；依赖”，固定搭配：depend on（依靠；取决于）。例句：Children depend on their parents when they are young.（孩子小时候依赖父母。）也可表示“取决于”，如：The result depends on your effort.（结果取决于你的努力。）"
+    },
+    {
+      "id": 17,
+      "question": "“压力；紧张”对应的英文单词是？",
+      "options": ["pressure", "stress", "tension", "anxiety", "worry", "nervousness"],
+      "answer": "pressure",
+      "difficulty": 2,
+      "explanation": "pressure是名词（n.），意为“压力；紧张”，可指“学业、工作或生活压力”。常见搭配：under pressure（处于压力之下）、put pressure on sb（给某人施压）；例句：Many students feel under pressure before exams.（很多学生考试前感到有压力。）"
+    },
+    {
+      "id": 18,
+      "question": "“解决；解答”对应的英文单词是？",
+      "options": ["solve", "settle", "resolve", "answer", "deal", "handle"],
+      "answer": "solve",
+      "difficulty": 2,
+      "explanation": "solve是动词（v.），意为“解决；解答”，常接“问题、难题”等名词。常见搭配：solve a problem（解决问题）、solve a puzzle（解开谜题）；例句：He spent two hours solving the math problem.（他花了两小时解那道数学题。）"
+    },
+    {
+      "id": 19,
+      "question": "在句子“His ______ in music helped him win the competition.”中，填入合适的单词是？",
+      "options": ["talent", "skill", "ability", "gift", "knowledge", "experience"],
+      "answer": "talent",
+      "difficulty": 2,
+      "explanation": "talent是名词（n.），意为“天赋；才能”，强调“天生的能力”。常见搭配：talent in（在……方面的天赋）、have a talent for（有……的天赋）；例句：She has a talent for painting.（她有绘画天赋。）其他选项中，skill指“后天习得的技能”，不符合“帮助赢得比赛”的“先天优势”语境。"
+    },
+    {
+      "id": 20,
+      "question": "“重要性；意义”对应的英文单词是？",
+      "options": ["significance", "importance", "meaning", "value", "point", "purpose"],
+      "answer": "significance",
+      "difficulty": 3,
+      "explanation": "significance是名词（n.），意为“重要性；意义”，比importance更正式，常指“深层或长远的意义”。常见搭配：the significance of...（……的意义）、great significance（重大意义）；例句：We should understand the significance of protecting cultural heritage.（我们应该理解保护文化遗产的意义。）"
+    },
+    {
+      "id": 21,
+      "question": "“鼓励；激励”对应的英文单词是？",
+      "options": ["encourage", "inspire", "motivate", "cheer", "support", "stimulate"],
+      "answer": "encourage",
+      "difficulty": 2,
+      "explanation": "encourage是动词（v.），意为“鼓励；激励”，强调“给予信心，促使行动”。固定搭配：encourage sb to do sth（鼓励某人做某事）；例句：Teachers often encourage students to ask questions.（老师经常鼓励学生提问。）"
+    },
+    {
+      "id": 22,
+      "question": "“大约；近似”对应的英文单词是？",
+      "options": ["approximately", "about", "nearly", "almost", "roughly", "around"],
+      "answer": "approximately",
+      "difficulty": 2,
+      "explanation": "approximately是副词（adv.），意为“大约；近似”，比about更正式，常用于“数据、时间”等精确场景。例句：The project will take approximately three months to finish.（这个项目大约需要三个月完成。）"
+    },
+    {
+      "id": 23,
+      "question": "“贡献；捐献”对应的英文单词是？",
+      "options": ["contribute", "donate", "offer", "give", "provide", "supply"],
+      "answer": "contribute",
+      "difficulty": 2,
+      "explanation": "contribute是动词（v.），意为“贡献；捐献”，常见搭配：contribute to（为……做贡献；导致）、contribute money（捐款）；例句：Everyone can contribute to the development of society.（每个人都能为社会发展做贡献。）"
+    },
+    {
+      "id": 24,
+      "question": "在句子“Please ______ the book to the library after reading it.”中，填入合适的单词是？",
+      "options": ["return", "give", "send", "take", "bring", "pass"],
+      "answer": "return",
+      "difficulty": 1,
+      "explanation": "return是动词（v.），意为“归还；返回”，此处指“归还物品”。固定搭配：return sth to sb/sth（把某物归还给某人/某处）；例句：You must return the dictionary to me tomorrow.（你明天必须把字典还给我。）其他选项中，give虽可接to，但无“归还”的“原有归属”含义。"
+    },
+    {
+      "id": 25,
+      "question": "“态度；看法”对应的英文单词是？",
+      "options": ["attitude", "opinion", "view", "thought", "idea", "belief"],
+      "answer": "attitude",
+      "difficulty": 2,
+      "explanation": "attitude是名词（n.），意为“态度；看法”，强调“对人或事的行为倾向”。常见搭配：attitude towards（对……的态度）、positive attitude（积极态度）；例句：Her attitude towards work is very serious.（她对工作的态度很认真。）"
+    },
+    {
+      "id": 26,
+      "question": "“影响；作用”对应的英文单词是？",
+      "options": ["influence", "effect", "impact", "affect", "result", "consequence"],
+      "answer": "influence",
+      "difficulty": 2,
+      "explanation": "influence可作名词（n.）或动词（v.），此处考名词“影响；作用”，可指“正面或负面的潜移默化影响”。常见搭配：have an influence on（对……有影响）；例句：Parents have a great influence on their children.（父母对孩子有很大影响。）"
+    },
+    {
+      "id": 27,
+      "question": "“资源；财力”对应的英文单词是？",
+      "options": ["resource", "material", "asset", "wealth", "supply", "stock"],
+      "answer": "resource",
+      "difficulty": 2,
+      "explanation": "resource是名词（n.），意为“资源；财力”，常用复数形式resources，可指“自然资源、人力资源”等。常见搭配：natural resources（自然资源）、human resources（人力资源）；例句：We should use resources wisely to protect the earth.（我们应该合理利用资源保护地球。）"
+    },
+    {
+      "id": 28,
+      "question": "“目标；目的”对应的英文单词是？",
+      "options": ["goal", "aim", "target", "purpose", "objective", "intention"],
+      "answer": "goal",
+      "difficulty": 1,
+      "explanation": "goal是名词（n.），意为“目标；目的”，可指“短期或长期目标”，高频基础词。常见搭配：achieve a goal（实现目标）、set a goal（设定目标）；例句：My main goal this year is to improve my English.（我今年的主要目标是提高英语。）"
+    },
+    {
+      "id": 29,
+      "question": "在句子“ The new policy will ______ the lives of many people.”中，填入合适的单词是？",
+      "options": ["improve", "change", "affect", "influence", "benefit", "harm"],
+      "answer": "affect",
+      "difficulty": 2,
+      "explanation": "affect是动词（v.），意为“影响”，强调“对事物产生客观作用（可正可负）”，直接接宾语。例句：The bad weather affected our travel plans.（坏天气影响了我们的旅行计划。）其他选项中，influence更侧重“潜移默化的影响”，而此处“政策对生活”是直接作用，affect更合适。"
+    },
+    {
+      "id": 30,
+      "question": "“传统；惯例”对应的英文单词是？",
+      "options": ["tradition", "custom", "habit", "practice", "routine", "culture"],
+      "answer": "tradition",
+      "difficulty": 2,
+      "explanation": "tradition是名词（n.），意为“传统；惯例”，强调“代代相传的文化或习俗”。常见搭配：traditional culture（传统文化）、follow a tradition（遵循传统）；例句：It's a tradition to eat dumplings during the Spring Festival.（春节吃饺子是一种传统。）"
+    },
+    {
+      "id": 31,
+      "question": "“能力；才能”对应的英文单词是？",
+      "options": ["ability", "skill", "talent", "capability", "capacity", "gift"],
+      "answer": "ability",
+      "difficulty": 2,
+      "explanation": "ability是名词（n.），意为“能力；才能”，泛指“做某事的能力”，可通过后天培养获得。常见搭配：ability to do sth（做某事的能力）、develop ability（培养能力）；例句：She has the ability to speak three languages.（她有说三种语言的能力。）"
+    },
+    {
+      "id": 32,
+      "question": "“逐渐地；慢慢地”对应的英文单词是？",
+      "options": ["gradually", "slowly", "little by little", "step by step", "gently", "quietly"],
+      "answer": "gradually",
+      "difficulty": 2,
+      "explanation": "gradually是副词（adv.），意为“逐渐地；慢慢地”，强调“过程的渐进性”。例句：The weather gradually turned cold in autumn.（秋天天气逐渐变冷。）"
+    },
+    {
+      "id": 33,
+      "question": "“交流；沟通”对应的英文单词是？",
+      "options": ["communication", "conversation", "talk", "discussion", "chat", "dialogue"],
+      "answer": "communication",
+      "difficulty": 2,
+      "explanation": "communication是名词（n.），意为“交流；沟通”，泛指“信息传递的过程”，包括语言和非语言方式。常见搭配：effective communication（有效沟通）、communication skills（沟通技巧）；例句：Good communication is important in a team.（团队中良好的沟通很重要。）"
+    },
+    {
+      "id": 34,
+      "question": "在句子“He ______ a lot of time reading books every day.”中，填入合适的单词是？",
+      "options": ["spends", "takes", "uses", "costs", "pays", "wastes"],
+      "answer": "spends",
+      "difficulty": 1,
+      "explanation": "spends是动词spend的第三人称单数，意为“花费（时间/金钱）”，固定搭配：spend time/money (in) doing sth（花费时间/金钱做某事）或spend time/money on sth（在某事上花费时间/金钱）。例句：I spend two hours on my homework every night.（我每晚花两小时做作业。）其他选项中，take的搭配是“it takes sb time to do sth”，需注意句式差异。"
+    },
+    {
+      "id": 35,
+      "question": "“选择；挑选”对应的英文单词是？",
+      "options": ["choose", "select", "pick", "elect", "decide", "opt"],
+      "answer": "choose",
+      "difficulty": 1,
+      "explanation": "choose是动词（v.），意为“选择；挑选”，泛指“从多个选项中选定”，基础高频词。常见搭配：choose to do sth（选择做某事）、choose from（从……中选择）；例句：She chose to study history at university.（她选择在大学学习历史。）"
+    },
+    {
+      "id": 36,
+      "question": "“困难；难题”对应的英文单词是？",
+      "options": ["difficulty", "problem", "trouble", "hardship", "challenge", "difficulty"],
+      "answer": "difficulty",
+      "difficulty": 1,
+      "explanation": "difficulty是名词（n.），意为“困难；难题”，可指“做某事的难度”或“具体困难”。常见搭配：have difficulty (in) doing sth（做某事有困难）、overcome difficulties（克服困难）；例句：He has difficulty in speaking English.（他说英语有困难。）"
+    },
+    {
+      "id": 37,
+      "question": "“保护；保卫”对应的英文单词是？",
+      "options": ["protect", "defend", "guard", "preserve", "save", "shield"],
+      "answer": "protect",
+      "difficulty": 2,
+      "explanation": "protect是动词（v.），意为“保护；保卫”，强调“使免受伤害”。固定搭配：protect...from/against（保护……免受……）；例句：We should protect animals from being killed.（我们应该保护动物不被杀害。）"
+    },
+    {
+      "id": 38,
+      "question": "“信息；消息”对应的英文单词是？",
+      "options": ["information", "message", "news", "data", "detail", "fact"],
+      "answer": "information",
+      "difficulty": 1,
+      "explanation": "information是名词（n.），意为“信息；消息”，不可数名词，泛指“各种信息”。常见搭配：collect information（收集信息）、provide information（提供信息）；例句：You can get more information from the website.（你可以从网站上获取更多信息。）"
+    },
+    {
+      "id": 39,
+      "question": "在句子“ The teacher ______ us to be honest in our daily life.”中，填入合适的单词是？",
+      "options": ["advises", "tells", "asks", "orders", "suggests", "urges"],
+      "answer": "advises",
+      "difficulty": 2,
+      "explanation": "advises是动词advise的第三人称单数，意为“建议；劝告”，强调“给出合理建议”。固定搭配：advise sb to do sth（建议某人做某事）；例句：My friend advised me to take a break.（我朋友建议我休息一下。）其他选项中，suggest的搭配是“suggest doing sth”，不能接“sb to do sth”，需注意用法差异。"
+    },
+    {
+      "id": 40,
+      "question": "“发展；进展”对应的英文单词是？",
+      "options": ["development", "progress", "growth", "advance", "improvement", "evolution"],
+      "answer": "development",
+      "difficulty": 2,
+      "explanation": "development是名词（n.），意为“发展；进展”，由动词develop变形而来，可指“社会、经济、个人的发展”。常见搭配：the development of...（……的发展）、economic development（经济发展）；例句：The development of technology has changed our lives.（科技的发展改变了我们的生活。）"
+    },
+    {
+      "id": 41,
+      "question": "“准备；预备”对应的英文单词是？",
+      "options": ["preparation", "prep", "readiness", "arrangement", "plan", "preliminary"],
+      "answer": "preparation",
+      "difficulty": 2,
+      "explanation": "preparation是名词（n.），意为“准备；预备”，由动词prepare变形而来。常见搭配：make preparations for（为……做准备）、preparation for（……的准备）；例句：We are making preparations for the final exam.（我们正在为期末考试做准备。）"
+    },
+    {
+      "id": 42,
+      "question": "“安全；平安”对应的英文单词是？",
+      "options": ["safety", "security", "safety", "protection", "safety", "well-being"],
+      "answer": "safety",
+      "difficulty": 1,
+      "explanation": "safety是名词（n.），意为“安全；平安”，对应形容词safe，强调“无危险的状态”。常见搭配：ensure safety（确保安全）、personal safety（人身安全）；例句：Parents always care about their children's safety.（父母总是关心孩子的安全。）"
+    },
+    {
+      "id": 43,
+      "question": "“友谊；友情”对应的英文单词是？",
+      "options": ["friendship", "friendship", "companionship", "fellowship", "relationship", "bond"],
+      "answer": "friendship",
+      "difficulty": 1,
+      "explanation": "friendship是名词（n.），意为“友谊；友情”，由名词friend变形而来。常见搭配：true friendship（真挚的友谊）、develop a friendship（建立友谊）；例句：True friendship lasts for a long time.（真挚的友谊能持续很久。）"
+    },
+    {
+      "id": 44,
+      "question": "在句子“ She ______ from a bad cold and returned to school yesterday.”中，填入合适的单词是？",
+      "options": ["recovered", "got better", "improved", "healed", "cured", "restored"],
+      "answer": "recovered",
+      "difficulty": 2,
+      "explanation": "recovered是动词recover的过去式，意为“恢复；康复”，固定搭配：recover from（从……中康复）。例句：He recovered from the illness after a month's treatment.（经过一个月的治疗，他康复了。）其他选项中，get better虽可表示“好转”，但recover更正式，且搭配from更准确。"
+    },
+    {
+      "id": 45,
+      "question": "“知识；学问”对应的英文单词是？",
+      "options": ["knowledge", "knowledge", "wisdom", "learning", "education", "information"],
+      "answer": "knowledge",
+      "difficulty": 1,
+      "explanation": "knowledge是名词（n.），意为“知识；学问”，不可数名词，强调“通过学习获得的知识”。常见搭配：gain knowledge（获取知识）、knowledge of（……的知识）；例句：Reading can help us gain more knowledge.（读书能帮我们获取更多知识。）"
+    },
+    {
+      "id": 46,
+      "question": "“创造；创建”对应的英文单词是？",
+      "options": ["create", "invent", "make", "produce", "build", "design"],
+      "answer": "create",
+      "difficulty": 2,
+      "explanation": "create是动词（v.），意为“创造；创建”，强调“从无到有地创造新事物”。常见搭配：create a new product（创造新产品）、create a better life（创造更好的生活）；例句：Artists create beautiful works to express their ideas.（艺术家创作美丽的作品来表达想法。）"
+    },
+    {
+      "id": 47,
+      "question": "“满足；满意”对应的英文单词是？",
+      "options": ["satisfaction", "contentment", "pleasure", "happiness", "joy", "delight"],
+      "answer": "satisfaction",
+      "difficulty": 2,
+      "explanation": "satisfaction是名词（n.），意为“满足；满意”，由形容词satisfied变形而来。常见搭配：feel satisfaction（感到满意）、to one's satisfaction（令某人满意的是）；例句：He looked at his finished work with satisfaction.（他满意地看着自己完成的作品。）"
+    },
+    {
+      "id": 48,
+      "question": "“责任；义务”对应的英文单词是？",
+      "options": ["duty", "responsibility", "obligation", "task", "job", "role"],
+      "answer": "duty",
+      "difficulty": 2,
+      "explanation": "duty是名词（n.），意为“责任；义务”，强调“道德或法律要求的责任”。常见搭配：do one's duty（尽责任）、duty to do sth（做某事的义务）；例句：It's our duty to protect the environment.（保护环境是我们的责任。）"
+    },
+    {
+      "id": 49,
+      "question": "在句子“ The company will ______ a new product next month.”中，填入合适的单词是？",
+      "options": ["launch", "release", "produce", "make", "create", "introduce"],
+      "answer": "launch",
+      "difficulty": 3,
+      "explanation": "launch是动词（v.），意为“发布；推出（新产品/服务）”，常用于商业场景。例句：The phone company launched a new model last week.（这家手机公司上周推出了一款新机型。）其他选项中，release虽可表示“发布”，但更侧重“软件、电影”，launch更贴合“实体产品”语境。"
+    },
+    {
+      "id": 50,
+      "question": "“信任；信赖”对应的英文单词是？",
+      "options": ["trust", "believe", "faith", "confidence", "reliance", "credit"],
+      "answer": "trust",
+      "difficulty": 2,
+      "explanation": "trust可作动词（v.）或名词（n.），此处考“信任；信赖”含义，强调“对某人的可靠性有信心”。常见搭配：trust sb（信任某人）、have trust in（对……有信心）；例句：You can trust her—she always keeps her promises.（你可以信任她，她总是信守承诺。）"
+    }
+  ]
+}
