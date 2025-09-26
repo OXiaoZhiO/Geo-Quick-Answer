@@ -21,17 +21,17 @@
     
     <!-- 全局控制按钮 -->
     <div id="global-controls" class="global-controls">
-        <button id="global-back-btn" class="control-btn" title="返回主菜单">
-            <i class="fas fa-home"></i>
-            <span class="control-text">返回主菜单</span>
+        <button id="global-back-btn" class="control-btn">
+            <i class="fas fa-arrow-left"></i>
+            <span>返回</span>
         </button>
-        <button id="global-clear-btn" class="control-btn hidden" title="清空排行榜">
+        <button id="global-clear-btn" class="control-btn hidden">
             <i class="fas fa-trash"></i>
-            <span class="control-text">清空排行榜</span>
+            <span>清空记录</span>
         </button>
     </div>
     
-    <!-- 通知弹窗容器 -->
+    <!-- 提示弹窗容器 -->
     <div id="notification-container" class="notification-container"></div>
     
     <div id="app">
@@ -83,17 +83,11 @@
                 
                 <div id="local-file-upload" class="file-upload-section">
                     <p>或选择本地题库文件：</p>
-                    <div class="upload-area" id="upload-area">
+                    <div class="upload-area">
                         <input type="file" id="library-file-input" accept=".json" />
-                        <p class="upload-text">点击或拖拽JSON文件到此处上传</p>
+                        <p>拖放JSON文件到此处，或<span class="browse-link">浏览文件</span></p>
                     </div>
                     <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
-                </div>
-                
-                <div class="button-group">
-                    <button id="back-from-library-btn" class="primary-btn">
-                        <i class="fas fa-arrow-left"></i> 返回
-                    </button>
                 </div>
             </div>
         </div>
@@ -130,10 +124,8 @@
                     
                     <div class="explanation-section">
                         <div class="card explanation-card">
-                            <h3>答题解析</h3>
-                            <div id="explanation-list" class="explanation-list">
-                                <!-- 解析列表将在这里动态生成 -->
-                            </div>
+                            <h3>答题记录</h3>
+                            <div id="explanation-list"></div>
                         </div>
                     </div>
                 </div>
@@ -141,26 +133,28 @@
         </div>
         
         <!-- 排行榜界面 -->
-        <div id="leaderboard-container" class="screen-container hidden">
-            <div class="card leaderboard-card">
-                <h2>排行榜</h2>
-                
-                <!-- 排行榜筛选 -->
-                <div class="leaderboard-filter">
-                    <label for="library-filter">题库筛选：</label>
-                    <select id="library-filter">
-                        <option value="all">所有题库</option>
-                        <!-- 选项将动态生成 -->
-                    </select>
+        <div id="leaderboard-menu" class="screen hidden">
+            <div class="leaderboard-container">
+                <div class="card leaderboard-card">
+                    <h2>排行榜</h2>
+                    
+                    <!-- 排行榜筛选 -->
+                    <div class="leaderboard-filter">
+                        <label for="library-filter">题库筛选：</label>
+                        <select id="library-filter">
+                            <option value="all">所有题库</option>
+                            <!-- 选项将动态生成 -->
+                        </select>
+                    </div>
+                    
+                    <ul id="leaderboard" class="score-list"></ul>
                 </div>
                 
-                <ul id="leaderboard" class="score-list"></ul>
-            </div>
-            
-            <div class="card explanation-card leaderboard-explanation-card">
-                <h3>答题解析</h3>
-                <div id="leaderboard-explanation" class="explanation-list">
-                    <p>请选择一条记录查看解析</p>
+                <div class="card explanation-card leaderboard-explanation">
+                    <h3>答题解析</h3>
+                    <div id="leaderboard-explanation-content">
+                        <p>选择一条记录查看解析</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -172,19 +166,11 @@
                 <p>你的最终得分是:</p>
                 <p class="final-score" id="final-score">0</p>
                 <p id="record-message" class="hidden">恭喜你创造了新纪录！</p>
+                
                 <p>答题统计: <span id="quiz-completion-time">0/0/0-0%</span></p>
                 
                 <h3>当前题库排行榜</h3>
                 <ul id="game-over-leaderboard" class="score-list"></ul>
-                
-                <div class="button-group">
-                    <button id="restart-game-btn" class="primary-btn">
-                        <i class="fas fa-redo"></i> 返回主菜单
-                    </button>
-                    <button id="clear-records-btn" class="secondary-btn">
-                        <i class="fas fa-trash"></i> 清空记录
-                    </button>
-                </div>
             </div>
         </div>
         
