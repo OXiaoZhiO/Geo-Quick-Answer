@@ -23,11 +23,11 @@
     <!-- 控制按钮区域 -->
     <div id="control-buttons" class="control-buttons">
         <button id="control-back-btn" class="control-btn hidden" aria-label="返回主菜单">
-            <i class="fas fa-home control-icon"></i>
+            <span class="icon-wrap"><i class="fas fa-home control-icon"></i></span>
             <span class="control-text">返回主菜单</span>
         </button>
         <button id="control-clear-btn" class="control-btn hidden" aria-label="清空记录">
-            <i class="fas fa-trash control-icon"></i>
+            <span class="icon-wrap"><i class="fas fa-trash control-icon"></i></span>
             <span class="control-text">清空记录</span>
         </button>
     </div>
@@ -69,6 +69,41 @@
                         <p>请先选择一个题库</p>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- 模式选择卡片 -->
+        <div id="mode-select-menu" class="screen hidden">
+            <div class="mode-select-wrapper">
+                <div class="card mode-card" id="classic-mode-card">
+                    <h2>经典模式</h2>
+                    <p class="mode-rule">
+                        <span class="mode-desc-title">规则：</span><br>
+                        60秒倒计时，答错不扣分。每答一题，倒计时继续。<br>
+                        <span class="mode-desc-title">玩法：</span><br>
+                        挑战答题速度和准确率，冲击排行榜！
+                    </p>
+                    <button id="choose-classic-btn" class="primary-btn mode-choose-btn">
+                        <i class="fas fa-stopwatch"></i> 进入经典模式
+                    </button>
+                </div>
+                <div class="card mode-card" id="endless-mode-card">
+                    <h2>无尽模式</h2>
+                    <p class="mode-rule">
+                        <span class="mode-desc-title">规则：</span><br>
+                        初始60秒，每答对+3秒（最多90秒），答错-2秒，题库答完自动重洗继续，提示已答完n轮。<br>
+                        <span class="mode-desc-title">玩法：</span><br>
+                        挑战极限答题轮数和分数，单独无尽模式排行榜。
+                    </p>
+                    <button id="choose-endless-btn" class="primary-btn mode-choose-btn">
+                        <i class="fas fa-infinity"></i> 进入无尽模式
+                    </button>
+                </div>
+            </div>
+            <div class="button-group" style="margin-top:32px">
+                <button id="back-from-mode-btn" class="secondary-btn">
+                    <i class="fas fa-arrow-left"></i> 返回
+                </button>
             </div>
         </div>
         
@@ -115,6 +150,9 @@
                     <div class="status-item">
                         <i class="fas fa-chart-pie"></i> 正确率: <span id="accuracy-display">0/0/0-0%</span>
                     </div>
+                    <div class="status-item" id="endless-round-info" style="display:none">
+                        <i class="fas fa-redo"></i> 已完成 <span id="endless-round-count">1</span> 轮
+                    </div>
                 </div>
                 
                 <div class="progress-container">
@@ -151,6 +189,11 @@
                     
                     <!-- 排行榜筛选 -->
                     <div class="leaderboard-filter">
+                        <label for="leaderboard-mode-filter">模式：</label>
+                        <select id="leaderboard-mode-filter">
+                            <option value="classic">经典模式</option>
+                            <option value="endless">无尽模式</option>
+                        </select>
                         <label for="library-filter">题库筛选：</label>
                         <select id="library-filter">
                             <option value="all">所有题库</option>
@@ -174,10 +217,12 @@
         <div id="game-over-menu" class="screen hidden">
             <div class="card">
                 <h2>游戏结束</h2>
+                <p id="game-over-mode-tip" class="mode-tip"></p>
                 <p>你的最终得分是:</p>
                 <p class="final-score" id="final-score">0</p>
                 <p id="record-message" class="hidden">恭喜你创造了新纪录！</p>
                 <p>答题统计: <span id="quiz-completion-time">0/0/0-0%</span></p>
+                <div id="game-over-round-tip" class="game-over-round-tip"></div>
                 
                 <h3>当前题库排行榜</h3>
                 <ul id="game-over-leaderboard" class="score-list"></ul>
@@ -216,6 +261,7 @@
                     <li>回答正确加分，回答错误不扣分</li>
                     <li>电脑端右侧会显示所有题目的解析记录</li>
                     <li>游戏结束后可以查看自己的排名</li>
+                    <li>无尽模式：每答对+3秒（最多90秒），答错-2秒，每答完一轮题库自动重洗继续答题，挑战极限分数和轮数！</li>
                 </ul>
             </div>
         </div>
