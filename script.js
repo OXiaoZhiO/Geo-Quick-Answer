@@ -409,7 +409,7 @@ function startGame() {
     score = 0; timeLeft = 60; currentQuestionIndex = 0;
     correctAnswers = 0; incorrectAnswers = 0; totalAnswered = 0;
     currentGameRecords = [];
-    endlessRound = 1;
+    endlessRound = 0;
     shuffledQuestions = [...questions];
     shuffleArray(shuffledQuestions);
     document.getElementById('start-menu').classList.add('hidden');
