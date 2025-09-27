@@ -16,10 +16,10 @@
             <p id="loading-library" class="loading-library">正在加载题库...</p>
         </div>
     </div>
-    
+
     <!-- 动态背景元素 -->
     <div class="bg-animation"></div>
-    
+
     <!-- 控制按钮区域 -->
     <div id="control-buttons" class="control-buttons">
         <button id="control-back-btn" class="control-btn hidden" aria-label="返回主菜单">
@@ -31,10 +31,10 @@
             <span class="control-text">清空记录</span>
         </button>
     </div>
-    
+
     <!-- 通知提示区域 -->
     <div id="notification-container" class="notification-container"></div>
-    
+
     <div id="app">
         <!-- 开始菜单界面 -->
         <div id="start-menu" class="screen fade-transition">
@@ -46,7 +46,7 @@
                     <span class="version">v1.4.36-build</span>
                 </div>
                 <p>挑战你的学科知识储备，在限定时间内尽可能回答更多问题！</p>
-                
+
                 <div class="button-group">
                     <button id="start-game-btn" class="primary-btn">
                         <i class="fas fa-play"></i> 开始游戏
@@ -61,7 +61,7 @@
                         <i class="fas fa-info-circle"></i> 游戏说明
                     </button>
                 </div>
-                
+
                 <!-- 知识卡片 -->
                 <div id="knowledge-card" class="knowledge-card">
                     <h3>知识卡片</h3>
@@ -75,7 +75,7 @@
         <!-- 模式选择卡片 -->
         <div id="mode-select-menu" class="screen hidden fade-transition">
             <div class="mode-select-flex">
-                <div class="card mode-card">
+                <div class="card mode-card mode-card-1">
                     <h2>经典模式</h2>
                     <div class="mode-rule">
                         <span class="mode-desc-title">规则：</span><br>
@@ -87,7 +87,7 @@
                         <i class="fas fa-stopwatch"></i> 进入经典模式
                     </button>
                 </div>
-                <div class="card mode-card">
+                <div class="card mode-card mode-card-2">
                     <h2>无尽模式</h2>
                     <div class="mode-rule">
                         <span class="mode-desc-title">规则：</span><br>
@@ -106,17 +106,17 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- 题库选择界面 -->
         <div id="library-selector" class="screen hidden fade-transition">
             <div class="card">
                 <h2>选择题库</h2>
                 <p>当前选择: <span id="current-library-name">加载中...</span></p>
-                
+
                 <div id="library-list" class="library-list">
                     <!-- 题库列表将动态生成 -->
                 </div>
-                
+
                 <div id="local-file-upload" class="file-upload-section">
                     <p>或选择本地题库文件：</p>
                     <div class="upload-area" id="upload-area">
@@ -128,7 +128,7 @@
                     </div>
                     <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
                 </div>
-                
+
                 <div class="button-group">
                     <button id="back-from-library-btn" class="primary-btn">
                         <i class="fas fa-arrow-left"></i> 返回
@@ -136,7 +136,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- 游戏界面 -->
         <div id="game" class="screen hidden fade-transition">
             <div class="card">
@@ -154,13 +154,13 @@
                         <i class="fas fa-redo"></i> 已完成 <span id="endless-round-count">0</span> 轮
                     </div>
                 </div>
-                
+
                 <div class="progress-container">
                     <div class="progress-bar">
                         <div id="progress-fill" class="progress-fill"></div>
                     </div>
                 </div>
-                
+
                 <div class="game-content">
                     <div class="question-section">
                         <div id="question-area">
@@ -169,7 +169,7 @@
                         </div>
                         <div id="feedback" class="hidden"></div>
                     </div>
-                    
+
                     <div class="explanation-section">
                         <div class="card explanation-card">
                             <!-- 解析列表将在这里动态生成 -->
@@ -180,13 +180,12 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- 排行榜界面 -->
         <div id="leaderboard-menu" class="screen hidden fade-transition">
             <div class="leaderboard-container">
                 <div class="card leaderboard-card">
                     <h2>排行榜</h2>
-                    
                     <!-- 排行榜筛选 -->
                     <div class="leaderboard-filter">
                         <label for="leaderboard-mode-filter">模式：</label>
@@ -199,10 +198,12 @@
                             <option value="all">所有题库</option>
                         </select>
                     </div>
-                    
-                    <ul id="leaderboard" class="score-list leaderboard-pretty"></ul>
+
+                    <div id="leaderboard-table-container">
+                        <!-- 排行榜表格将动态插入 -->
+                    </div>
                 </div>
-                
+
                 <div class="card explanation-card leaderboard-explanation">
                     <h3>答题解析</h3>
                     <div id="leaderboard-explanation-content">
@@ -211,7 +212,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- 游戏结束界面 -->
         <div id="game-over-menu" class="screen hidden fade-transition">
             <div class="card">
@@ -222,10 +223,12 @@
                 <p id="record-message" class="hidden">恭喜你创造了新纪录！</p>
                 <p>答题统计: <span id="quiz-completion-time">0/0/0-0%</span></p>
                 <div id="game-over-round-tip" class="game-over-round-tip"></div>
-                
+
                 <h3>当前题库排行榜</h3>
-                <ul id="game-over-leaderboard" class="score-list leaderboard-pretty"></ul>
-                
+                <div id="game-over-leaderboard-table-container">
+                    <!-- 排行榜表格将动态插入 -->
+                </div>
+
                 <div class="button-group">
                     <button id="restart-game-btn" class="primary-btn">
                         <i class="fas fa-redo"></i> 返回主菜单
@@ -236,12 +239,12 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- 破纪录庆祝弹窗 -->
         <div id="celebration-message" class="celebration hidden">
             恭喜你创造了新纪录！
         </div>
-        
+
         <!-- 游戏说明弹窗 -->
         <div id="instructions-modal" class="modal hidden">
             <div class="modal-content">
