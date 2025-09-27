@@ -37,13 +37,13 @@
     
     <div id="app">
         <!-- 开始菜单界面 -->
-        <div id="start-menu" class="screen fade-transition">
+        <div id="start-menu" class="screen">
             <div class="card">
                 <h1>学科快回答！</h1>
                 <div class="version-info">
                     <span class="author">by 晓炙云溪</span>
                     <span class="version-separator">|</span>
-                    <span class="version">v1.4.36-build</span>
+                    <span class="version">v1.4.35-build</span>
                 </div>
                 <p>挑战你的学科知识储备，在限定时间内尽可能回答更多问题！</p>
                 
@@ -73,34 +73,34 @@
         </div>
 
         <!-- 模式选择卡片 -->
-        <div id="mode-select-menu" class="screen hidden fade-transition">
-            <div class="mode-select-flex">
-                <div class="card mode-card">
+        <div id="mode-select-menu" class="screen hidden">
+            <div class="mode-select-wrapper">
+                <div class="card mode-card" id="classic-mode-card">
                     <h2>经典模式</h2>
-                    <div class="mode-rule">
+                    <p class="mode-rule">
                         <span class="mode-desc-title">规则：</span><br>
                         60秒倒计时，答错不扣分。每答一题，倒计时继续。<br>
                         <span class="mode-desc-title">玩法：</span><br>
                         挑战答题速度和准确率，冲击排行榜！
-                    </div>
+                    </p>
                     <button id="choose-classic-btn" class="primary-btn mode-choose-btn">
                         <i class="fas fa-stopwatch"></i> 进入经典模式
                     </button>
                 </div>
-                <div class="card mode-card">
+                <div class="card mode-card" id="endless-mode-card">
                     <h2>无尽模式</h2>
-                    <div class="mode-rule">
+                    <p class="mode-rule">
                         <span class="mode-desc-title">规则：</span><br>
-                        初始60秒，每答对+3秒（最多90秒），答错-2秒，题库答完自动重洗继续，提示已完成n轮。<br>
+                        初始60秒，每答对+3秒（最多90秒），答错-2秒，题库答完自动重洗继续，提示已答完n轮。<br>
                         <span class="mode-desc-title">玩法：</span><br>
                         挑战极限答题轮数和分数，单独无尽模式排行榜。
-                    </div>
+                    </p>
                     <button id="choose-endless-btn" class="primary-btn mode-choose-btn">
                         <i class="fas fa-infinity"></i> 进入无尽模式
                     </button>
                 </div>
             </div>
-            <div class="button-group mode-select-buttons">
+            <div class="button-group" style="margin-top:32px">
                 <button id="back-from-mode-btn" class="secondary-btn">
                     <i class="fas fa-arrow-left"></i> 返回
                 </button>
@@ -108,7 +108,7 @@
         </div>
         
         <!-- 题库选择界面 -->
-        <div id="library-selector" class="screen hidden fade-transition">
+        <div id="library-selector" class="screen hidden">
             <div class="card">
                 <h2>选择题库</h2>
                 <p>当前选择: <span id="current-library-name">加载中...</span></p>
@@ -138,7 +138,7 @@
         </div>
         
         <!-- 游戏界面 -->
-        <div id="game" class="screen hidden fade-transition">
+        <div id="game" class="screen hidden">
             <div class="card">
                 <div class="status-bar">
                     <div class="status-item">
@@ -151,7 +151,7 @@
                         <i class="fas fa-chart-pie"></i> 正确率: <span id="accuracy-display">0/0/0-0%</span>
                     </div>
                     <div class="status-item" id="endless-round-info" style="display:none">
-                        <i class="fas fa-redo"></i> 已完成 <span id="endless-round-count">0</span> 轮
+                        <i class="fas fa-redo"></i> 已完成 <span id="endless-round-count">1</span> 轮
                     </div>
                 </div>
                 
@@ -182,7 +182,7 @@
         </div>
         
         <!-- 排行榜界面 -->
-        <div id="leaderboard-menu" class="screen hidden fade-transition">
+        <div id="leaderboard-menu" class="screen hidden">
             <div class="leaderboard-container">
                 <div class="card leaderboard-card">
                     <h2>排行榜</h2>
@@ -201,7 +201,7 @@
                         </select>
                     </div>
                     
-                    <ul id="leaderboard" class="score-list leaderboard-pretty"></ul>
+                    <ul id="leaderboard" class="score-list"></ul>
                 </div>
                 
                 <div class="card explanation-card leaderboard-explanation">
@@ -214,7 +214,7 @@
         </div>
         
         <!-- 游戏结束界面 -->
-        <div id="game-over-menu" class="screen hidden fade-transition">
+        <div id="game-over-menu" class="screen hidden">
             <div class="card">
                 <h2>游戏结束</h2>
                 <p id="game-over-mode-tip" class="mode-tip"></p>
@@ -225,7 +225,7 @@
                 <div id="game-over-round-tip" class="game-over-round-tip"></div>
                 
                 <h3>当前题库排行榜</h3>
-                <ul id="game-over-leaderboard" class="score-list leaderboard-pretty"></ul>
+                <ul id="game-over-leaderboard" class="score-list"></ul>
                 
                 <div class="button-group">
                     <button id="restart-game-btn" class="primary-btn">
