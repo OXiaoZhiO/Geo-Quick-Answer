@@ -1,17 +1,14 @@
 /**
  * Geo-Quick-Answer 游戏主脚本
- * 代码包含所有页面逻辑、动画效果、健壮性提升、注释完善。
- * 所有功能均有详细注释，确保只改动指定功能点，其余逻辑不变。
- * 
- * 主要增强点：
- * 1. 控制按钮图标显示修复
- * 2. 知识卡片字体淡入淡出动画
- * 3. 解析栏和知识卡片描述字体样式区分
- * 4. 加载界面元素彻底居中
- * 5. 健壮性与注释
+ * - 支持经典/无尽模式选择
+ * - 左上角按钮缩略模式图标修复
+ * - 题库列表固定顺序不变
+ * - 解析栏/知识卡片描述字体和颜色区分
+ * - 答题后解析时暂停倒计时减少
+ * - 无尽模式答题轮数、计时增减、排行榜隔离
+ * - 代码健壮性与注释
  */
 
-// 游戏状态变量
 let questions = [];
 let shuffledQuestions = [];
 let currentQuestionIndex = 0;
@@ -23,17 +20,25 @@ let completionTime = null;
 let correctAnswers = 0;
 let incorrectAnswers = 0;
 let totalAnswered = 0;
-const leaderboardKey = 'leaderboard';
+let currentGameRecords = [];
+let endlessRound = 1;
+let endlessMode = false;
+let modeName = 'classic'; // classic/endless
+let loadingTimeout = null;
+let endlessTimerMax = 90;
+let endlessTimerMin = 0;
+const leaderboardKey = 'leaderboard_v2';
 const selectedLibraryKey = 'selectedLibrary';
 let availableLibraries = [];
 let currentLibrary = { file: '', name: '加载中...', questionCount: 0 };
-let currentGameRecords = [];
-let loadingTimeout = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     createExplanationList();
+    document.getElementById('start-game-btn').addEventListener('click', showModeSelectMenu);
+    document.getElementById('choose-classic-btn').addEventListener('click', () => chooseGameMode('classic'));
+    document.getElementById('choose-endless-btn').addEventListener('click', () => chooseGameMode('endless'));
+    document.getElementById('back-from-mode-btn').addEventListener('click', backToMenu);
 
-    document.getElementById('start-game-btn').addEventListener('click', startGame);
     document.getElementById('view-leaderboard-btn').addEventListener('click', () => {
         viewLeaderboard();
         populateLibraryFilter();
@@ -49,7 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('knowledge-card').addEventListener('click', showRandomKnowledgeFade);
 
     document.getElementById('library-filter').addEventListener('change', function() {
-        updateLeaderboardDisplay('leaderboard', this.value);
+        updateLeaderboardDisplay('leaderboard', this.value, document.getElementById('leaderboard-mode-filter').value);
+    });
+
+    document.getElementById('leaderboard-mode-filter').addEventListener('change', function() {
+        updateLeaderboardDisplay('leaderboard', document.getElementById('library-filter').value, this.value);
     });
 
     document.getElementById('leaderboard').addEventListener('click', function(e) {
@@ -66,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.protocol !== 'file:') {
         showLoadingScreen();
         fetchDataFolderFiles();
-
         loadingTimeout = setTimeout(() => {
             showNotification('加载超时，请手动选择题库', 'error');
             hideLoadingScreen();
@@ -77,27 +85,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/**
- * 显示加载中界面
- */
+/** 显示加载界面 */
 function showLoadingScreen() {
     document.getElementById('loading-screen').classList.remove('hidden');
 }
 
-/**
- * 隐藏加载中界面
- */
+/** 隐藏加载界面 */
 function hideLoadingScreen() {
     document.getElementById('loading-screen').classList.add('hidden');
-    if (loadingTimeout) {
-        clearTimeout(loadingTimeout);
-        loadingTimeout = null;
-    }
+    if (loadingTimeout) { clearTimeout(loadingTimeout); loadingTimeout = null; }
 }
 
-/**
- * 从data文件夹获取所有JSON文件
- */
+/** 读取data文件夹所有json文件，顺序不变 */
 async function fetchDataFolderFiles() {
     try {
         const possibleFiles = ['1.json', '2.json', '3.json', '4.json', '5.json'];
@@ -108,11 +107,11 @@ async function fetchDataFolderFiles() {
                 if (response.ok) foundFiles.push(file);
             } catch (error) {}
         }
-        availableLibraries = foundFiles.map(file => ({
+        // 保持原有顺序
+        availableLibraries = possibleFiles.filter(f => foundFiles.includes(f)).map(file => ({
             id: file.split('.')[0],
             file: `data/${file}`
         }));
-
         if (availableLibraries.length > 0 && !currentLibrary.file) {
             currentLibrary.file = availableLibraries[0].file;
         }
@@ -126,9 +125,7 @@ async function fetchDataFolderFiles() {
     }
 }
 
-/**
- * 拖放上传功能
- */
+/** 拖放上传功能 */
 function initDragAndDrop() {
     const uploadArea = document.getElementById('upload-area');
     const fileInput = document.getElementById('library-file-input');
@@ -148,9 +145,7 @@ function initDragAndDrop() {
     });
 }
 
-/**
- * 处理拖放的文件
- */
+/** 处理拖放的文件 */
 function handleDroppedFile(file) {
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -172,9 +167,7 @@ function handleDroppedFile(file) {
     reader.readAsText(file);
 }
 
-/**
- * 通知及其简化方法
- */
+/** 通知弹窗 */
 function showNotification(message, type = 'info') {
     const container = document.getElementById('notification-container');
     const existing = Array.from(container.children).find(el => el.textContent.includes(message));
@@ -208,9 +201,7 @@ function showErrorMessage(message) { showNotification(message, 'error'); }
 function showInfoMessage(message) { showNotification(message, 'info'); }
 function showSuccessMessage(message) { showNotification(message, 'success'); }
 
-/**
- * 题库选择界面
- */
+/** 题库选择界面 */
 function showLibrarySelector() {
     document.getElementById('start-menu').classList.add('hidden');
     document.getElementById('library-selector').classList.remove('hidden');
@@ -223,9 +214,7 @@ function hideLibrarySelector() {
     hideControlButtons();
 }
 
-/**
- * 控制按钮相关
- */
+/** 控制按钮相关 */
 function showControlButton(id) {
     if (id === 'back') document.getElementById('control-back-btn').classList.remove('hidden');
     else if (id === 'clear') document.getElementById('control-clear-btn').classList.remove('hidden');
@@ -236,9 +225,7 @@ function hideControlButton(id) {
 }
 function hideControlButtons() { hideControlButton('back'); hideControlButton('clear'); }
 
-/**
- * 渲染题库列表
- */
+/** 渲染题库列表，顺序严格保持availableLibraries顺序 */
 function renderLibraryList() {
     const libraryList = document.getElementById('library-list');
     if (!libraryList) return;
@@ -262,9 +249,7 @@ function renderLibraryList() {
     });
 }
 
-/**
- * 选择题库
- */
+/** 选择题库 */
 function selectLibrary(filePath, name, questionCount) {
     currentLibrary = {
         file: filePath,
@@ -283,9 +268,7 @@ function selectLibrary(filePath, name, questionCount) {
         });
 }
 
-/**
- * 加载本地存储的选中题库
- */
+/** 加载本地存储的选中题库 */
 function loadSelectedLibrary() {
     try {
         const savedLibrary = localStorage.getItem(selectedLibraryKey);
@@ -297,18 +280,14 @@ function loadSelectedLibrary() {
     document.getElementById('current-library-name').textContent = currentLibrary.name;
 }
 
-/**
- * 加载当前选中的题库
- */
+/** 加载当前选中的题库 */
 function loadCurrentLibrary() {
     if (window.location.protocol === 'file:') return Promise.resolve(false);
     else if (currentLibrary.file) return loadQuestionsFromFile(currentLibrary.file);
     return Promise.resolve(false);
 }
 
-/**
- * 处理本地题库文件选择
- */
+/** 处理本地题库文件选择 */
 function handleLibraryFileSelect(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -334,9 +313,7 @@ function handleLibraryFileSelect(event) {
     reader.readAsText(file);
 }
 
-/**
- * 获取题库信息
- */
+/** 获取题库信息 */
 async function fetchLibraryInfo(filePath) {
     try {
         const res = await fetch(filePath);
@@ -354,9 +331,7 @@ async function fetchLibraryInfo(filePath) {
     }
 }
 
-/**
- * 加载题库
- */
+/** 加载题库 */
 async function loadQuestionsFromFile(filePath) {
     try {
         showLoadingScreen();
@@ -379,9 +354,7 @@ async function loadQuestionsFromFile(filePath) {
     }
 }
 
-/**
- * 处理题库内容
- */
+/** 处理题库内容 */
 function processLibraryContent(content, filePath) {
     if (!content.questions || !Array.isArray(content.questions)) {
         throw new Error('题库格式错误，预期包含questions数组');
@@ -397,13 +370,11 @@ function processLibraryContent(content, filePath) {
         }
         return true;
     });
-    shuffledQuestions = [...questions].sort(() => Math.random() - 0.5);
+    shuffledQuestions = [...questions];
     showInfoMessage(`已加载 ${questions.length} 道题`);
 }
 
-/**
- * 解析栏容器
- */
+/** 解析栏容器 */
 function createExplanationList() {
     const explanationSection = document.querySelector('.explanation-section');
     if (explanationSection) {
@@ -413,9 +384,22 @@ function createExplanationList() {
     }
 }
 
-/**
- * 开始游戏
- */
+/** 开始菜单选择模式 */
+function showModeSelectMenu() {
+    document.getElementById('start-menu').classList.add('hidden');
+    document.getElementById('mode-select-menu').classList.remove('hidden');
+    hideControlButtons();
+}
+
+/** 选择模式后开始游戏 */
+function chooseGameMode(mode) {
+    modeName = mode;
+    endlessMode = mode === 'endless';
+    document.getElementById('mode-select-menu').classList.add('hidden');
+    startGame();
+}
+
+/** 开始游戏（经典/无尽） */
 function startGame() {
     if (questions.length === 0) {
         showErrorMessage('请先选择并加载一个题库');
@@ -425,27 +409,44 @@ function startGame() {
     score = 0; timeLeft = 60; currentQuestionIndex = 0;
     correctAnswers = 0; incorrectAnswers = 0; totalAnswered = 0;
     currentGameRecords = [];
-    shuffledQuestions = [...questions].sort(() => Math.random() - 0.5);
+    endlessRound = 1;
+    shuffledQuestions = [...questions];
+    shuffleArray(shuffledQuestions);
     document.getElementById('start-menu').classList.add('hidden');
+    document.getElementById('mode-select-menu').classList.add('hidden');
     document.getElementById('game').classList.remove('hidden');
     document.getElementById('score-value').textContent = '0';
     document.getElementById('time-left').textContent = '60';
     document.getElementById('accuracy-display').textContent = '0/0/0-0%';
     document.getElementById('progress-fill').style.width = '100%';
     document.getElementById('explanation-list').innerHTML = '';
+    document.getElementById('endless-round-info').style.display = endlessMode ? 'inline-block' : 'none';
+    document.getElementById('endless-round-count').textContent = endlessRound;
     showControlButton('back'); hideControlButton('clear');
     startTime = new Date();
     startTimer();
     showNextQuestion();
 }
 
-/**
- * 下一题
- */
+/** 洗牌算法 */
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
+
+/** 下一题 */
 function showNextQuestion() {
     if (currentQuestionIndex >= shuffledQuestions.length) {
-        shuffledQuestions = [...questions].sort(() => Math.random() - 0.5);
+        // 题库答完一轮，重新洗牌
+        endlessRound++;
         currentQuestionIndex = 0;
+        shuffleArray(shuffledQuestions);
+        if (endlessMode) {
+            showNotification(`已经答完${endlessRound - 1}轮，继续挑战！`, 'info');
+            document.getElementById('endless-round-count').textContent = endlessRound;
+        }
     }
     const question = shuffledQuestions[currentQuestionIndex];
     currentQuestionIndex++;
@@ -454,12 +455,12 @@ function showNextQuestion() {
     const optionCounts = {1: 3, 2: 4, 3: 5, 4: 6};
     const numOptions = optionCounts[question.difficulty] || 3;
     const availableOptions = [...question.options];
-    const shuffledOptions = availableOptions.sort(() => Math.random() - 0.5);
-    const selectedOptions = shuffledOptions.slice(0, numOptions);
+    shuffleArray(availableOptions);
+    let selectedOptions = availableOptions.slice(0, numOptions);
     if (!selectedOptions.includes(question.answer)) {
         selectedOptions.pop();
         selectedOptions.push(question.answer);
-        selectedOptions.sort(() => Math.random() - 0.5);
+        shuffleArray(selectedOptions);
     }
     const optionsElement = document.getElementById('options');
     optionsElement.innerHTML = '';
@@ -475,9 +476,7 @@ function showNextQuestion() {
     document.getElementById('feedback').classList.add('hidden');
 }
 
-/**
- * 检查答案
- */
+/** 检查答案，解析后暂停时间改为700ms */
 function checkAnswer(question, selectedOption, optionElement) {
     const allOptions = document.querySelectorAll('.option');
     allOptions.forEach(opt => {
@@ -492,6 +491,9 @@ function checkAnswer(question, selectedOption, optionElement) {
         score += scores[question.difficulty] || 5;
         document.getElementById('score-value').textContent = score.toString();
         optionElement.classList.add('correct');
+        if (endlessMode) {
+            timeLeft = Math.min(endlessTimerMax, timeLeft + 3);
+        }
     } else {
         incorrectAnswers++;
         optionElement.classList.add('incorrect');
@@ -500,11 +502,14 @@ function checkAnswer(question, selectedOption, optionElement) {
                 opt.classList.add('correct');
             }
         });
+        if (endlessMode) {
+            timeLeft = Math.max(endlessTimerMin, timeLeft - 2);
+        }
     }
     const feedbackElement = document.getElementById('feedback');
-    feedbackElement.textContent = isCorrect ? 
-        `正确！+${{1:5,2:10,3:15,4:20}[question.difficulty] || 5}分` : 
-        `错误。正确答案是：${question.answer}`;
+    feedbackElement.innerHTML = isCorrect ? 
+        `<span class="explanation-desc">正确！</span> +${{1:5,2:10,3:15,4:20}[question.difficulty] || 5}分` : 
+        `<span class="explanation-desc">错误。</span> 正确答案是：${question.answer}`;
     feedbackElement.className = isCorrect ? 'feedback-correct' : 'feedback-incorrect';
     feedbackElement.classList.remove('hidden');
     updateAccuracyDisplay();
@@ -518,18 +523,19 @@ function checkAnswer(question, selectedOption, optionElement) {
     };
     currentGameRecords.push(record);
     addToExplanationList(record, totalAnswered);
-    setTimeout(showNextQuestion, 1500);
+    setTimeout(() => {
+        if (timeLeft <= 0) endGame();
+        else showNextQuestion();
+    }, 700);
 }
 
-/**
- * 解析栏添加项，描述字体区分
- */
+/** 解析栏添加项，描述字体区分 */
 function addToExplanationList(record, questionNumber) {
     const explanationList = document.getElementById('explanation-list');
     const item = document.createElement('div');
     item.className = `explanation-item ${record.isCorrect ? 'correct' : 'incorrect'}`;
     item.innerHTML = `
-        <div class="explanation-question">第${questionNumber}题：${record.isCorrect ? '回答正确' : '回答错误'}</div>
+        <div class="explanation-question">第${questionNumber}题：${record.isCorrect ? '<span class="explanation-desc">回答正确</span>' : '<span class="explanation-desc">回答错误</span>'}</div>
         <div class="explanation-text"><span>题目：</span>${record.question}</div>
         <div class="explanation-text"><span class="explanation-desc">解析：</span>${record.explanation}</div>
     `;
@@ -540,29 +546,27 @@ function addToExplanationList(record, questionNumber) {
     }
 }
 
-/**
- * 正确率显示
- */
+/** 正确率显示 */
 function updateAccuracyDisplay() {
     const accuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
     document.getElementById('accuracy-display').textContent = 
         `${correctAnswers}/${incorrectAnswers}/${totalAnswered}-${accuracy}%`;
 }
 
-/**
- * 计时器
- */
+/** 计时器 */
 function startTimer() {
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(() => {
         timeLeft--;
         document.getElementById('time-left').textContent = timeLeft.toString();
-        const progress = (timeLeft / 60) * 100;
+        const progress = (timeLeft / (endlessMode ? endlessTimerMax : 60)) * 100;
         document.getElementById('progress-fill').style.width = `${progress}%`;
         if (timeLeft < 10) {
             document.getElementById('progress-fill').style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
         } else if (timeLeft < 20) {
             document.getElementById('progress-fill').style.background = 'linear-gradient(90deg, #f39c12, #d35400)';
+        } else {
+            document.getElementById('progress-fill').style.background = 'linear-gradient(90deg, #2ecc71, #3498db)';
         }
         if (timeLeft <= 0) {
             endGame();
@@ -570,9 +574,7 @@ function startTimer() {
     }, 1000);
 }
 
-/**
- * 结束游戏
- */
+/** 结束游戏 */
 function endGame() {
     clearInterval(timerInterval);
     timerInterval = null;
@@ -584,25 +586,27 @@ function endGame() {
     const accuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
     document.getElementById('quiz-completion-time').textContent = 
         `${correctAnswers}/${incorrectAnswers}/${totalAnswered}-${accuracy}%`;
+    document.getElementById('game-over-mode-tip').textContent = endlessMode ? '无尽模式' : '经典模式';
+    document.getElementById('game-over-round-tip').textContent = endlessMode ? `已完成${endlessRound}轮！` : '';
     saveScoreToLeaderboard(score, correctAnswers, incorrectAnswers, totalAnswered, timeTaken);
-    updateLeaderboardDisplay('game-over-leaderboard', currentLibrary.name);
+    updateLeaderboardDisplay('game-over-leaderboard', currentLibrary.name, modeName);
     hideControlButtons();
 }
 
-/**
- * 排行榜保存
- */
+/** 排行榜保存 */
 function saveScoreToLeaderboard(score, correct, incorrect, total, timeTaken) {
     try {
         let leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
         const now = new Date();
         const today = now.toISOString().split('T')[0];
+        // 模式隔离
         const duplicate = leaderboard.some(entry => 
             entry.score === score &&
             entry.date.startsWith(today) &&
             entry.library === currentLibrary.name &&
             entry.correct === correct &&
-            entry.total === total
+            entry.total === total &&
+            entry.mode === modeName
         );
         if (duplicate) return;
         const newEntry = {
@@ -614,13 +618,15 @@ function saveScoreToLeaderboard(score, correct, incorrect, total, timeTaken) {
             timeTaken: timeTaken,
             date: now.toLocaleString(),
             library: currentLibrary.name,
+            mode: modeName,
+            endlessRound: endlessMode ? endlessRound : 0,
             records: currentGameRecords
         };
         leaderboard.push(newEntry);
         leaderboard.sort((a, b) => b.score - a.score);
         if (leaderboard.length > 100) leaderboard = leaderboard.slice(0, 100);
         localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard));
-        const libraryScores = leaderboard.filter(entry => entry.library === currentLibrary.name);
+        const libraryScores = leaderboard.filter(entry => entry.library === currentLibrary.name && entry.mode === modeName);
         if (libraryScores.length === 1 || score >= libraryScores[0].score) {
             document.getElementById('celebration-message').classList.remove('hidden');
             document.getElementById('record-message').classList.remove('hidden');
@@ -633,27 +639,24 @@ function saveScoreToLeaderboard(score, correct, incorrect, total, timeTaken) {
     }
 }
 
-/**
- * 排行榜界面
- */
+/** 排行榜界面 */
 function viewLeaderboard() {
     document.getElementById('start-menu').classList.add('hidden');
     document.getElementById('leaderboard-menu').classList.remove('hidden');
-    updateLeaderboardDisplay('leaderboard', document.getElementById('library-filter').value);
+    updateLeaderboardDisplay('leaderboard', document.getElementById('library-filter').value, document.getElementById('leaderboard-mode-filter').value);
     showControlButton('back'); showControlButton('clear');
 }
 
-/**
- * 排行榜筛选
- */
+/** 排行榜筛选 */
 function populateLibraryFilter() {
     const filter = document.getElementById('library-filter');
     if (!filter) return;
     const currentValue = filter.value;
     while (filter.options.length > 1) { filter.remove(1);}
     const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
+    const mode = document.getElementById('leaderboard-mode-filter').value;
     const libraries = new Set();
-    leaderboard.forEach(entry => { libraries.add(entry.library); });
+    leaderboard.filter(entry => entry.mode === mode).forEach(entry => { libraries.add(entry.library); });
     availableLibraries.forEach(library => {
         fetchLibraryInfo(library.file).then(info => {
             libraries.add(info.name);
@@ -670,14 +673,13 @@ function populateLibraryFilter() {
     }
 }
 
-/**
- * 排行榜显示
- */
-function updateLeaderboardDisplay(elementId, libraryFilter = 'all') {
+/** 排行榜显示 */
+function updateLeaderboardDisplay(elementId, libraryFilter = 'all', modeFilter = 'classic') {
     const leaderboardElement = document.getElementById(elementId);
     if (!leaderboardElement) return;
     try {
         let leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
+        leaderboard = leaderboard.filter(entry => entry.mode === modeFilter);
         if (libraryFilter !== 'all') {
             leaderboard = leaderboard.filter(entry => entry.library === libraryFilter);
         }
@@ -698,6 +700,7 @@ function updateLeaderboardDisplay(elementId, libraryFilter = 'all') {
                 <div>
                     <strong>${index + 1}.</strong> 得分: ${entry.score}
                     ${libraryFilter === 'all' ? `<div class="small-text">${entry.library}</div>` : ''}
+                    ${entry.mode === 'endless' && entry.endlessRound ? `<span class="small-text">轮数:${entry.endlessRound}</span>` : ''}
                 </div>
                 <div>
                     <span>${formattedDate}</span>
@@ -712,9 +715,7 @@ function updateLeaderboardDisplay(elementId, libraryFilter = 'all') {
     }
 }
 
-/**
- * 排行榜解析
- */
+/** 排行榜解析 */
 function showLeaderboardExplanation(recordId) {
     const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
     const entry = leaderboard.find(item => item.id === recordId);
@@ -728,7 +729,7 @@ function showLeaderboardExplanation(recordId) {
         const item = document.createElement('div');
         item.className = `explanation-item ${record.isCorrect ? 'correct' : 'incorrect'}`;
         item.innerHTML = `
-            <div class="explanation-question">第${index + 1}题：${record.isCorrect ? '回答正确' : '回答错误'}</div>
+            <div class="explanation-question">第${index + 1}题：${record.isCorrect ? '<span class="explanation-desc">回答正确</span>' : '<span class="explanation-desc">回答错误</span>'}</div>
             <div class="explanation-text">题目：${record.question}</div>
             <div class="explanation-text">你的答案：${record.userAnswer}</div>
             <div class="explanation-text">正确答案：${record.correctAnswer}</div>
@@ -738,9 +739,7 @@ function showLeaderboardExplanation(recordId) {
     });
 }
 
-/**
- * 返回主菜单
- */
+/** 返回主菜单 */
 function backToMenu() {
     if (timerInterval) clearInterval(timerInterval);
     document.querySelectorAll('.screen').forEach(screen => {
@@ -752,21 +751,17 @@ function backToMenu() {
     hideControlButtons();
 }
 
-/**
- * 清空排行榜
- */
+/** 清空排行榜 */
 function clearLeaderboard() {
     if (confirm('确定要清空所有记录吗？此操作不可恢复。')) {
         localStorage.removeItem(leaderboardKey);
-        updateLeaderboardDisplay('leaderboard', document.getElementById('library-filter').value);
-        updateLeaderboardDisplay('game-over-leaderboard', currentLibrary.name);
+        updateLeaderboardDisplay('leaderboard', document.getElementById('library-filter').value, document.getElementById('leaderboard-mode-filter').value);
+        updateLeaderboardDisplay('game-over-leaderboard', currentLibrary.name, modeName);
         showSuccessMessage('记录已清空');
     }
 }
 
-/**
- * 游戏说明弹窗
- */
+/** 游戏说明弹窗 */
 function setupInstructionsModal() {
     const modal = document.getElementById('instructions-modal');
     const btn = document.getElementById('show-instructions-btn');
@@ -787,9 +782,7 @@ function setupInstructionsModal() {
     });
 }
 
-/**
- * 知识卡片淡入淡出动画
- */
+/** 知识卡片淡入淡出动画，描述字体区分 */
 function showRandomKnowledgeFade() {
     const contentElement = document.getElementById('knowledge-content');
     if (!questions.length) {
@@ -813,9 +806,7 @@ function showRandomKnowledgeFade() {
     }, 250);
 }
 
-/**
- * 普通知识卡片刷新（无动画）
- */
+/** 普通知识卡片刷新（无动画） */
 function showRandomKnowledge() {
     const contentElement = document.getElementById('knowledge-content');
     if (!questions.length) {
