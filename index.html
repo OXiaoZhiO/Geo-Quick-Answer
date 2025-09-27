@@ -1,809 +1,226 @@
-/* 基础样式 */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    position: relative;
-    overflow-x: hidden;
-}
-
-/* 动态背景 */
-.bg-animation {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background: linear-gradient(45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-    background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
-}
-
-@keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-#app {
-    width: 100%;
-    max-width: 1200px;
-}
-
-/* 屏幕样式 */
-.screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* 卡片样式 */
-.card {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    width: 100%;
-    max-width: 800px;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* 标题样式 */
-h1, h2, h3, p {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-h1 {
-    font-size: 2.5rem;
-    background: linear-gradient(45deg, #3498db, #e74c3c);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    background-size: 200% auto;
-    animation: textShine 3s ease-in-out infinite;
-}
-
-@keyframes textShine {
-    to { background-position: 200% center; }
-}
-
-/* 按钮样式 */
-.button-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.primary-btn, .secondary-btn {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-}
-
-.primary-btn {
-    background: linear-gradient(45deg, #3498db, #2980b9);
-    color: white;
-}
-
-.primary-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-}
-
-.secondary-btn {
-    background: linear-gradient(45deg, #ecf0f1, #bdc3c7);
-    color: #2c3e50;
-}
-
-.secondary-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(189, 195, 199, 0.4);
-}
-
-/* 游戏界面样式 */
-.status-bar {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.status-item {
-    background: rgba(0, 0, 0, 0.05);
-    padding: 10px 15px;
-    border-radius: 20px;
-    font-weight: 500;
-}
-
-.progress-container {
-    width: 100%;
-    height: 10px;
-    background-color: #ecf0f1;
-    border-radius: 5px;
-    margin-bottom: 30px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-.progress-fill {
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(90deg, #2ecc71, #3498db);
-    transition: width 1s linear;
-}
-
-.game-content {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-}
-
-.question-section {
-    flex: 1;
-    min-width: 300px;
-}
-
-#question {
-    font-size: 1.2rem;
-    margin-bottom: 25px;
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.03);
-    border-radius: 12px;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.option {
-    padding: 15px;
-    border: 2px solid #bdc3c7;
-    border-radius: 12px;
-    background: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1rem;
-}
-
-.option:hover {
-    border-color: #3498db;
-    background: rgba(52, 152, 219, 0.05);
-    transform: translateX(5px);
-}
-
-.option.correct {
-    background: rgba(46, 204, 113, 0.2);
-    border-color: #27ae60;
-}
-
-.option.incorrect {
-    background: rgba(231, 76, 60, 0.2);
-    border-color: #c0392b;
-}
-
-/* 反馈和解析样式 */
-#feedback {
-    padding: 15px;
-    border-radius: 12px;
-    margin-top: 15px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.feedback-correct {
-    background: rgba(46, 204, 113, 0.2);
-    color: #27ae60;
-    animation: fadeIn 0.5s ease;
-}
-
-.feedback-incorrect {
-    background: rgba(231, 76, 60, 0.2);
-    color: #c0392b;
-    animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.explanation-section {
-    flex: 1;
-    min-width: 300px;
-}
-
-.explanation-card {
-    max-height: 500px;
-    overflow-y: auto;
-}
-
-#explanation-list {
-    text-align: left;
-}
-
-.explanation-item {
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.03);
-    border-left: 4px solid #3498db;
-}
-
-.explanation-item.correct {
-    border-left-color: #27ae60;
-}
-
-.explanation-item.incorrect {
-    border-left-color: #c0392b;
-}
-
-.explanation-item + .explanation-item {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.explanation-question {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.explanation-text {
-    font-size: 0.95rem;
-    color: #34495e;
-}
-
-/* 排行榜样式 */
-.score-list {
-    list-style: none;
-    margin: 20px 0;
-    max-height: 350px;
-    overflow-y: auto;
-    padding-right: 10px;
-}
-
-.score-list li {
-    background: rgba(0, 0, 0, 0.05);
-    padding: 12px 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.score-list li:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: #3498db;
-    transform: scaleY(0);
-    transition: transform 0.3s ease;
-}
-
-.score-list li:hover {
-    transform: translateX(5px);
-    background: rgba(0, 0, 0, 0.08);
-}
-
-.score-list li:hover:before {
-    transform: scaleY(1);
-}
-
-.score-list li:first-child {
-    background: rgba(241, 196, 15, 0.2);
-    border: 2px solid #f1c40f;
-}
-
-.score-list li:first-child:before {
-    background: #f1c40f;
-}
-
-/* 排行榜筛选 */
-.leaderboard-filter {
-    margin: 20px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-#library-filter {
-    padding: 8px 15px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
-    background: white;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-#library-filter:hover {
-    border-color: #3498db;
-    box-shadow: 0 2px 5px rgba(52, 152, 219, 0.1);
-}
-
-/* 弹窗样式 */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.modal:not(.hidden) {
-    opacity: 1;
-    visibility: visible;
-}
-
-.modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    max-width: 500px;
-    width: 90%;
-    position: relative;
-    transform: translateY(-20px);
-    transition: all 0.3s ease;
-}
-
-.modal:not(.hidden) .modal-content {
-    transform: translateY(0);
-}
-
-.close-modal {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.close-modal:hover {
-    color: #e74c3c;
-    transform: rotate(90deg);
-}
-
-/* 庆祝消息 */
-.celebration {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.8);
-    background: linear-gradient(45deg, #f1c40f, #f39c12);
-    color: white;
-    padding: 30px 60px;
-    border-radius: 15px;
-    font-size: 2rem;
-    font-weight: bold;
-    z-index: 1001;
-    box-shadow: 0 10px 30px rgba(241, 196, 15, 0.5);
-    opacity: 0;
-    transition: all 0.5s ease;
-    text-align: center;
-    background-size: 200% auto;
-    animation: celebrationShine 3s ease-in-out infinite;
-}
-
-@keyframes celebrationShine {
-    to { background-position: 200% center; }
-}
-
-.celebration:not(.hidden) {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-/* 版本信息 */
-.version-info {
-    margin-bottom: 20px;
-    color: #7f8c8d;
-    font-size: 0.9rem;
-    text-align: center;
-}
-
-.version-separator {
-    margin: 0 8px;
-}
-
-/* 题库选择界面样式 */
-.library-list {
-    margin: 25px 0;
-    max-height: 300px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.library-item {
-    padding: 15px;
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.05);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: left;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-left: 4px solid transparent;
-}
-
-.library-item:hover {
-    background: rgba(52, 152, 219, 0.1);
-    transform: translateX(5px);
-    border-left-color: #3498db;
-}
-
-.library-item.selected {
-    background: rgba(52, 152, 219, 0.2);
-    border-left: 4px solid #3498db;
-}
-
-.library-meta {
-    font-size: 0.9rem;
-    color: #7f8c8d;
-}
-
-/* 文件上传区域样式 */
-.file-upload-section {
-    margin: 20px 0;
-    padding: 20px;
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.03);
-    transition: all 0.3s ease;
-}
-
-.file-upload-section:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-#library-file-input {
-    display: none;
-}
-
-.upload-area {
-    margin: 15px 0;
-    padding: 30px 10px;
-    border: 2px dashed #bdc3c7;
-    border-radius: 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.upload-area:hover {
-    border-color: #3498db;
-    background: rgba(52, 152, 219, 0.05);
-}
-
-.upload-area.dragover {
-    border-color: #2ecc71;
-    background: rgba(46, 204, 113, 0.1);
-}
-
-.upload-text {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    color: #7f8c8d;
-}
-
-.upload-text i {
-    font-size: 2rem;
-}
-
-.small-text {
-    font-size: 0.8rem;
-    color: #7f8c8d;
-    text-align: center;
-}
-
-/* 最终得分样式 */
-.final-score {
-    font-size: 3rem;
-    font-weight: bold;
-    background: linear-gradient(45deg, #e74c3c, #f39c12, #f1c40f, #2ecc71, #3498db);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    background-size: 400% auto;
-    animation: scoreShine 5s ease-in-out infinite;
-    margin: 20px 0;
-}
-
-@keyframes scoreShine {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* 通知提示样式 */
-.notification-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.notification {
-    padding: 15px 20px;
-    border-radius: 8px;
-    color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 280px;
-    max-width: 400px;
-    animation: slideIn 0.3s ease-out forwards, fadeOut 0.3s ease-in forwards 2.7s;
-}
-
-.notification.success {
-    background: linear-gradient(45deg, #27ae60, #2ecc71);
-}
-
-.notification.error {
-    background: linear-gradient(45deg, #c0392b, #e74c3c);
-}
-
-.notification.info {
-    background: linear-gradient(45deg, #2980b9, #3498db);
-}
-
-.notification.warning {
-    background: linear-gradient(45deg, #d35400, #f39c12);
-}
-
-.notification .close-btn {
-    margin-left: auto;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes fadeOut {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(100%); opacity: 0; }
-}
-
-/* 控制按钮样式 */
-.control-buttons {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 900;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.control-btn {
-    background: rgba(255, 255, 255, 0.9);
-    border: none;
-    border-radius: 50px;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    overflow: hidden;
-}
-
-.control-btn:hover {
-    width: 180px;
-    background: linear-gradient(45deg, #3498db, #2980b9);
-    color: white;
-}
-
-.control-btn .control-text {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    margin-left: 10px;
-    white-space: nowrap;
-}
-
-.control-btn:hover .control-text {
-    opacity: 1;
-}
-
-/* 知识卡片样式 */
-.knowledge-card {
-    margin-top: 30px;
-    padding: 20px;
-    background: rgba(52, 152, 219, 0.05);
-    border-radius: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: left;
-}
-
-.knowledge-card:hover {
-    background: rgba(52, 152, 219, 0.1);
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
-}
-
-.knowledge-card h3 {
-    margin-bottom: 15px;
-    color: #3498db;
-    text-align: left;
-}
-
-#knowledge-content {
-    line-height: 1.6;
-}
-
-#knowledge-content p {
-    margin-bottom: 10px;
-    text-align: left;
-}
-
-/* 加载中界面 */
-.loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid rgba(52, 152, 219, 0.2);
-    border-top: 5px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-    font-size: 1.2rem;
-    color: #34495e;
-}
-
-.loading-library {
-    font-size: 1rem;
-    color: #7f8c8d;
-}
-
-/* 排行榜容器 */
-.leaderboard-container {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-}
-
-.leaderboard-card {
-    flex: 1;
-}
-
-.leaderboard-explanation {
-    flex: 1;
-    max-height: 600px;
-    overflow-y: auto;
-}
-
-/* 响应式调整 */
-@media (max-width: 899px) {
-    body {
-        padding-bottom: 80px;
-    }
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学科快回答！</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 加载中界面 -->
+    <div id="loading-screen" class="loading-screen hidden">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loading-text">加载中...</p>
+            <p id="loading-library" class="loading-library">正在加载题库...</p>
+        </div>
+    </div>
     
-    .game-content {
-        flex-direction: column;
-    }
+    <!-- 动态背景元素 -->
+    <div class="bg-animation"></div>
     
-    .status-bar {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-    }
+    <!-- 控制按钮区域 -->
+    <div id="control-buttons" class="control-buttons">
+        <button id="control-back-btn" class="control-btn hidden">
+            <i class="fas fa-home"></i>
+            <span class="control-text">返回主菜单</span>
+        </button>
+        <button id="control-clear-btn" class="control-btn hidden">
+            <i class="fas fa-trash"></i>
+            <span class="control-text">清空记录</span>
+        </button>
+    </div>
     
-    .card {
-        padding: 20px;
-        max-width: 100%;
-    }
+    <!-- 通知提示区域 -->
+    <div id="notification-container" class="notification-container"></div>
     
-    h1 {
-        font-size: 2rem;
-    }
-    
-    .leaderboard-filter {
-        flex-direction: column;
-    }
-    
-    .leaderboard-container {
-        flex-direction: column;
-    }
-    
-    .control-btn:hover {
-        width: 150px;
-    }
-    
-    .explanation-card {
-        max-height: 300px;
-    }
-}
+    <div id="app">
+        <!-- 开始菜单界面 -->
+        <div id="start-menu" class="screen">
+            <div class="card">
+                <h1>学科快回答！</h1>
+                <div class="version-info">
+                    <span class="author">by 晓炙云溪</span>
+                    <span class="version-separator">|</span>
+                    <span class="version">v1.4.31-beta</span>
+                </div>
+                <p>挑战你的学科知识储备，在限定时间内尽可能回答更多问题！</p>
+                
+                <div class="button-group">
+                    <button id="start-game-btn" class="primary-btn">
+                        <i class="fas fa-play"></i> 开始游戏
+                    </button>
+                    <button id="select-library-btn" class="secondary-btn">
+                        <i class="fas fa-book"></i> 选择题库
+                    </button>
+                    <button id="view-leaderboard-btn" class="secondary-btn">
+                        <i class="fas fa-trophy"></i> 查看排行榜
+                    </button>
+                    <button id="show-instructions-btn" class="secondary-btn">
+                        <i class="fas fa-info-circle"></i> 游戏说明
+                    </button>
+                </div>
+                
+                <!-- 知识卡片 -->
+                <div id="knowledge-card" class="knowledge-card">
+                    <h3>知识卡片</h3>
+                    <div id="knowledge-content">
+                        <p>请先选择一个题库</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 题库选择界面 -->
+        <div id="library-selector" class="screen hidden">
+            <div class="card">
+                <h2>选择题库</h2>
+                <p>当前选择: <span id="current-library-name">加载中...</span></p>
+                
+                <div id="library-list" class="library-list">
+                    <!-- 题库列表将动态生成 -->
+                </div>
+                
+                <div id="local-file-upload" class="file-upload-section">
+                    <p>或选择本地题库文件：</p>
+                    <div class="upload-area" id="upload-area">
+                        <input type="file" id="library-file-input" accept=".json" />
+                        <div class="upload-text">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>拖放JSON文件到此处或点击选择</p>
+                        </div>
+                    </div>
+                    <p class="small-text">提示：请在文件选择器中导航到data文件夹</p>
+                </div>
+                
+                <div class="button-group">
+                    <button id="back-from-library-btn" class="primary-btn">
+                        <i class="fas fa-arrow-left"></i> 返回
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 游戏界面 -->
+        <div id="game" class="screen hidden">
+            <div class="card">
+                <div class="status-bar">
+                    <div class="status-item">
+                        <i class="fas fa-clock"></i> 时间: <span id="time-left">60</span>秒
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-scoreboard"></i> 分数: <span id="score-value">0</span>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-chart-pie"></i> 正确率: <span id="accuracy-display">0/0/0-0%</span>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="game-content">
+                    <div class="question-section">
+                        <div id="question-area">
+                            <div id="question">问题将在这里显示</div>
+                            <div id="options"></div>
+                        </div>
+                        <div id="feedback" class="hidden"></div>
+                    </div>
+                    
+                    <div class="explanation-section">
+                        <div class="card explanation-card">
+                            <!-- 解析列表将在这里动态生成 -->
+                            <h3>答题记录</h3>
+                            <div id="explanation-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 排行榜界面 -->
+        <div id="leaderboard-menu" class="screen hidden">
+            <div class="leaderboard-container">
+                <div class="card leaderboard-card">
+                    <h2>排行榜</h2>
+                    
+                    <!-- 排行榜筛选 -->
+                    <div class="leaderboard-filter">
+                        <label for="library-filter">题库筛选：</label>
+                        <select id="library-filter">
+                            <option value="all">所有题库</option>
+                            <!-- 选项将动态生成 -->
+                        </select>
+                    </div>
+                    
+                    <ul id="leaderboard" class="score-list"></ul>
+                </div>
+                
+                <div class="card explanation-card leaderboard-explanation">
+                    <h3>答题解析</h3>
+                    <div id="leaderboard-explanation-content">
+                        <p>请选择一条记录查看解析</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 游戏结束界面 -->
+        <div id="game-over-menu" class="screen hidden">
+            <div class="card">
+                <h2>游戏结束</h2>
+                <p>你的最终得分是:</p>
+                <p class="final-score" id="final-score">0</p>
+                <p id="record-message" class="hidden">恭喜你创造了新纪录！</p>
+                <p>答题统计: <span id="quiz-completion-time">0/0/0-0%</span></p>
+                
+                <h3>当前题库排行榜</h3>
+                <ul id="game-over-leaderboard" class="score-list"></ul>
+                
+                <div class="button-group">
+                    <button id="restart-game-btn" class="primary-btn">
+                        <i class="fas fa-redo"></i> 返回主菜单
+                    </button>
+                    <button id="clear-records-btn" class="secondary-btn">
+                        <i class="fas fa-trash"></i> 清空记录
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 破纪录庆祝弹窗 -->
+        <div id="celebration-message" class="celebration hidden">
+            恭喜你创造了新纪录！
+        </div>
+        
+        <!-- 游戏说明弹窗 -->
+        <div id="instructions-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>游戏说明</h2>
+                <ul>
+                    <li>游戏时间为60秒，在限定时间内尽可能回答更多问题</li>
+                    <li>题目难度分为4级，难度越高，得分越多：
+                        <ul>
+                            <li>难度1：3个选项，每题5分</li>
+                            <li>难度2：4个选项，每题10分</li>
+                            <li>难度3：5个选项，每题15分</li>
+                            <li>难度4：6个选项，每题20分</li>
+                        </ul>
+                    </li>
+                    <li>回答正确加分，回答错误不扣分</li>
+                    <li>电脑端右侧会显示所有题目的解析记录</li>
+                    <li>游戏结束后可以查看自己的排名</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
