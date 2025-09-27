@@ -22,12 +22,12 @@
     
     <!-- 控制按钮区域 -->
     <div id="control-buttons" class="control-buttons">
-        <button id="control-back-btn" class="control-btn hidden">
-            <i class="fas fa-home"></i>
+        <button id="control-back-btn" class="control-btn hidden" aria-label="返回主菜单">
+            <i class="fas fa-home control-icon"></i>
             <span class="control-text">返回主菜单</span>
         </button>
-        <button id="control-clear-btn" class="control-btn hidden">
-            <i class="fas fa-trash"></i>
+        <button id="control-clear-btn" class="control-btn hidden" aria-label="清空记录">
+            <i class="fas fa-trash control-icon"></i>
             <span class="control-text">清空记录</span>
         </button>
     </div>
@@ -65,7 +65,7 @@
                 <!-- 知识卡片 -->
                 <div id="knowledge-card" class="knowledge-card">
                     <h3>知识卡片</h3>
-                    <div id="knowledge-content">
+                    <div id="knowledge-content" class="knowledge-content">
                         <p>请先选择一个题库</p>
                     </div>
                 </div>
