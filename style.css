@@ -242,6 +242,11 @@ h1 {
     animation: fadeIn 0.5s ease;
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .explanation-section {
     flex: 1;
     min-width: 300px;
@@ -254,72 +259,71 @@ h1 {
 
 #explanation-list {
     text-align: left;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
 }
 
 .explanation-item {
     padding: 15px;
+    margin-bottom: 15px;
     border-radius: 10px;
     background: rgba(0, 0, 0, 0.03);
-    animation: fadeIn 0.5s ease;
+    border-left: 4px solid #3498db;
 }
 
 .explanation-item.correct {
-    border-left: 4px solid #27ae60;
+    border-left-color: #27ae60;
 }
 
 .explanation-item.incorrect {
-    border-left: 4px solid #c0392b;
+    border-left-color: #c0392b;
+}
+
+.explanation-item + .explanation-item {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .explanation-question {
-    font-weight: 600;
+    font-weight: bold;
     margin-bottom: 5px;
 }
 
-.explanation-answer {
-    font-style: italic;
-    margin-bottom: 5px;
+.explanation-text {
+    font-size: 0.95rem;
+    color: #34495e;
 }
 
 /* 排行榜样式 */
 .score-list {
     list-style: none;
-    margin-top: 20px;
-    max-height: 400px;
+    margin: 20px 0;
+    max-height: 350px;
     overflow-y: auto;
+    padding-right: 10px;
 }
 
 .score-list li {
-    padding: 15px;
-    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 12px 15px;
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.03);
+    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: all 0.3s ease;
     position: relative;
-    padding-left: 40px;
-    transition: transform 0.3s ease;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .score-list li:before {
-    content: attr(data-rank);
+    content: '';
     position: absolute;
-    left: 10px;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    background: #bdc3c7;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    transition: all 0.3s ease;
-    transform: scaleY(0.8);
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #3498db;
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
 }
 
 .score-list li:hover {
@@ -561,15 +565,22 @@ h1 {
     background-clip: text;
     color: transparent;
     background-size: 400% auto;
-    animation: textShine 3s ease-in-out infinite;
+    animation: scoreShine 5s ease-in-out infinite;
+    margin: 20px 0;
 }
 
-/* 通知样式 */
+@keyframes scoreShine {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 通知提示样式 */
 .notification-container {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 999;
+    z-index: 9999;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -578,53 +589,49 @@ h1 {
 .notification {
     padding: 15px 20px;
     border-radius: 8px;
-    background: white;
+    color: white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     display: flex;
     align-items: center;
     gap: 10px;
-    animation: fadeIn 0.3s ease-out;
-    max-width: 350px;
+    min-width: 280px;
+    max-width: 400px;
+    animation: slideIn 0.3s ease-out forwards, fadeOut 0.3s ease-in forwards 2.7s;
 }
 
 .notification.success {
-    border-left: 4px solid #2ecc71;
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
 }
 
 .notification.error {
-    border-left: 4px solid #e74c3c;
+    background: linear-gradient(45deg, #c0392b, #e74c3c);
 }
 
 .notification.info {
-    border-left: 4px solid #3498db;
+    background: linear-gradient(45deg, #2980b9, #3498db);
 }
 
 .notification.warning {
-    border-left: 4px solid #f39c12;
+    background: linear-gradient(45deg, #d35400, #f39c12);
 }
 
 .notification .close-btn {
+    margin-left: auto;
     background: none;
     border: none;
+    color: white;
     cursor: pointer;
-    margin-left: auto;
-    font-size: 1.2rem;
-    color: #7f8c8d;
-    transition: color 0.2s ease;
+    font-size: 1rem;
 }
 
-.notification .close-btn:hover {
-    color: #2c3e50;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes fadeOut {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(10px); }
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
 }
 
 /* 控制按钮样式 */
@@ -651,7 +658,6 @@ h1 {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     overflow: hidden;
-    color: #34495e; /* 确保图标有颜色 */
 }
 
 .control-btn:hover {
@@ -694,29 +700,13 @@ h1 {
     text-align: left;
 }
 
-/* 知识卡片和解析内容样式区别 */
-.knowledge-content {
+#knowledge-content {
     line-height: 1.6;
-    font-family: 'Georgia', serif;
-    color: #34495e;
-    font-size: 1.05rem;
 }
 
-.explanation-content {
-    line-height: 1.5;
-    font-family: 'Segoe UI', sans-serif;
-    color: #2c3e50;
-    font-size: 0.95rem;
-}
-
-/* 知识卡片淡入淡出动画 */
-.knowledge-fade {
-    animation: knowledgeFade 0.5s ease-in-out;
-}
-
-@keyframes knowledgeFade {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+#knowledge-content p {
+    margin-bottom: 10px;
+    text-align: left;
 }
 
 /* 加载中界面 */
@@ -731,14 +721,8 @@ h1 {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-}
-
-.loading-content {
-    display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 20px;
-    text-align: center;
 }
 
 .spinner {
